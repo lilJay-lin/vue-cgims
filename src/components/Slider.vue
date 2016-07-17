@@ -1,33 +1,66 @@
 <template>
   <ul>
     <template v-for="menu in menus">
-      <li class="" >
-
+      <li :class="{submenu: menu.sub.length, active: menu.name === active}" v-open="active | canOpen menu">
+        <a :href="menu.name"  @click.prevent="onItemClick($event, menu)">
+          <i class="icon icon-th-list"></i>
+          <span>{{menu.title}}</span>
+          <span class="label" v-show="menu.sub.length">{{menu.sub.length}}</span>
+        </a>
+        <ul v-show="menu.sub">
+          <li v-for="sub in menu.sub" :class="{active: sub.name === active}"><a :href="sub.name" @click.prevent="onItemClick($event, sub)">{{sub.title}}</a></li>
+        </ul>
       </li>
     </template>
-    <li class="submenu open">
-      <a href="#">
-        <i class="icon icon-th-list"></i>
-        <span>角色管理</span> <span class="label">4</span>
-      </a>
-      <ul>
-        <li><a href="form-common.html">搜索角色</a></li>
-        <li><a href="form-validation.html">角色详情</a></li>
-        <li><a href="form-wizard.html">添加角色</a></li>
-        <li><a href="form-wizard.html">修改角色</a></li>
-      </ul>
-    </li>
   </ul>
 </template>
 <script>
+import go from '../util/go'
 export default {
-  props:{
+  props: {
     menus: {
       type: Array
     },
-    isActive: {
+    active: {
       type: String,
-      default: 'index'
+      default: '/'
+    }
+  },
+  filters: {
+    canOpen: function (active, menu) {
+      let res = 0
+      if (menu.sub && menu.sub.length > 0) {
+        let name = menu.name.replace(/\/*$/g, '') + '/'
+        res = active.startsWith(name)
+        if (!res) {
+          res = menu.sub.some(function (sub) {
+            if (!res) {
+              res = sub.name === active
+              return res
+            }
+          })
+        }
+      }
+      return res
+    }
+  },
+  directives: {
+    open: function (open) {
+      open && this.el.classList.add('open')
+    }
+  },
+  methods: {
+    onItemClick: function (e, menu) {
+      let el = e.currentTarget
+      if (el.tagName.toLowerCase() === 'a') {
+        let parent = el.parentNode
+        let classList = parent.classList
+        if (menu.sub && menu.sub.length > 0) {
+          classList[!classList.contains('open') ? 'add' : 'remove']('open')
+        } else {
+          go(menu.name, this.$router)
+        }
+      }
     }
   }
 }
