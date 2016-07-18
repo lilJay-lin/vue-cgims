@@ -46,3 +46,10 @@ export const getBreadCrumb = (state) => {
     active: active
   }
 }
+
+/*
+* 是否登录
+* */
+export const isLogin = (state) => {
+  return state.auth.login
+}

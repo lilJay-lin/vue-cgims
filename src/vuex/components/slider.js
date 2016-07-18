@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/16.
  */
-import {SET_ACTION_MENU} from '../mutation-types'
+import {SET_ACTIVE_MENU} from '../mutation-types'
 const state = {
   menus: [
     {
@@ -75,7 +75,7 @@ const state = {
 }
 
 const mutations = {
-  [SET_ACTION_MENU]: (state, url) => {
+  [SET_ACTIVE_MENU]: (state, url) => {
     state.active = url
   }
 }

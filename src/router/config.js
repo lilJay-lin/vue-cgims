@@ -13,8 +13,10 @@ import AddWorker from 'components/worker/AddWorker.vue'
 import SearchOrder from 'components/order/SearchOrder.vue'
 import AddOrder from 'components/order/AddOrder.vue'
 import store from 'my_vuex/store'
-import {setMenuActive} from '../vuex/actions'
+import {isLogin} from 'my_vuex/getters'
+import {setActiveMenu} from 'my_vuex/actions'
 
+let loginUrl = '/login'
 export default (router) => {
   router.map({
     '/admin': {
@@ -60,7 +62,7 @@ export default (router) => {
         }
       }
     },
-    '/login': {
+    [loginUrl]: {
       component: Login
     }
   })
@@ -72,7 +74,11 @@ export default (router) => {
   *  全局路由权限控制，无权限跳转至forbidden
   */
   router.beforeEach(function (transition) {
-    setMenuActive(store, transition.to.path)
+    if (!isLogin(store.state) && transition.to.path !== loginUrl) {
+      transition.redirect(loginUrl)
+      return
+    }
+    setActiveMenu(store, transition.to.path)
     transition.next()
   })
 }
