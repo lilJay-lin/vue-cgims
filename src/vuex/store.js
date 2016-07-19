@@ -10,9 +10,10 @@ import auth from 'my_vuex/components/auth'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
   modules: {
     slider,
     auth
   },
-  middlewares: [createLogger()]
+  plugins: [createLogger()]
 })

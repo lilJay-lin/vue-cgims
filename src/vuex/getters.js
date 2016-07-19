@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/16.
  */
-const _ = require('lodash/collection')
+const forEach = require('lodash/collection/forEach')
 /*
 * 获取左侧侧边栏菜单列表
 * */
@@ -14,7 +14,7 @@ export const getSlider = state => {
 * */
 function loopSubMenu (menus, breads, active) {
   let isHit = 0
-  _.forEach(menus, (menu) => {
+  forEach(menus, (menu) => {
     if (isHit) return
     breads.push({
       name: menu.name,
@@ -40,7 +40,6 @@ export const getBreadCrumb = (state) => {
   let active = slider.active
   let breads = []
   loopSubMenu(menus, breads, active)
-  console.log(breads)
   return {
     menus: breads,
     active: active
