@@ -3,7 +3,7 @@
     <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
       <h5>{{title}}</h5>
     </div>
-    <div class="widget-content" :class="{nopadding: notPadding}">
+    <div class="widget-content" :class="{nopadding: padding}">
       <slot></slot>
     </div>
   </div>
@@ -12,9 +12,9 @@
 export default {
   props: {
     title: String,
-    notPadding: {
+    padding: {
       type: Boolean,
-      default: 0
+      default: true
     }
   }
 }

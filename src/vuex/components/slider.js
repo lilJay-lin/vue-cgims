@@ -15,57 +15,57 @@ const state = {
       ]
     },
     {
-      name: 'users',
+      name: 'user',
       title: '用户管理',
       sub: [
         {
-          name: '/admin/users',
+          name: '/admin/user',
           title: '搜索用户'
         },
         {
-          name: '/admin/users/add',
+          name: '/admin/user/add',
           title: '添加用户'
         }
       ]
     },
     {
-      name: 'orders',
+      name: 'order',
       title: '订单管理',
       sub: [
         {
-          name: '/admin/orders',
+          name: '/admin/order',
           title: '搜索订单'
         },
         {
-          name: '/admin/orders/add',
+          name: '/admin/order/add',
           title: '添加订单'
         }
       ]
     },
     {
-      name: 'user-orders',
+      name: 'user-order',
       title: '个人订单管理',
       sub: [
         {
-          name: '/admin/orders/user',
+          name: '/admin/order/user',
           title: '搜索订单'
         },
         {
-          name: '/admin/orders/user/add',
+          name: '/admin/order/user/add',
           title: '添加订单'
         }
       ]
     },
     {
-      name: 'workers',
+      name: 'worker',
       title: '师傅管理',
       sub: [
         {
-          name: '/admin/workers',
+          name: '/admin/worker',
           title: '搜索师傅'
         },
         {
-          name: '/admin/workers/add',
+          name: '/admin/worker/add',
           title: '添加师傅'
         }
       ]

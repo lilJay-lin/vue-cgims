@@ -13,7 +13,7 @@ import AddWorker from 'components/worker/AddWorker.vue'
 import SearchOrder from 'components/order/SearchOrder.vue'
 import AddOrder from 'components/order/AddOrder.vue'
 import store from 'my_vuex/store'
-import {isLogin} from 'my_vuex/getters'
+import {isLogin} from 'my_vuex/getters/getters'
 import {setActiveMenu} from 'my_vuex/actions'
 
 let loginUrl = '/login'
@@ -27,10 +27,10 @@ export default (router) => {
             template: '<p>this is default view</p>'
           }
         },
-        '/users': {
+        '/user': {
           component: SearchUser
         },
-        '/users/add': {
+        '/user/add': {
           component: AddUser
         },
         '/roles': {
@@ -39,25 +39,25 @@ export default (router) => {
         '/roles/add': {
           component: AddRole
         },
-        '/workers': {
+        '/worker': {
           component: SearchWorker
         },
-        '/workers/add': {
+        '/worker/add': {
           component: AddWorker
         },
         '/statistic': {
           component: Statistic
         },
-        '/orders': {
+        '/order': {
           component: SearchOrder
         },
-        '/orders/add': {
+        '/order/add': {
           component: AddOrder
         },
-        '/orders/user': {
+        '/order/user': {
           component: SearchOrder
         },
-        '/orders/user/add': {
+        '/order/user/add': {
           component: AddOrder
         }
       }

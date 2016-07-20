@@ -1,6 +1,6 @@
 <template>
   <Content :breads="breads" :title="title">
-    <Widget :notPadding="1" :title="title">
+    <Widget :padding="false" :title="title">
       <table class="table with-check role">
         <thead>
         <tr>
@@ -49,7 +49,8 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-import {getBreadCrumb} from 'my_vuex/getters'
+import {getBreadCrumb} from 'my_vuex/getters/getters'
+import {searchUser} from 'my_vuex/getters/user'
 import BreadCrumb from 'components/BreadCrumb'
 import Content from 'components/Content'
 import Widget from 'components/Widget'
@@ -68,7 +69,8 @@ export default {
   },
   vuex: {
     getters: {
-      breads: getBreadCrumb
+      breads: getBreadCrumb,
+      users: searchUser
     }
   }
 }

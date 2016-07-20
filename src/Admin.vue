@@ -32,7 +32,7 @@
 </template>
 <script>
 import Slider from './components/Slider.vue'
-import {getSlider} from './vuex/getters'
+import {getSlider} from './vuex/getters/getters'
 import {css} from './util/dom.js'
 export default {
   components: {
