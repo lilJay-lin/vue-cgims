@@ -6,7 +6,7 @@
         <tr>
           <th>
             <div class="checker" >
-              <span><input type="checkbox"  name="title-table-checkbox"></span>
+              <span :class="{checked: checkAll}"><input type="checkbox"  name="title-table-checkbox"  @change="toggleCheck($event, '')"></span>
             </div>
           </th>
           <th>用户名</th>
@@ -16,15 +16,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <tr v-for="user in users.list">
           <td>
             <div class="checker" >
-              <span class="checked"><input type="checkbox" style="opacity: 0;"></span>
+              <span :class="{checked: user.checked}"><input type="checkbox" @change="toggleCheck($event, user.id)"></span>
             </div>
           </td>
-          <td>Row 1</td>
-          <td>Row 1</td>
-          <td>Row 1</td>
+          <td>{{user.login_name}}</td>
+          <td>{{user.name}}</td>
+          <td>{{user.phone_num}}</td>
           <td>
             <div class="operation-group">
               <a href="" title="详情"><i class="icon-search"></i></a>
@@ -49,29 +49,51 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-import {getBreadCrumb} from 'my_vuex/getters/getters'
-import {searchUser} from 'my_vuex/getters/user'
+  import {getBreadCrumb} from 'my_vuex/getters/getters'
+  import {getUsers, getCheckAll} from 'my_vuex/getters/user'
+import {searchUser, checkUser} from 'my_vuex/actions/user'
 import BreadCrumb from 'components/BreadCrumb'
 import Content from 'components/Content'
 import Widget from 'components/Widget'
 import Pagination from 'components/Pagination'
 export default {
-  components: {
-    BreadCrumb,
-    Content,
-    Widget,
-    Pagination
-  },
-  computed: {
-    title: function () {
-      return '用户管理'
+    components: {
+      BreadCrumb,
+      Content,
+      Widget,
+      Pagination
+    },
+    computed: {
+      title: function () {
+        return '用户管理'
+      }
+    },
+    methods: {
+      toggleCheck: function (e, id) {
+        let el = e.target
+        this.checkUser(el.checked, id)
+      }
+    },
+    route: {
+      data () {
+        this.searchUser({})
+      }
+    },
+    vuex: {
+      getters: {
+        breads: getBreadCrumb,
+        users: getUsers,
+        checkAll: getCheckAll
+      },
+      actions: {
+        searchUser,
+        checkUser
+      }
     }
-  },
-  vuex: {
-    getters: {
-      breads: getBreadCrumb,
-      users: searchUser
-    }
-  }
 }
 </script>
+<style>
+  .table td{
+    text-align: center;
+  }
+</style>

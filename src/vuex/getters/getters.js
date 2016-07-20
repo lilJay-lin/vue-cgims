@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/16.
  */
-const forEach = require('lodash/collection/forEach')
+const forEach = require('lodash/forEach')
 /*
 * 获取左侧侧边栏菜单列表
 * */

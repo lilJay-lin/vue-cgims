@@ -6,8 +6,10 @@ let qwest = require('qwest')
 /*
 * 默认配置
 * */
-qwest.base = 'http://localhost:8080'
-qwest.setDefaultDataType('json')
+qwest.base = 'http://localhost:3000'
+qwest.setDefaultOptions({
+  responseType: 'json'
+})
 
 export default {
   request: ({

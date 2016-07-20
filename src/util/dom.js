@@ -2,8 +2,8 @@
  * Created by linxiaojie on 2016/7/19.
  * 获取dom属性
  */
-const forEach = require('lodash/collection/forEach')
-const isString = require('lodash/lang/isString')
+const forEach = require('lodash/forEach')
+const isString = require('lodash/isString')
 const cssStyle = (el) => {
   if (window.getComputedStyle) {
     return el.ownerDocument.defaultView.getComputedStyle(el, null)

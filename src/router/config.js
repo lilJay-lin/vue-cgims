@@ -14,7 +14,7 @@ import SearchOrder from 'components/order/SearchOrder.vue'
 import AddOrder from 'components/order/AddOrder.vue'
 import store from 'my_vuex/store'
 import {isLogin} from 'my_vuex/getters/getters'
-import {setActiveMenu} from 'my_vuex/actions'
+import {setActiveMenu} from 'my_vuex/actions/actions'
 
 let loginUrl = '/login'
 export default (router) => {
