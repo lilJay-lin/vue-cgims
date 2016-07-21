@@ -19,6 +19,14 @@ export default {
     options = null,
     before = function () {}
   }) => {
-    return qwest[method](url, data, options, before)
+    return qwest[method](url, data, options, before).then((xhr, res) => {
+      return new Promise((resolve, reject) => {
+        if (res.success === 1) {
+          resolve(res)
+        } else {
+          reject(res)
+        }
+      })
+    })
   }
 }

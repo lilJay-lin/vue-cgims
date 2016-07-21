@@ -1,8 +1,9 @@
 /**
  * Created by linxiaojie on 2016/7/19.
  */
-import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER} from 'my_vuex/mutations/user'
+import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER} from 'my_vuex/mutations/user'
 const state = {
+  searchKeyword: '',
   checkAll: false,
   details: {},
   list: [],
@@ -15,7 +16,8 @@ const state = {
 }
 const findIndex = require('lodash/findIndex')
 const mutations = {
-  [RECEIVE_USE]: (state, {list, pageInfo}) => {
+  [RECEIVE_USE]: (state, {list, pageInfo, searchKeyword}) => {
+    state.searchKeyword = searchKeyword
     state.list = list
     state.pageInfo = pageInfo
   },
@@ -33,6 +35,11 @@ const mutations = {
       user.checked = checked
       state.list[idx] = user
     }
+  },
+  [DELETE_USER]: (state, ids) => {
+    state.list = state.list.filter((user) => {
+      return ids.indexOf(user.id) === -1
+    })
   }
 }
 
