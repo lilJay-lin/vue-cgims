@@ -8,7 +8,9 @@
           <span class="label" v-show="menu.sub.length">{{menu.sub.length}}</span>
         </a>
         <ul v-show="menu.sub">
-          <li v-for="sub in menu.sub" :class="{active: sub.name === active}"><a :href="sub.name" @click.prevent="onItemClick($event, sub)">{{sub.title}}</a></li>
+          <li v-for="sub in menu.sub" :class="{active: sub.name === active || sub.contains && ~sub.contains.indexOf(active)}">
+            <a :href="sub.name" @click.prevent="onItemClick($event, sub)">{{sub.title}}</a>
+          </li>
         </ul>
       </li>
     </template>
@@ -30,16 +32,12 @@ export default {
     canOpen: function (active, menu) {
       let res = 0
       if (menu.sub && menu.sub.length > 0) {
-        let name = menu.name.replace(/\/*$/g, '') + '/'
-        res = active.startsWith(name)
-        if (!res) {
-          res = menu.sub.some(function (sub) {
-            if (!res) {
-              res = sub.name === active
-              return res
-            }
-          })
-        }
+        res = menu.sub.some(function (sub) {
+          if (!res) {
+            res = sub.contains ? sub.contains.indexOf(active) > -1 : sub.name === active
+            return res
+          }
+        })
       }
       return res
     }

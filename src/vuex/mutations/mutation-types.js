@@ -12,4 +12,3 @@ export const SET_ACTIVE_MENU = 'set_active_menu'
 * */
 export const AUTH_SUCCESS = 'login_success'
 export const AUTH_PRIVILEGE = 'auth_privilege'
-

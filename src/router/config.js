@@ -4,9 +4,9 @@
 import Admin from 'src/Admin.vue'
 import Login from 'src/Login.vue'
 import SearchUser from 'components/user/SearchUser.vue'
-import AddUser from 'components/user/AddUser.vue'
+import EditUser from 'components/user/EditUser.vue'
 import SearchRole from 'components/role/SearchRole.vue'
-import AddRole from 'components/role/AddRole.vue'
+import EditRole from 'components/role/EditRole.vue'
 import Statistic from 'components/statistic/Statistic.vue'
 import SearchWorker from 'components/worker/SearchWorker.vue'
 import AddWorker from 'components/worker/AddWorker.vue'
@@ -28,36 +28,55 @@ export default (router) => {
           }
         },
         '/user': {
+          name: '/admin/user',
           component: SearchUser
         },
         '/user/add': {
-          component: AddUser
+          name: '/admin/user/add',
+          component: EditUser
         },
-        '/roles': {
+        '/user/:id': {
+          name: '/admin/user/:id',
+          component: EditUser
+        },
+        '/role': {
+          name: '/admin/role',
           component: SearchRole
         },
-        '/roles/add': {
-          component: AddRole
+        '/role/add': {
+          name: '/admin/role/add',
+          component: EditRole
+        },
+        '/role/:id': {
+          name: '/admin/role/:id',
+          component: EditRole
         },
         '/worker': {
+          name: '/admin/worker',
           component: SearchWorker
         },
         '/worker/add': {
+          name: '/admin/worker/add',
           component: AddWorker
         },
         '/statistic': {
+          name: '/admin/statistic',
           component: Statistic
         },
         '/order': {
+          name: '/admin/order',
           component: SearchOrder
         },
         '/order/add': {
+          name: '/admin/order/add',
           component: AddOrder
         },
         '/order/user': {
+          name: '/admin/order/user',
           component: SearchOrder
         },
         '/order/user/add': {
+          name: '/admin/order/user/add',
           component: AddOrder
         }
       }
@@ -67,7 +86,7 @@ export default (router) => {
     }
   })
   router.redirect({
-    '*': '/admin'
+    '/': '/admin'
   })
 
   /*
@@ -78,7 +97,14 @@ export default (router) => {
       transition.redirect(loginUrl)
       return
     }
-    setActiveMenu(store, transition.to.path)
-    transition.next()
+    let to = transition.to
+    console.log(to.name)
+    setActiveMenu(store, to.name)
+    try {
+      transition.next()
+    } catch (e) {
+      console.log('interrupt error: ' + e.message)
+      window.location.href = transition.to.path || router.redirect('/')
+    }
   })
 }

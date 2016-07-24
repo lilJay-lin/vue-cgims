@@ -6,7 +6,7 @@
         <Slider :menus="slider.menus" :active="slider.active"></Slider>
       </div>
     </aside>
-    <header class="top-nav">
+    <header class="top-nav"  v-el:header>
       <div class="nav-menu">
         <ul class="nav">
           <li>
@@ -19,9 +19,9 @@
           <li><a href="">登录</a></li>
         </ul>
       </div>
-    </header v-el:header>
+    </header>
     <aside class="right-content" v-el:content>
-      <router-view></router-view>
+      <router-view keep-alive></router-view>
     </aside>
     <footer>
       <div class="footer"  v-el:footer>
@@ -62,3 +62,25 @@ export default {
   }
 }
 </script>
+<style>
+  .dataTables-filter-wrap input, .dataTables-filter-wrap .btn, .dataTables-filter-wrap select{
+    margin-bottom: 10px;
+  }
+  .relation-list{
+    min-height: 42px;
+    user-select: none;
+  }
+  .relation-list li{
+    min-width: auto;
+  }
+  .pagination-box{
+    margin-top: 15px;
+  }
+  .pagination-info span {
+    margin-right: 10px;
+  }
+  .pagination{
+    margin:0
+  }
+
+</style>

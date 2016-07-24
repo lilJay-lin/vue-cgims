@@ -2,6 +2,9 @@
  * Created by liljay on 2016/7/16.
  */
 import {SET_ACTIVE_MENU} from '../mutations/mutation-types'
+/*
+* contains: 所有指定链接都定位到当前name菜单上
+* */
 const state = {
   menus: [
     {
@@ -20,6 +23,7 @@ const state = {
       sub: [
         {
           name: '/admin/user',
+          contains: ['/admin/user', '/admin/user/:id'],
           title: '搜索用户'
         },
         {
@@ -29,11 +33,27 @@ const state = {
       ]
     },
     {
+      name: 'role',
+      title: '角色管理',
+      sub: [
+        {
+          name: '/admin/role',
+          contains: ['/admin/role', '/admin/role/:id'],
+          title: '搜索角色'
+        },
+        {
+          name: '/admin/role/add',
+          title: '添加角色'
+        }
+      ]
+    },
+    {
       name: 'order',
       title: '订单管理',
       sub: [
         {
           name: '/admin/order',
+          contains: ['/admin/order', '/admin/order/:id'],
           title: '搜索订单'
         },
         {
@@ -48,6 +68,7 @@ const state = {
       sub: [
         {
           name: '/admin/order/user',
+          contains: ['/admin/order/user', '/admin/order/user/:id'],
           title: '搜索订单'
         },
         {

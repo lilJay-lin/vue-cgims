@@ -13,35 +13,34 @@
         <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
           <h5>角色信息</h5>
         </div>
-        <div class="dataTables-filter-wrap">
-          <div class="dataTables-filter">
-            <label>
-              <select class="form-control">
-                <option selected>全部状态</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <select class="form-control">
-                <option selected>全部类型</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <select class="form-control">
-                <option selected>员工甲</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <input type="date"/>
-              至
-              <input type="date"/>
-              <input type="text" />
-              <button type="button" class="btn btn-info">搜索</button>
-              <button type="button" class="btn btn-info">新增</button>
-            </label>
-          </div>
-        </div>
         <div class="widget-content ">
-
+          <div class="dataTables-filter-wrap">
+            <div class="dataTables-filter">
+              <label>
+                <select class="form-control">
+                  <option selected>全部状态</option>
+                  <option>Second option</option>
+                  <option>Third option</option>
+                </select>
+                <select class="form-control">
+                  <option selected>全部类型</option>
+                  <option>Second option</option>
+                  <option>Third option</option>
+                </select>
+                <select class="form-control">
+                  <option selected>员工甲</option>
+                  <option>Second option</option>
+                  <option>Third option</option>
+                </select>
+                <input type="date"/>
+                至
+                <input type="date"/>
+                <input type="text" />
+                <button type="button" class="btn btn-info">搜索</button>
+                <button type="button" class="btn btn-info">新增</button>
+              </label>
+            </div>
+          </div>
           <table class="table with-check">
             <thead>
             <tr>

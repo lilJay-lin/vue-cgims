@@ -7,6 +7,9 @@ import createLogger from 'vuex/logger'
 import slider from 'my_vuex/components/slider'
 import auth from 'my_vuex/components/auth'
 import user from 'my_vuex/components/user'
+import role from 'my_vuex/components/role'
+import worker from 'my_vuex/components/worker'
+import permission from 'my_vuex/components/permission'
 
 Vue.use(Vuex)
 
@@ -15,7 +18,10 @@ export default new Vuex.Store({
   modules: {
     slider,
     auth,
-    user
+    user,
+    role,
+    permission,
+    worker
   },
   plugins: [createLogger()]
 })

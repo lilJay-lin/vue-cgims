@@ -1,11 +1,18 @@
 /**
  * Created by linxiaojie on 2016/7/19.
  */
-import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER} from 'my_vuex/mutations/user'
+import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER, RECEIVE_USER_DETAIL,
+  DELETE_USER_REL_ROLE, ADD_USER_REL_ROLE, DELETE_USER_REL_SLAVE, ADD_USER_REL_SLAVE, SET_USER_MODE} from 'my_vuex/mutations/user'
 const state = {
+  ui: {
+    mode: 'query'
+  },
   searchKeyword: '',
   checkAll: false,
-  details: {},
+  detail: {
+    roles: [],
+    slaves: []
+  },
   list: [],
   pageInfo: {
     curPage: 1,
@@ -40,6 +47,32 @@ const mutations = {
     state.list = state.list.filter((user) => {
       return ids.indexOf(user.id) === -1
     })
+  },
+  [RECEIVE_USER_DETAIL]: (state, user) => {
+    state.detail = user
+  },
+  [DELETE_USER_REL_ROLE]: (state, roleId) => {
+    let roles = state.detail.roles
+    let idx = findIndex(roles, {id: roleId})
+    ~idx && roles.splice(idx, 1)
+  },
+  [ADD_USER_REL_ROLE]: (state, role) => {
+    let roles = state.detail.roles
+    let idx = findIndex(roles, {id: role.id})
+    idx === -1 && roles.push(role)
+  },
+  [DELETE_USER_REL_SLAVE]: (state, slaveId) => {
+    let slaves = state.detail.slaves
+    let idx = findIndex(slaves, {id: slaveId})
+    ~idx && slaves.splice(idx, 1)
+  },
+  [ADD_USER_REL_SLAVE]: (state, slave) => {
+    let slaves = state.detail.slaves
+    let idx = findIndex(slaves, {id: slave.id})
+    idx === -1 && slaves.push(slave)
+  },
+  [SET_USER_MODE]: (state, type) => {
+    state.ui.mode = type
   }
 }
 

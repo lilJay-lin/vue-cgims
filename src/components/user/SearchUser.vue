@@ -1,7 +1,15 @@
 <template>
   <Content :breads="breads" :title="title">
     <Widget :padding="false" :title="title">
-      <table class="table with-check role">
+      <div class="dataTables-filter-wrap">
+        <div class="dataTables-filter">
+          <label>
+            <input type="text" v-el:search @keydown.enter="startSearchUser(1)"/>
+            <button type="button" class="btn btn-info" @click="startSearchUser(1)">搜索</button>
+          </label>
+        </div>
+      </div>
+      <table class="table with-check user">
         <thead>
         <tr>
           <th>
@@ -10,8 +18,8 @@
             </div>
           </th>
           <th>用户名</th>
-          <th >姓名</th>
-          <th >手机</th>
+          <th class="desc">姓名</th>
+          <th class="desc">手机</th>
           <th class="operation-group">操作</th>
         </tr>
         </thead>
@@ -27,8 +35,8 @@
           <td>{{user.phone_num}}</td>
           <td>
             <div class="operation-group">
-              <a href="javascript:void(0)" title="详情"><i class="icon-search"></i></a>
-              <a  href="javascript:void(0)" title="更新"><i class="icon-pencil"></i></a>
+              <a v-link="'user/' + user.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
+              <a  v-link="'user/' + user.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
               <a  href="javascript:void(0)" title="删除" @click="deleteUser(user.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
@@ -40,9 +48,9 @@
       <div class="fg-toolbar">
         <div class="fg-toolbar-operation">
           <button type="button" class="btn btn-success" @click="deleteUser()">删除</button>
-          <button type="button" class="btn btn-success">新增</button>
+          <a v-link="'user/add?type=new'" class="btn btn-success">新增</a>
         </div>
-        <Pagination :cur-page="1" :total-page="10"></Pagination>
+        <Pagination :cur-page="users.pageInfo.curPage" :total-page="users.pageInfo.totalPage" @go-page="startSearchUser"></Pagination>
       </div>
       </div>
     </Widget>
@@ -51,32 +59,34 @@
 <script type="text/ecmascript-6">
   import {getBreadCrumb} from 'my_vuex/getters/getters'
   import {getUsers, getCheckAll} from 'my_vuex/getters/user'
-import {searchUser, checkUser, deleteUser} from 'my_vuex/actions/user'
-import BreadCrumb from 'components/BreadCrumb'
-import Content from 'components/Content'
-import Widget from 'components/Widget'
-import Pagination from 'components/Pagination'
-export default {
+  import {searchUser, checkUser, deleteUser} from 'my_vuex/actions/user'
+  import Content from 'components/Content'
+  import Widget from 'components/Widget'
+  import Pagination from 'components/Pagination'
+  export default {
     components: {
-      BreadCrumb,
       Content,
       Widget,
       Pagination
     },
     computed: {
       title: function () {
-        return '用户管理'
+        return '角色管理'
       }
     },
     methods: {
       toggleCheck: function (e, id) {
         let el = e.target
         this.checkUser(el.checked, id)
+      },
+      startSearchUser: function (page) {
+        let searchKeyword = this.$els.search.value.trim()
+        this.searchUser({searchKeyword, curPage: page || 1})
       }
     },
     route: {
-      data () {
-        this.searchUser({})
+      data ({to: {query: {back}}}) {
+        back ? this.searchUser({searchKeyword: this.$els.search.value.trim(), curPage: this.users.pageInfo.curPage}) : this.searchUser({})
       }
     },
     vuex: {
@@ -91,10 +101,5 @@ export default {
         deleteUser
       }
     }
-}
-</script>
-<style>
-  .table td{
-    text-align: center;
   }
-</style>
+</script>

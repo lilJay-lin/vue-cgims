@@ -1084,10 +1084,14 @@ body {
   color: #666;
   line-height: 20px;
 }
+.table td {
+  text-align: center;
+}
 a,
 a:hover {
   color: #08c;
   text-decoration: none;
+  outline: none;
 }
 hr {
   margin: 20px 0;
@@ -1514,8 +1518,8 @@ footer {
   font-size: 11px;
   left: 0;
   top: 5px;
-  margin: 10px 15px 0px 20px;
-  position: absolute;
+  /*    margin: 10px 15px 0px 20px;
+    position: absolute;*/
   text-align: left;
 }
 .dataTables-filter .btn {

@@ -1,110 +1,139 @@
 <template>
-  <div class="content">
-    <div class="content-header">
-      <div class="breadcrumb">
-        <a href="#" class="tip-bottom" data-original-title="Go to Home"><i class="icon-home"></i>首页</a>
-        <a href="#" class="tip-bottom" data-original-title="Go to Home">师傅管理</a>
-        <a href="#" class="current">搜索师傅</a> </div>
-      <h1>搜索师傅</h1>
-    </div>
-    <div class="content-container">
-      <hr/>
-      <div class="widget-box worker-search">
-        <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-          <h5>师傅信息</h5>
-        </div>
-        <div class="dataTables-filter-wrap">
-          <div class="dataTables-filter">
-            <label>
-              <select class="form-control">
-                <option selected>省</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <select class="form-control">
-                <option selected>市</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <select class="form-control">
-                <option selected>区</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <select class="form-control">
-                <option selected>服务</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <input type="text" placeholder="师傅名、电话"/>
-              <button type="button" class="btn btn-info">搜索</button>
-              <button type="button" class="btn btn-info">新增</button>
-            </label>
-          </div>
-        </div>
-        <div class="widget-content ">
-
-          <table class="table with-check">
-            <thead>
-            <tr>
-              <th>
-                <div class="checker" >
-                  <span><input type="checkbox"  name="title-table-checkbox"></span>
-                </div>
-              </th>
-              <th>工号</th>
-              <th>名称</th>
-              <th>电话</th>
-              <th>qq</th>
-              <th>服务地区</th>
-              <th>评价</th>
-              <th>合作次数</th>
-              <th>备注</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                <div class="checker" >
-                  <span class="checked"><input type="checkbox" style="opacity: 0;"></span>
-                </div>
-              </td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-            </tr>
-            </tbody>
-
-          </table>
-
-          <div class="fg-toolbar">
-            <div class="fg-toolbar-operation">
-              <button type="button" class="btn btn-success">批量删除</button>
-            </div>
-            <div class="pagination " >
-              <a tabindex="0" class="first pg-button  pg-state-disabled" >首页</a>
-              <a tabindex="0" class="previous pg-button  pg-state-disabled">上一页</a>
-                            <span>
-                                <a tabindex="0" class=" pg-button  pg-state-disabled">1</a>
-                                <a tabindex="0" class=" pg-button ">2</a>
-                                <a tabindex="0" class=" pg-button ">3</a>
-                                <a tabindex="0" class=" pg-button ">4</a>
-                                <a tabindex="0" class=" pg-button ">5</a>
-                            </span>
-              <a tabindex="0" class="next  pg-button ">下一页</a>
-              <a tabindex="0" class="last   pg-button " >尾页</a></div>
-          </div>
+  <Content :breads="breads" :title="title">
+    <Widget :padding="false" :title="title">
+      <div class="dataTables-filter-wrap worker">
+        <div class="dataTables-filter">
+          <label>
+            <select class="form-control">
+              <option selected>省</option>
+              <option>Second option</option>
+              <option>Third option</option>
+            </select>
+            <select class="form-control">
+              <option selected>市</option>
+              <option>Second option</option>
+              <option>Third option</option>
+            </select>
+            <select class="form-control">
+              <option selected>区</option>
+              <option>Second option</option>
+              <option>Third option</option>
+            </select>
+            <select class="form-control">
+              <option value="">服务</option>
+              <option value="配安">配安</option>
+              <option value="维修">维修</option>
+            </select>
+            <input type="text" placeholder="师傅名、电话" v-el:search/>
+            <button type="button" class="btn btn-info">搜索</button>
+            <a v-link="'worker/add?type=new'" class="btn btn-success">新增</a>
+          </label>
         </div>
       </div>
-    </div>
-  </div>
+      <table class="table with-check" >
+        <thead>
+        <tr>
+          <th>
+            <div class="checker" >
+              <span :class="{checked: checkAll}"><input type="checkbox" :checked="checkAll"  name="title-table-checkbox"  @change="toggleCheck($event, '')"></span>
+            </div>
+          </th>
+          <th>工号</th>
+          <th>名称</th>
+          <th>电话</th>
+          <th>qq</th>
+          <th>服务地区</th>
+          <th>评价</th>
+          <th>合作次数</th>
+          <th>备注</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="worker in workers.list">
+          <td>
+            <div class="checker" >
+              <span :class="{checked: worker.checked}"><input type="checkbox" :checked="worker.checked" @change="toggleCheck($event, worker.id)"></span>
+            </div>
+          </td>
+          <td>{{worker.workman_number}}</td>
+          <td>{{worker.name}}</td>
+          <td>{{worker.phone_num}}</td>
+          <td>{{worker.qq}}</td>
+          <td>{{worker.service_area}}</td>
+          <td>{{worker.score}}</td>
+          <td>{{worker.cooperate_times}}</td>
+          <td>{{worker.description}}</td>
+          <td>
+            <div class="operation-group">
+              <a v-link="'worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
+              <a  v-link="'worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
+              <a  href="javascript:void(0)" title="删除" @click="deleteWorker(worker.id)"><i class="icon-remove"></i></a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+      <div class="fg-toolbar">
+        <div class="fg-toolbar-operation">
+          <button type="button" class="btn btn-success" @click="deleteWorker()">批量删除</button>
+        </div>
+        <Pagination :cur-page="workers.pageInfo.curPage" :total="workers.pageInfo.total" :page-size="workers.pageInfo.pageSize" :total-page="workers.pageInfo.totalPage" @go-page="startSearchWorker"></Pagination>
+      </div>
+      </div>
+    </Widget>
+  </Content>
 </template>
-<script>
+<script type="text/ecmascript-6">
+  import {getBreadCrumb} from 'my_vuex/getters/getters'
+  import {getWorkers, getCheckAll} from 'my_vuex/getters/worker'
+  import {searchWorker, checkWorker, deleteWorker} from 'my_vuex/actions/worker'
+  import Content from 'components/Content'
+  import Widget from 'components/Widget'
+  import Pagination from 'components/Pagination'
   export default {
+    components: {
+      Content,
+      Widget,
+      Pagination
+    },
+    computed: {
+      title: function () {
+        return '师傅管理'
+      }
+    },
+    methods: {
+      toggleCheck: function (e, id) {
+        let el = e.target
+        this.checkWorker(el.checked, id)
+      },
+      startSearchWorker: function (page) {
+        let searchKeyword = this.$els.search.value.trim()
+        this.searchWorker({searchKeyword, curPage: page || 1})
+      }
+    },
+    route: {
+      data ({to: {query: {back}}}) {
+        back ? this.searchWorker({searchKeyword: this.$els.search.value.trim(), curPage: this.workers.pageInfo.curPage}) : this.searchWorker({})
+      }
+    },
+    vuex: {
+      getters: {
+        breads: getBreadCrumb,
+        workers: getWorkers,
+        checkAll: getCheckAll
+      },
+      actions: {
+        searchWorker,
+        checkWorker,
+        deleteWorker
+      }
+    }
   }
 </script>
+<style>
+  .worker.dataTables-filter-wrap select {
+    width: 150px
+  }
+</style>
