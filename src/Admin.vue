@@ -82,5 +82,7 @@ export default {
   .pagination{
     margin:0
   }
-
+  table.table  td{
+    padding:10px;
+  }
 </style>

@@ -9,7 +9,7 @@ import SearchRole from 'components/role/SearchRole.vue'
 import EditRole from 'components/role/EditRole.vue'
 import Statistic from 'components/statistic/Statistic.vue'
 import SearchWorker from 'components/worker/SearchWorker.vue'
-import AddWorker from 'components/worker/AddWorker.vue'
+import EditWorker from 'components/worker/EditWorker.vue'
 import SearchOrder from 'components/order/SearchOrder.vue'
 import AddOrder from 'components/order/AddOrder.vue'
 import store from 'my_vuex/store'
@@ -57,7 +57,11 @@ export default (router) => {
         },
         '/worker/add': {
           name: '/admin/worker/add',
-          component: AddWorker
+          component: EditWorker
+        },
+        '/worker/:id': {
+          name: '/admin/worker/add',
+          component: EditWorker
         },
         '/statistic': {
           name: '/admin/statistic',
@@ -100,11 +104,6 @@ export default (router) => {
     let to = transition.to
     console.log(to.name)
     setActiveMenu(store, to.name)
-    try {
-      transition.next()
-    } catch (e) {
-      console.log('interrupt error: ' + e.message)
-      window.location.href = transition.to.path || router.redirect('/')
-    }
+    transition.next()
   })
 }

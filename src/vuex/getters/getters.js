@@ -20,7 +20,7 @@ function loopSubMenu (menus, breads, active) {
       name: menu.name,
       title: menu.title
     })
-    if (menu.name === active) {
+    if (menu.name === active || menu.contains && ~menu.contains.indexOf(active)) {
       isHit = 1
     } else {
       let subMenus = menu.sub
@@ -51,4 +51,11 @@ export const getBreadCrumb = (state) => {
 * */
 export const isLogin = (state) => {
   return state.auth.login
+}
+
+/*
+* 获取区域
+* */
+export const getRegion = (state) => {
+  return state.region.region[0]
 }

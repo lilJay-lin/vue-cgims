@@ -1,131 +1,258 @@
 <template>
-  <div class="content">
-    <div class="content-header">
-      <div class="breadcrumb">
-        <a href="#" class="tip-bottom" data-original-title="Go to Home"><i class="icon-home"></i>首页</a>
-        <a href="#" class="tip-bottom" data-original-title="Go to Home">订单管理</a>
-        <a href="#" class="current">订单信息</a> </div>
-      <h1>订单信息</h1>
-    </div>
-    <div class="content-container">
-      <hr/>
-      <div class="widget-box order">
-        <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-          <h5>角色信息</h5>
-        </div>
-        <div class="widget-content ">
-          <div class="dataTables-filter-wrap">
-            <div class="dataTables-filter">
-              <label>
-                <select class="form-control">
-                  <option selected>全部状态</option>
-                  <option>Second option</option>
-                  <option>Third option</option>
-                </select>
-                <select class="form-control">
-                  <option selected>全部类型</option>
-                  <option>Second option</option>
-                  <option>Third option</option>
-                </select>
-                <select class="form-control">
-                  <option selected>员工甲</option>
-                  <option>Second option</option>
-                  <option>Third option</option>
-                </select>
-                <input type="date"/>
-                至
-                <input type="date"/>
-                <input type="text" />
-                <button type="button" class="btn btn-info">搜索</button>
-                <button type="button" class="btn btn-info">新增</button>
-              </label>
-            </div>
-          </div>
-          <table class="table with-check">
-            <thead>
-            <tr>
-              <th>
-                <div class="checker" >
-                  <span><input type="checkbox"  name="title-table-checkbox"></span>
-                </div>
-              </th>
-              <th>订单号</th>
-              <th>商家信息</th>
-              <th>接单价/服务价</th>
-              <th>师傅</th>
-              <th class="detail">详情</th>
-              <th class="operation-group">操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                <div class="checker" >
-                  <span class="checked"><input type="checkbox" style="opacity: 0;"></span>
-                </div>
-              </td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td>Row 1</td>
-              <td >
-                <div class="detail">客户甲 14123152343 广东省肇庆市端州区星湖大道仕贤村口海逸广场A1</div>
-              </td>
-              <td>
-                <div class="operation-group">
-                  <div class="operation-list-box">
-                    <i class="icon-th-list"></i>操作
-                    <div class="operation-list ">
-                      <a href="#" title="打款订单"><i class="icon-link"></i>打款订单</a>
-                      <a href="#" title="完成订单"><i class="icon-link"></i>完成订单</a>
-                      <a  href="#" title="售后订单"><i class="icon-link"></i>售后订单</a>
-                    </div>
-                  </div>
-                  <div class="operation-list-box">
-                    <i class="icon-info-sign"></i>备注
-                    <div class="operation-list save-common-box">
-                      <div>
-                        <span>备注</span>
-                        <button  class="btn btn-sm btn-success">保存</button>
-                      </div>
-                      <textarea name="" ></textarea>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-
-          </table>
-
-          <div class="fg-toolbar">
-            <div class="fg-toolbar-operation">
-              <select class="form-control">
-                <option selected>全部状态</option>
-                <option>Second option</option>
-                <option>Third option</option>
-              </select>
-              <button type="button" class="btn btn-success">批量操作</button>
-            </div>
-            <div class="pagination " >
-              <a tabindex="0" class="first pg-button  pg-state-disabled" >首页</a>
-              <a tabindex="0" class="previous pg-button  pg-state-disabled">上一页</a>
-                            <span>
-                                <a tabindex="0" class=" pg-button  pg-state-disabled">1</a>
-                                <a tabindex="0" class=" pg-button ">2</a>
-                                <a tabindex="0" class=" pg-button ">3</a>
-                                <a tabindex="0" class=" pg-button ">4</a>
-                                <a tabindex="0" class=" pg-button ">5</a>
-                            </span>
-              <a tabindex="0" class="next  pg-button ">下一页</a>
-              <a tabindex="0" class="last   pg-button " >尾页</a></div>
-          </div>
+  <Content :breads="breads" :title="title">
+    <Widget :padding="false" :title="title">
+      <div class="dataTables-filter-wrap order">
+        <div class="dataTables-filter">
+          <label>
+            <select class="form-control" v-el:order_status>
+              <option value="全部" selected>全部状态</option>
+              <option value="未收未付">未收未付</option>
+              <option value="未收需付">未收需付</option>
+              <option value="已收未付">已收未付</option>
+              <option value="已收需付">已收需付</option>
+              <option value="未收未完">未收未完</option>
+              <option value="未收完成">未收完成</option>
+              <option value="已收未完">已收未完</option>
+              <option value="已收完成">已收完成</option>
+              <option value="未收失败">未收失败</option>
+              <option value="已收失败">已收失败</option>
+            </select>
+            <select class="form-control" v-el:service_type>
+              <option value="全部" selected>全部类型</option>
+              <option value="配送安装">配送安装</option>
+              <option value="维修">维修</option>
+            </select>
+            <select class="form-control" v-el:creator_id>
+              <option  v-for="user in users.list" :value="user.id">{{user.name}}</option>
+            </select>
+            <input type="date" v-el:begin_time/>
+            至
+            <input type="date" v-el:end_time/>
+            <input type="text" @keydown.enter="startSearchOrder(1)" v-el:search/>
+            <button type="button" class="btn btn-info" @click="startSearchOrder(1)">搜索</button>
+            <button type="button" class="btn btn-info">新增</button>
+          </label>
         </div>
       </div>
-    </div>
-  </div>
+      <div class="operation-list"  v-el:order_operation @mouseover="keepOperaShow" @mouseout="hideOrderOpera">
+        <a href="#" title="未收未付"><i class="icon-link"></i>未收未付</a>
+        <a href="#" title="未收需付"><i class="icon-link"></i>未收需付</a>
+        <a href="#" title="已收未付"><i class="icon-link"></i>已收未付</a>
+        <a href="#" title="已收需付"><i class="icon-link"></i>已收需付</a>
+        <a href="#" title="未收未完"><i class="icon-link"></i>未收未完</a>
+        <a href="#" title="未收完成"><i class="icon-link"></i>未收完成</a>
+        <a href="#" title="已收未完"><i class="icon-link"></i>已收未完</a>
+        <a href="#" title="已收完成"><i class="icon-link"></i>已收完成</a>
+        <a href="#" title="未收失败"><i class="icon-link"></i>未收失败</a>
+        <a href="#" title="已收失败"><i class="icon-link"></i>已收失败</a>
+      </div>
+      <div class="operation-list" v-el:order_comment  @mouseover="keepCommentShow" @mouseout="hideOrderComment">
+        <div>
+          <span>备注</span>
+          <button  class="btn btn-sm btn-success">保存</button>
+        </div>
+        <textarea name="" ></textarea>
+      </div>
+      <table class="table with-check order">
+        <thead>
+        <tr>
+          <th>
+            <div class="checker" >
+              <span :class="{checked: checkAll}"><input type="checkbox" :checked="checkAll"  name="title-table-checkbox"  @change="toggleCheck($event, '')"></span>
+            </div>
+          </th>
+          <th>订单号</th>
+          <th>商家信息</th>
+          <th>接单价/服务价</th>
+          <th>师傅</th>
+          <th class="detail">详情</th>
+          <th class="operation-group">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="order in orders.list">
+          <td>
+            <div class="checker" >
+              <span :class="{checked: order.checked}"><input type="checkbox" :checked="order.checked" @change="toggleCheck($event, order.id)"></span>
+            </div>
+          </td>
+          <td>{{order.order_number}}</td>
+          <td>{{order.shop_info}}</td>
+          <td>{{order.order_price}}/{{order.service_price}}</td>
+          <td>{{order.order_number}}</td>
+          <td>{{order.customer_name}}{{order.customer_phone_num || order.customer_address}}{{order.customer_address}}</td>
+          <td>
+            <div class="operation-group">
+              <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>
+              <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id)"><i class="icon-info-sign"></i>备注</a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+      <div class="fg-toolbar">
+        <div class="fg-toolbar-operation">
+          <select class="form-control" v-el:action>
+            <option value="删除" selected>删除</option>
+            <option value="未收未付">未收未付</option>
+            <option value="未收需付">未收需付</option>
+            <option value="已收未付">已收未付</option>
+            <option value="已收需付">已收需付</option>
+            <option value="未收未完">未收未完</option>
+            <option value="未收完成">未收完成</option>
+            <option value="已收未完">已收未完</option>
+            <option value="已收完成">已收完成</option>
+            <option value="未收失败">未收失败</option>
+            <option value="已收失败">已收失败</option>
+          </select>
+          <button type="button" class="btn btn-success" @click="onDealOrder()">批量操作</button>
+        </div>
+        <Pagination :cur-page="orders.pageInfo.curPage" :total="orders.pageInfo.total" :page-size="orders.pageInfo.pageSize" :total-page="orders.pageInfo.totalPage" @go-page="startSearchOrder"></Pagination>
+      </div>
+    </Widget>
+  </Content>
 </template>
-<script>
+<script type="text/ecmascript-6">
+  import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
+  import {getOrders, getCheckAll} from 'my_vuex/getters/order'
+  import {searchOrder, checkOrder, dealOrder} from 'my_vuex/actions/order'
+  import {getUsers} from 'my_vuex/getters/user'
+  import {searchUser} from 'my_vuex/actions/user'
+  import Content from 'components/Content'
+  import Widget from 'components/Widget'
+  import Pagination from 'components/Pagination'
+  import Region from 'components/Region'
+  import {css} from 'src/util/dom'
   export default {
+    components: {
+      Content,
+      Widget,
+      Pagination,
+      Region
+    },
+    ready () {
+      let elOpera = this.$els.order_operation
+      let elComment = this.$els.order_comment
+      elOpera.setAttribute('height', elOpera.offsetHeight)
+      elOpera.setAttribute('width', elOpera.offsetWidth)
+      elComment.setAttribute('height', elComment.offsetHeight)
+      elComment.setAttribute('width', elComment.offsetWidth)
+    },
+    computed: {
+      title: function () {
+        return '订单管理'
+      }
+    },
+    methods: {
+      toggleCheck: function (e, id) {
+        let el = e.target
+        this.checkOrder(el.checked, id)
+      },
+      startSearchOrder: function (page) {
+        let searchKeyword = this.$els.search.value.trim()
+        let orderStatus = this.$els.order_status.value.trim()
+        let serviceType = this.$els.service_type.value.trim()
+        let creatorId = this.$els.creator_id.value.trim()
+        let beginTime = this.$els.begin_time.value.trim()
+        let endTime = this.$els.end_time.value.trim()
+        let search = {
+          searchKeyword,
+          orderStatus,
+          serviceType,
+          creatorId,
+          beginTime,
+          endTime
+        }
+        this.searchOrder({search, curPage: page || 1})
+      },
+      onDealOrder: function (id) {
+        let val = this.$els.action.value
+        let action = val === '删除' ? 'delete' : 'update'
+        let data = {id: id, action, orderStatus: val}
+        this.dealOrder(data)
+      },
+      showOrderOpera: function (e, id) {
+        let el = this.$els.order_operation
+        this.show(e, el)
+      },
+      show: function (e, el) {
+        let elHeight = parseInt(el.getAttribute('height'), 10)
+        let elWidth = parseInt(el.getAttribute('width'), 10)
+        let top = e.clientY
+        let left = e.clientX
+        let height = window.innerHeight
+        let width = window.innerWidth
+        top = top + elHeight > height ? height - elHeight - 50 : top
+        left = left + elWidth > width ? width - elWidth - 40 : left
+        css(el, {
+          display: 'block',
+          left: left + 'px',
+          top: top + 'px'
+        })
+      },
+      showOrderComment: function (e, id) {
+        let el = this.$els.order_comment
+        this.show(e, el)
+      },
+      hideOrderOpera: function (e, id) {
+        css(this.$els.order_operation, {
+          display: 'none'
+        })
+      },
+      hideOrderComment: function (e, id) {
+        css(this.$els.order_comment, {
+          display: 'none'
+        })
+      },
+      keepOperaShow: function () {
+        css(this.$els.order_operation, {
+          display: 'block'
+        })
+      },
+      keepCommentShow: function () {
+        css(this.$els.order_comment, {
+          display: 'block'
+        })
+      }
+    },
+    route: {
+      data ({to: {query: {back}}}) {
+        this.searchUser({page: 1})
+        back ? this.searchOrder({searchKeyword: this.$els.search.value.trim(), curPage: this.orders.pageInfo.curPage}) : this.searchOrder({})
+      }
+    },
+    vuex: {
+      getters: {
+        breads: getBreadCrumb,
+        orders: getOrders,
+        checkAll: getCheckAll,
+        region: getRegion,
+        users: getUsers
+      },
+      actions: {
+        searchOrder,
+        checkOrder,
+        dealOrder,
+        searchUser
+      }
+    }
   }
 </script>
+<style>
+  .order.dataTables-filter-wrap select {
+    width: 120px
+  }
+  .order .operation-group{
+    width: 150px
+  }
+  .operation-list{
+    position: fixed;
+    z-index: 10;
+    display: block;
+    left: -1000px
+  }
+  .widget-content{
+    position: relative;
+  }
+</style>

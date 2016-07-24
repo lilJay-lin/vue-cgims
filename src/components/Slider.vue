@@ -2,14 +2,14 @@
   <ul>
     <template v-for="menu in menus">
       <li :class="{submenu: menu.sub.length, active: menu.name === active}" v-open="active | canOpen menu">
-        <a :href="menu.name"  @click.prevent="onItemClick($event, menu)">
+        <a href="javascript:void(0)" @click.prevent="onItemClick($event, menu)">
           <i class="icon icon-th-list"></i>
           <span>{{menu.title}}</span>
           <span class="label" v-show="menu.sub.length">{{menu.sub.length}}</span>
         </a>
         <ul v-show="menu.sub">
           <li v-for="sub in menu.sub" :class="{active: sub.name === active || sub.contains && ~sub.contains.indexOf(active)}">
-            <a :href="sub.name" @click.prevent="onItemClick($event, sub)">{{sub.title}}</a>
+            <a v-link="sub.name" @click.prevent="onItemClick($event, sub)">{{sub.title}}</a>
           </li>
         </ul>
       </li>

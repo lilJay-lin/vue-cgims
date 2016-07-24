@@ -4,28 +4,15 @@
       <div class="dataTables-filter-wrap worker">
         <div class="dataTables-filter">
           <label>
-            <select class="form-control">
-              <option selected>省</option>
-              <option>Second option</option>
-              <option>Third option</option>
-            </select>
-            <select class="form-control">
-              <option selected>市</option>
-              <option>Second option</option>
-              <option>Third option</option>
-            </select>
-            <select class="form-control">
-              <option selected>区</option>
-              <option>Second option</option>
-              <option>Third option</option>
-            </select>
-            <select class="form-control">
-              <option value="">服务</option>
-              <option value="配安">配安</option>
+            <Region @select-region="selectRegion"></Region>
+            <input type="hidden" v-el:search_region/>
+            <select class="form-control" v-el:search_service>
+              <option value="服务" selected>服务</option>
+              <option value="配安">配送安装</option>
               <option value="维修">维修</option>
             </select>
-            <input type="text" placeholder="师傅名、电话" v-el:search/>
-            <button type="button" class="btn btn-info">搜索</button>
+            <input type="text" placeholder="师傅名、电话" @keydown.enter="startSearchWorker(1)" v-el:search/>
+            <button type="button" class="btn btn-info"  @click="startSearchWorker(1)">搜索</button>
             <a v-link="'worker/add?type=new'" class="btn btn-success">新增</a>
           </label>
         </div>
@@ -86,17 +73,19 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-  import {getBreadCrumb} from 'my_vuex/getters/getters'
+  import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getWorkers, getCheckAll} from 'my_vuex/getters/worker'
   import {searchWorker, checkWorker, deleteWorker} from 'my_vuex/actions/worker'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
+  import Region from 'components/Region'
   export default {
     components: {
       Content,
       Widget,
-      Pagination
+      Pagination,
+      Region
     },
     computed: {
       title: function () {
@@ -110,7 +99,16 @@
       },
       startSearchWorker: function (page) {
         let searchKeyword = this.$els.search.value.trim()
-        this.searchWorker({searchKeyword, curPage: page || 1})
+        let region = this.$els.search_region.value
+        let service = this.$els.search_service.value
+        this.searchWorker({search: {
+          searchKeyword,
+          region,
+          server_type: service
+        }, curPage: page || 1})
+      },
+      selectRegion: function (region) {
+        this.$els.search_region.value = region.join('/')
       }
     },
     route: {
@@ -122,7 +120,8 @@
       getters: {
         breads: getBreadCrumb,
         workers: getWorkers,
-        checkAll: getCheckAll
+        checkAll: getCheckAll,
+        region: getRegion
       },
       actions: {
         searchWorker,

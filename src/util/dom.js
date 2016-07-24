@@ -4,7 +4,7 @@
  */
 const forEach = require('lodash/forEach')
 const isString = require('lodash/isString')
-const cssStyle = (el) => {
+export const cssStyle = (el) => {
   if (window.getComputedStyle) {
     return el.ownerDocument.defaultView.getComputedStyle(el, null)
   } else {

@@ -9,6 +9,8 @@ import auth from 'my_vuex/components/auth'
 import user from 'my_vuex/components/user'
 import role from 'my_vuex/components/role'
 import worker from 'my_vuex/components/worker'
+import order from 'my_vuex/components/order'
+import region from 'my_vuex/components/region'
 import permission from 'my_vuex/components/permission'
 
 Vue.use(Vuex)
@@ -21,7 +23,9 @@ export default new Vuex.Store({
     user,
     role,
     permission,
-    worker
+    worker,
+    region,
+    order
   },
   plugins: [createLogger()]
 })
