@@ -12,6 +12,7 @@ import worker from 'my_vuex/components/worker'
 import order from 'my_vuex/components/order'
 import region from 'my_vuex/components/region'
 import permission from 'my_vuex/components/permission'
+import statistic from 'my_vuex/components/statistic'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ export default new Vuex.Store({
     permission,
     worker,
     region,
-    order
+    order,
+    statistic
   },
   plugins: [createLogger()]
 })

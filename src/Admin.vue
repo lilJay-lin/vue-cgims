@@ -11,7 +11,7 @@
         <ul class="nav">
           <li>
             <a href="">
-              <img src="../static/img/avatar.jpg" alt="" class="img-user">
+              <img src="../assets/img/avatar.jpg" alt="" class="img-user">
               <strong>@john</strong>
             </a>
           </li>
