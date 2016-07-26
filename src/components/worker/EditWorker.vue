@@ -99,19 +99,8 @@
         </div>
         <div class="control-group">
           <label class="control-label">服务类型</label>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="service_type"></span>
-              </div>
-              配送安装
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="service_type"></span>
-              </div>
-              维修
-            </label>
+          <div class="controls service-region-radio">
+            <radio-group :radios="service_types" :checked="worker.service_type" @radio-checked="setServiceType"></radio-group>
           </div>
         </div>
         <div class="form-title">
@@ -119,224 +108,38 @@
         </div>
         <div class="control-group">
           <label class="control-label">家具类</label>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="order_state"></span>
-              </div>
-              办公家具
-
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              定制家具
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              民用家具
-            </label>
+          <div class="controls service-region-radio">
+            <radio-group :radios="furniture_types" :checked="worker.furniture_type" @radio-checked="setFurnitureType"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">灯具类</label>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="order_state"></span>
-              </div>
-              吸顶灯
-
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              吊灯
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              大型水晶灯
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              筒灯
-            </label>
+          <div class="controls service-region-radio">
+            <radio-group :radios="light_types" :checked="worker.light_type" @radio-checked="setLightType"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">卫浴类</label>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="order_state"></span>
-              </div>
-              马桶
-
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              花洒
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              淋浴屏
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              水盆类
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              浴室柜
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              储物架
-            </label>
+          <div class="controls  service-region-radio">
+            <radio-group :radios="stool_types" :checked="worker.stool_type" @radio-checked="setStoolType"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">门窗五金</label>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="order_state"></span>
-              </div>
-              晾衣杆
-
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              饰品
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              挂件
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              内门
-            </label>
+          <div class="controls service-region-radio">
+            <radio-group :radios="metals_types" :checked="worker.metals_type" @radio-checked="setMetalsType"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">家电</label>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="order_state"></span>
-              </div>
-              电视
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              空调
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              净水器
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              热水器
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              浴霸
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              吊扇
-            </label>
+          <div class="controls service-region-radio">
+            <radio-group :radios="household_types" :checked="worker.household_type" @radio-checked="setHouseholdType"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">服务区域</label>
-          <div class="controls label-inline service-region-radio ">
-            <label>
-              <div class="radio">
-                <span class="checked"><input type="radio" name="order_state"></span>
-              </div>
-              端州区
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              鼎湖区
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              大旺区
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              四会
-            </label>
-          </div>
-          <div class="controls label-inline service-region-radio">
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              怀集
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              广宁
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              封开
-            </label>
-            <label>
-              <div class="radio" >
-                <span><input type="radio" name="order_state"></span>
-              </div>
-              高要
-            </label>
+          <div class="controls service-region-radio ">
+            <radio-group :radios="region_types" :checked="worker.region_type" @radio-checked="setRegionType"></radio-group>
           </div>
         </div>
         <div class="control-group">
@@ -397,20 +200,22 @@
     </Widget>
   </Content>
 </template>
-<script>
+<script type="text/ecmascript-6">
   import {getBreadCrumb} from 'my_vuex/getters/getters'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
   import Region from 'components/Region'
+  import RadioGroup from 'components/RadioGroup'
   import {getDetailWorker, getUIOptions} from 'my_vuex/getters/worker'
-  import {showWorkerDetail, saveWorker, setWorkerMode, clearWorkerDetail} from 'my_vuex/actions/worker'
+  import {showWorkerDetail, saveWorker, setWorkerMode, clearWorkerDetail, setWorker} from 'my_vuex/actions/worker'
   export default {
     components: {
       Content,
       Widget,
       Pagination,
-      Region
+      Region,
+      RadioGroup
     },
     detached () {
       this.clearWorkerDetail()
@@ -424,9 +229,42 @@
       },
       isQuery: function () {
         return this.mode === 'query'
+      },
+      service_types: function () {
+        return this.createRadios(['配送安装', '维修'])
+      },
+      furniture_types: function () {
+        return this.createRadios(['办公家具', '定制家具', '民用家具'])
+      },
+      light_types: function () {
+        return this.createRadios(['吸顶灯', '吊灯', '大型水晶灯', '筒灯'])
+      },
+      stool_types: function () {
+        return this.createRadios(['马桶', '花洒', '淋浴屏', '水盆类', '浴室柜', '储物架'])
+      },
+      metals_types: function () {
+        return this.createRadios(['晾衣杆', '饰品', '挂件', '内门'])
+      },
+      household_types: function () {
+        return this.createRadios(['电视', '空调', '净水器', '热水器', '浴霸', '吊扇'])
+      },
+      region_types: function () {
+        return this.createRadios(['端州区', '鼎湖区', '大旺区', '四会', '怀集', '广宁', '封开', '高要'])
       }
     },
     methods: {
+      createRadios: function (arr) {
+        let key = arr.slice(0)
+        key.unshift('全部')
+        let all = arr.slice(0)
+        arr.unshift(JSON.stringify(all))
+        return key.map((val, idx) => {
+          return {
+            name: val,
+            value: arr[idx]
+          }
+        })
+      },
       onSaveWorker: function () {
         let vm = this
         let els = vm.$els
@@ -435,6 +273,41 @@
           id: worker.id,
           name: els.name.value,
           description: els.description.value
+        })
+      },
+      setServiceType: function (value) {
+        this.setWorker({
+          serviceType: value
+        })
+      },
+      setFurnitureType: function (value) {
+        this.setWorker({
+          furnitureType: value
+        })
+      },
+      setLightType: function (value) {
+        this.setWorker({
+          lightType: value
+        })
+      },
+      setStoolType: function (value) {
+        this.setWorker({
+          stoolType: value
+        })
+      },
+      setMetalsType: function (value) {
+        this.setWorker({
+          metalsType: value
+        })
+      },
+      setHouseholdType: function (value) {
+        this.setWorker({
+          householdType: value
+        })
+      },
+      setRegionType: function (value) {
+        this.setWorker({
+          regionType: value
         })
       }
     },
@@ -457,7 +330,8 @@
         showWorkerDetail,
         saveWorker,
         setWorkerMode,
-        clearWorkerDetail
+        clearWorkerDetail,
+        setWorker
       }
     }
   }

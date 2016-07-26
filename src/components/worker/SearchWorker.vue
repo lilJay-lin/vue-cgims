@@ -13,7 +13,7 @@
             </select>
             <input type="text" placeholder="师傅名、电话" @keydown.enter="startSearchWorker(1)" v-el:search/>
             <button type="button" class="btn btn-info"  @click="startSearchWorker(1)">搜索</button>
-            <a v-link="'worker/add?type=new'" class="btn btn-success">新增</a>
+            <a v-link="'/admin/worker/add?type=new'" class="btn btn-success">新增</a>
           </label>
         </div>
       </div>
@@ -53,8 +53,8 @@
           <td>{{worker.description}}</td>
           <td>
             <div class="operation-group">
-              <a v-link="'worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
-              <a  v-link="'worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
+              <a v-link="'/admin/worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
+              <a  v-link="'/admin/worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
               <a  href="javascript:void(0)" title="删除" @click="deleteWorker(worker.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
@@ -133,6 +133,6 @@
 </script>
 <style>
   .worker.dataTables-filter-wrap select {
-    width: 150px
+    width: 130px
   }
 </style>

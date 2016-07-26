@@ -33,8 +33,8 @@
           <td>{{role.description}}</td>
           <td>
             <div class="operation-group">
-              <a v-link="'role/' + role.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
-              <a  v-link="'role/' + role.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
+              <a v-link="'/admin/role/' + role.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
+              <a  v-link="'/admin/role/' + role.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
               <a  href="javascript:void(0)" title="删除" @click="deleteRole(role.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
@@ -46,7 +46,7 @@
       <div class="fg-toolbar">
         <div class="fg-toolbar-operation">
           <button type="button" class="btn btn-success" @click="deleteRole()">删除</button>
-          <a v-link="'role/add?type=new'" class="btn btn-success">新增</a>
+          <a v-link="'/admin/role/add?type=new'" class="btn btn-success">新增</a>
         </div>
         <Pagination :cur-page="roles.pageInfo.curPage" :total-page="roles.pageInfo.totalPage" @go-page="startSearchRole"></Pagination>
       </div>

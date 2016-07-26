@@ -14,6 +14,7 @@ export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
     url,
     method: 'get'
   }).then((res) => {
+    let result = res.result
     let list = res.result.datas.map((user) => {
       user.checked = false
       return user
@@ -22,10 +23,10 @@ export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
       searchKeyword,
       list,
       pageInfo: {
-        curPage: parseInt(res.curPage, 10),
-        pageSize: parseInt(res.pageSize, 10),
-        totalPage: parseInt(res.totalPage, 10),
-        total: parseInt(res.total, 10)
+        curPage: parseInt(result.curPage, 10),
+        pageSize: parseInt(result.pageSize, 10),
+        totalPage: parseInt(result.totalPage, 10),
+        total: parseInt(result.total, 10)
       }
     })
   })
@@ -40,7 +41,7 @@ export const showUserDetail = ({dispatch}, id) => {
     method: 'get',
     url
   }).then((res) => {
-    dispatch(RECEIVE_USER_DETAIL, res.result.data)
+    dispatch(RECEIVE_USER_DETAIL, res.result)
   })
 }
 export const clearUserDetail = ({dispatch}) => {
