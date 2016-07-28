@@ -4,12 +4,12 @@
       <form class="form-horizontal">
         <div class="control-group">
           <div class="controls">
-            <radio-group :radios="creators" @radio-checked="setCreatorId" :checked="search.creatorId"></radio-group>
+            <radio-group :radios="creators"  :name="'creatorId'" @radio-checked="setCreatorId" :checked="search.creatorId"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <div class="controls">
-            <radio-group :radios="serviceTypes" @radio-checked="setServerType" :checked="search.serviceType"></radio-group>
+            <radio-group :radios="serviceTypes" :name="'serviceType'" @radio-checked="setServerType" :checked="search.serviceType"></radio-group>
           </div>
         </div>
         <div class="control-group">
@@ -25,7 +25,7 @@
         </div>
         <div class="control-group">
           <div class="controls">
-            <radio-group :radios="searchTypes" @radio-checked="setSearchType" :checked="search.searchType"></radio-group>
+            <radio-group :name="'searchType'" :radios="searchTypes" @radio-checked="setSearchType" :checked="search.searchType"></radio-group>
           </div>
         </div>
         <div class="form-actions">

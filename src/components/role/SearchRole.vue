@@ -84,7 +84,9 @@
     },
     route: {
       data ({to: {query: {back}}}) {
-        back ? this.searchRole({searchKeyword: this.$els.search.value.trim(), curPage: this.roles.pageInfo.curPage}) : this.searchRole({})
+        let roles = this.roles
+        let searchKeyword = this.$els.search && this.$els.search.value || roles.searchKeyword
+        back ? this.searchRole({searchKeyword: searchKeyword, curPage: roles.pageInfo.curPage}) : this.searchRole({})
       }
     },
     vuex: {

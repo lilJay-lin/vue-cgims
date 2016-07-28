@@ -10,7 +10,7 @@ import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER, RECEIVE_USER_DETAI
 let baseUrl = '/user'
 export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage
-  Server.request({
+  return Server.request({
     url,
     method: 'get'
   }).then((res) => {

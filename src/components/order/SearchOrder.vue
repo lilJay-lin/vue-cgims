@@ -35,23 +35,23 @@
         </div>
       </div>
       <div class="operation-list"  v-el:order_operation @mouseover="keepOperaShow" @mouseout="hideOrderOpera">
-        <a href="#" title="未收未付"><i class="icon-link"></i>未收未付</a>
-        <a href="#" title="未收需付"><i class="icon-link"></i>未收需付</a>
-        <a href="#" title="已收未付"><i class="icon-link"></i>已收未付</a>
-        <a href="#" title="已收需付"><i class="icon-link"></i>已收需付</a>
-        <a href="#" title="未收未完"><i class="icon-link"></i>未收未完</a>
-        <a href="#" title="未收完成"><i class="icon-link"></i>未收完成</a>
-        <a href="#" title="已收未完"><i class="icon-link"></i>已收未完</a>
-        <a href="#" title="已收完成"><i class="icon-link"></i>已收完成</a>
-        <a href="#" title="未收失败"><i class="icon-link"></i>未收失败</a>
-        <a href="#" title="已收失败"><i class="icon-link"></i>已收失败</a>
+        <a href="javascript:void(0)" title="未收未付" @click="onDealOrder('未收未付')"><i class="icon-link"></i>未收未付</a>
+        <a href="javascript:void(0)" title="未收需付" @click="onDealOrder('未收需付')"><i class="icon-link"></i>未收需付</a>
+        <a href="javascript:void(0)" title="已收未付" @click="onDealOrder('已收未付')"><i class="icon-link"></i>已收未付</a>
+        <a href="javascript:void(0)" title="已收需付" @click="onDealOrder('已收需付')"><i class="icon-link"></i>已收需付</a>
+        <a href="javascript:void(0)" title="未收未完" @click="onDealOrder('未收未完')"><i class="icon-link"></i>未收未完</a>
+        <a href="javascript:void(0)" title="未收完成" @click="onDealOrder('未收完成')"><i class="icon-link"></i>未收完成</a>
+        <a href="javascript:void(0)" title="已收未完" @click="onDealOrder('已收未完')"><i class="icon-link"></i>已收未完</a>
+        <a href="javascript:void(0)" title="已收完成" @click="onDealOrder('已收完成')"><i class="icon-link"></i>已收完成</a>
+        <a href="javascript:void(0)" title="未收失败" @click="onDealOrder('未收失败')"><i class="icon-link"></i>未收失败</a>
+        <a href="javascript:void(0)" title="已收失败" @click="onDealOrder('已收失败')"><i class="icon-link"></i>已收失败</a>
       </div>
       <div class="operation-list" v-el:order_comment  @mouseover="keepCommentShow" @mouseout="hideOrderComment">
-        <div>
+        <div class="operation-comment-area">
           <span>备注</span>
-          <button  class="btn btn-sm btn-success">保存</button>
+          <button  class="btn btn-sm btn-success" @click="onSaveComment">保存</button>
         </div>
-        <textarea name="" ></textarea>
+        <textarea name="operation_comment" v-el:operation_comment></textarea>
       </div>
       <table class="table with-check order">
         <thead>
@@ -106,7 +106,7 @@
             <option value="未收失败">未收失败</option>
             <option value="已收失败">已收失败</option>
           </select>
-          <button type="button" class="btn btn-success" @click="onDealOrder()">批量操作</button>
+          <button type="button" class="btn btn-success" @click="onDealBatch()">批量操作</button>
         </div>
         <Pagination :cur-page="orders.pageInfo.curPage" :total="orders.pageInfo.total" :page-size="orders.pageInfo.pageSize" :total-page="orders.pageInfo.totalPage" @go-page="startSearchOrder"></Pagination>
       </div>
@@ -116,7 +116,7 @@
 <script type="text/ecmascript-6">
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getOrders, getCheckAll} from 'my_vuex/getters/order'
-  import {searchOrder, checkOrder, dealOrder} from 'my_vuex/actions/order'
+  import {searchOrder, checkOrder, dealOrder, updateOrderComment} from 'my_vuex/actions/order'
   import {getUsers} from 'my_vuex/getters/user'
   import {searchUser} from 'my_vuex/actions/user'
   import Content from 'components/Content'
@@ -166,14 +166,36 @@
         }
         this.searchOrder({search, curPage: page || 1})
       },
-      onDealOrder: function (id) {
-        let val = this.$els.action.value
-        let action = val === '删除' ? 'delete' : 'update'
+      onSaveComment: function () {
+        let el = this.$els.order_comment
+        let id = el.getAttribute('curren')
+        let val = this.$els.operation_comment.value.trim()
+        this.updateOrderComment({id, description: val})
+      },
+      onDealOrder: function (orderStatus) {
+        let el = this.$els.order_operation
+        let id = el.getAttribute('curren')
+        id && this.onDealBatch(id, orderStatus)
+      },
+      onDealBatch: function (id, orderStatus) {
+        let val = ''
+        let action = ''
+        /*
+        *  非批量操作
+        * */
+        if (id) {
+          val = orderStatus
+          action = 'update'
+        } else {
+          val = this.$els.action.value
+          action = val === '删除' ? 'delete' : 'update'
+        }
         let data = {id: id, action, orderStatus: val}
         this.dealOrder(data)
       },
       showOrderOpera: function (e, id) {
         let el = this.$els.order_operation
+        el.setAttribute('curren', id)
         this.show(e, el)
       },
       show: function (e, el) {
@@ -183,7 +205,7 @@
         let left = e.clientX
         let height = window.innerHeight
         let width = window.innerWidth
-        top = top + elHeight > height ? height - elHeight - 50 : top
+        top = top + elHeight > height ? height - elHeight - 80 : top
         left = left + elWidth > width ? width - elWidth - 40 : left
         css(el, {
           display: 'block',
@@ -193,6 +215,7 @@
       },
       showOrderComment: function (e, id) {
         let el = this.$els.order_comment
+        el.setAttribute('curren', id)
         this.show(e, el)
       },
       hideOrderOpera: function (e, id) {
@@ -218,8 +241,9 @@
     },
     route: {
       data ({to: {query: {back}}}) {
-        this.searchUser({page: 1})
-        back ? this.searchOrder({searchKeyword: this.$els.search.value.trim(), curPage: this.orders.pageInfo.curPage}) : this.searchOrder({})
+        let orders = this.orders
+        this.searchUser({page: 9999})
+        back ? this.searchOrder({search: orders.search, curPage: orders.pageInfo.curPage}) : this.searchOrder({})
       }
     },
     vuex: {
@@ -234,7 +258,8 @@
         searchOrder,
         checkOrder,
         dealOrder,
-        searchUser
+        searchUser,
+        updateOrderComment
       }
     }
   }
@@ -250,9 +275,33 @@
     position: fixed;
     z-index: 10;
     display: block;
-    left: -1000px
+    left: -1000px;
+    text-align: center;
+  }
+  .operation-list a{
+    margin: 10px 5px;
   }
   .widget-content{
     position: relative;
+  }
+  .operation-comment-area{
+    text-align: left;
+    line-height: 40px;
+    width: 350px;
+  }
+  .operation-comment-area button{
+    float: right;
+    margin:5px;
+  }
+  .operation-comment-area span{
+    margin-left: 10px;
+  }
+  .operation-list textarea{
+    width: 350px;
+    height: 200px;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid #e2e2e2;
+    outline: 0;
   }
 </style>

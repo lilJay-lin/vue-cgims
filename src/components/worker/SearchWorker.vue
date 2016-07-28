@@ -4,11 +4,11 @@
       <div class="dataTables-filter-wrap worker">
         <div class="dataTables-filter">
           <label>
-            <Region @select-region="selectRegion"></Region>
+            <Region @select-region="selectRegion" :region="region"></Region>
             <input type="hidden" v-el:search_region/>
             <select class="form-control" v-el:search_service>
-              <option value="服务" selected>服务</option>
-              <option value="配安">配送安装</option>
+              <option value="配送安装,维修" selected>全部</option>
+              <option value="配送安装">配送安装</option>
               <option value="维修">维修</option>
             </select>
             <input type="text" placeholder="师傅名、电话" @keydown.enter="startSearchWorker(1)" v-el:search/>
@@ -113,7 +113,8 @@
     },
     route: {
       data ({to: {query: {back}}}) {
-        back ? this.searchWorker({searchKeyword: this.$els.search.value.trim(), curPage: this.workers.pageInfo.curPage}) : this.searchWorker({})
+        let workers = this.workers
+        back ? this.searchWorker({search: workers.search, curPage: this.workers.pageInfo.curPage}) : this.searchWorker({})
       }
     },
     vuex: {
