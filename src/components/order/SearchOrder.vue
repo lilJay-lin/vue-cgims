@@ -84,7 +84,7 @@
           <td>
             <div class="operation-group">
               <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>
-              <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id)"><i class="icon-info-sign"></i>备注</a>
+              <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-info-sign"></i>备注</a>
             </div>
           </td>
         </tr>
@@ -213,7 +213,8 @@
           top: top + 'px'
         })
       },
-      showOrderComment: function (e, id) {
+      showOrderComment: function (e, id, description) {
+        this.$els.operation_comment.value = description
         let el = this.$els.order_comment
         el.setAttribute('curren', id)
         this.show(e, el)
