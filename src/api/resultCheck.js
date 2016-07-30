@@ -3,7 +3,7 @@
  */
 export default (res) => {
   return new Promise((resolve, reject) => {
-    if (res.success === 1) {
+    if (res.status === 1) {
       resolve(res)
     } else {
       reject(res)

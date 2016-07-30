@@ -14,6 +14,7 @@ export const DELETE_ROLE = 'delete_role'
 export const RECEIVE_ROLE_DETAIL = 'receive_role_detail'
 export const DELETE_ROLE_REL_PERMISSION = 'delete_role_rel_permission'
 export const ADD_ROLE_REL_PERMISSION = 'add_role_rel_permission'
+export const SET_ORDER = 'set_order'
 /*
 export const SAVE_ROLE = 'save_role'
 * */

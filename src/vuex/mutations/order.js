@@ -15,6 +15,7 @@ export const RECEIVE_ORDER_DETAIL = 'receive_order_detail'
 export const DELETE_ORDER_REL_WORKER = 'delete_order_rel_worker'
 export const ADD_ORDER_REL_WORKER = 'add_order_rel_worker'
 export const UPDATE_ORDER_DESCRIPTION = 'update_order_description'
+export const SET_ORDER = 'set_order'
 /*
 export const SAVE_ORDER = 'save_order'
 * */

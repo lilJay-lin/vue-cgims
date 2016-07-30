@@ -35,16 +35,7 @@
         </div>
       </div>
       <div class="operation-list"  v-el:order_operation @mouseover="keepOperaShow" @mouseout="hideOrderOpera">
-        <a href="javascript:void(0)" title="未收未付" @click="onDealOrder('未收未付')"><i class="icon-link"></i>未收未付</a>
-        <a href="javascript:void(0)" title="未收需付" @click="onDealOrder('未收需付')"><i class="icon-link"></i>未收需付</a>
-        <a href="javascript:void(0)" title="已收未付" @click="onDealOrder('已收未付')"><i class="icon-link"></i>已收未付</a>
-        <a href="javascript:void(0)" title="已收需付" @click="onDealOrder('已收需付')"><i class="icon-link"></i>已收需付</a>
-        <a href="javascript:void(0)" title="未收未完" @click="onDealOrder('未收未完')"><i class="icon-link"></i>未收未完</a>
-        <a href="javascript:void(0)" title="未收完成" @click="onDealOrder('未收完成')"><i class="icon-link"></i>未收完成</a>
-        <a href="javascript:void(0)" title="已收未完" @click="onDealOrder('已收未完')"><i class="icon-link"></i>已收未完</a>
-        <a href="javascript:void(0)" title="已收完成" @click="onDealOrder('已收完成')"><i class="icon-link"></i>已收完成</a>
-        <a href="javascript:void(0)" title="未收失败" @click="onDealOrder('未收失败')"><i class="icon-link"></i>未收失败</a>
-        <a href="javascript:void(0)" title="已收失败" @click="onDealOrder('已收失败')"><i class="icon-link"></i>已收失败</a>
+        <a href="javascript:void(0)" v-for="status in orderStatus"  :title="status" @click="onDealOrder(status)"><i class="icon-link"></i>{{status}}</a>
       </div>
       <div class="operation-list" v-el:order_comment  @mouseover="keepCommentShow" @mouseout="hideOrderComment">
         <div class="operation-comment-area">
@@ -76,7 +67,7 @@
               <span :class="{checked: order.checked}"><input type="checkbox" :checked="order.checked" @change="toggleCheck($event, order.id)"></span>
             </div>
           </td>
-          <td>{{order.order_number}}</td>
+          <td><a v-link="'/admin/order/' + order.id">{{order.order_number}}</a></td>
           <td>{{order.shop_info}}</td>
           <td>{{order.order_price}}/{{order.service_price}}</td>
           <td>{{order.order_number}}</td>
@@ -95,16 +86,7 @@
         <div class="fg-toolbar-operation">
           <select class="form-control" v-el:action>
             <option value="删除" selected>删除</option>
-            <option value="未收未付">未收未付</option>
-            <option value="未收需付">未收需付</option>
-            <option value="已收未付">已收未付</option>
-            <option value="已收需付">已收需付</option>
-            <option value="未收未完">未收未完</option>
-            <option value="未收完成">未收完成</option>
-            <option value="已收未完">已收未完</option>
-            <option value="已收完成">已收完成</option>
-            <option value="未收失败">未收失败</option>
-            <option value="已收失败">已收失败</option>
+            <option value="status" v-for="status in orderStatus">{{status}}</option>
           </select>
           <button type="button" class="btn btn-success" @click="onDealBatch()">批量操作</button>
         </div>
@@ -115,7 +97,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {getOrders, getCheckAll} from 'my_vuex/getters/order'
+  import {getOrders, getCheckAll, getOrderStatus} from 'my_vuex/getters/order'
   import {searchOrder, checkOrder, dealOrder, updateOrderComment} from 'my_vuex/actions/order'
   import {getUsers} from 'my_vuex/getters/user'
   import {searchUser} from 'my_vuex/actions/user'
@@ -253,7 +235,8 @@
         orders: getOrders,
         checkAll: getCheckAll,
         region: getRegion,
-        users: getUsers
+        users: getUsers,
+        orderStatus: getOrderStatus
       },
       actions: {
         searchOrder,

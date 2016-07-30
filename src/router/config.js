@@ -11,7 +11,7 @@ import Statistic from 'components/statistic/Statistic.vue'
 import SearchWorker from 'components/worker/SearchWorker.vue'
 import EditWorker from 'components/worker/EditWorker.vue'
 import SearchOrder from 'components/order/SearchOrder.vue'
-import AddOrder from 'components/order/AddOrder.vue'
+import EditOrder from 'components/order/EditOrder.vue'
 import store from 'my_vuex/store'
 import {isLogin} from 'my_vuex/getters/getters'
 import {setActiveMenu} from 'my_vuex/actions/actions'
@@ -60,7 +60,7 @@ export default (router) => {
           component: EditWorker
         },
         '/worker/:id': {
-          name: '/admin/worker/add',
+          name: '/admin/worker/:id',
           component: EditWorker
         },
         '/statistic': {
@@ -71,9 +71,9 @@ export default (router) => {
           name: '/admin/order',
           component: SearchOrder
         },
-        '/order/add': {
-          name: '/admin/order/add',
-          component: AddOrder
+        '/order/:id': {
+          name: '/admin/order/:id',
+          component: EditOrder
         },
         '/order/user': {
           name: '/admin/order/user',
@@ -81,7 +81,7 @@ export default (router) => {
         },
         '/order/user/add': {
           name: '/admin/order/user/add',
-          component: AddOrder
+          component: EditOrder
         }
       }
     },

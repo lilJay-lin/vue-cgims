@@ -19,7 +19,7 @@
         default: []
       },
       checked: {
-        type: String,
+        type: [String, Number],
         default: ''
       },
       readonly: {

@@ -6,7 +6,7 @@ let qwest = require('qwest')
 /*
  * 默认配置
  * */
-qwest.base = 'http://localhost:3000'
+qwest.base = window.__BASE_PATH__ || '/'
 qwest.setDefaultOptions({
   responseType: 'json'
 })
@@ -21,7 +21,7 @@ export default {
     }) => {
     return qwest[method](url, data, options, before).then((xhr, res) => {
       return new Promise((resolve, reject) => {
-        if (res.success === 1) {
+        if (res.status === 1) {
           resolve(res)
         } else {
           reject(res)

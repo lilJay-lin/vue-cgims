@@ -115,7 +115,7 @@ export const deleteWorker = ({state, dispatch}, id) => {
 /*
 * 保存师傅
 * */
-export const saveWorker = ({state, dispatch}, newWorker) => {
+export const saveWorker = ({state, dispatch}) => {
   let url = baseUrl
   let worker = clone(state.worker.detail || {})
   let items = {}

@@ -58,8 +58,8 @@
             </label>
             <label>
               <div class="radio" >
-                <span :class="{checked: worker.receive_type === 1}">
-                  <input value='1' type="radio" name="receive_type" :checked="worker.receive_type === 1" @change="setData('receive_type', $event)">
+                <span :class="{checked: worker.receive_type === '1'}">
+                  <input value='1' type="radio" name="receive_type" :checked="worker.receive_type === '1'" @change="setData('receive_type', $event)">
                 </span>
               </div>
               银行卡
@@ -343,7 +343,9 @@
           type = 'new'
         }
         this.setWorkerMode(type)
-        type !== 'new' && this.showWorkerDetail(id)
+        if (type !== 'new') {
+          return this.showOrderDetail(id)
+        }
       }
     },
     vuex: {

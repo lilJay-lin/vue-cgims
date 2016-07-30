@@ -2,7 +2,7 @@
  * Created by linxiaojie on 2016/7/20.
  */
 import Server from 'src/api/server.js'
-import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION} from 'my_vuex/mutations/order'
+import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
 /*
@@ -24,10 +24,11 @@ export const searchOrder = ({dispatch}, {search = {
     '&beginTime=' + window.encodeURIComponent(search.beginTime) +
     '&endTime=' + window.encodeURIComponent(search.endTime) +
     '&curPage=' + curPage
-  Server.request({
+  return Server.request({
     url,
     method: 'get'
   }).then((res) => {
+    console.log(res)
     let result = res.result
     let list = result.datas.map((order) => {
       order.checked = false
@@ -47,12 +48,20 @@ export const searchOrder = ({dispatch}, {search = {
 /*
  * 获取指定订单
  * */
+const getImages = (str) => {
+  return str ? str.split(',') : []
+}
 export const showOrderDetail = ({dispatch}, id) => {
   let url = baseUrl + '/' + id
   return Server.request({
     method: 'get',
     url
   }).then((res) => {
+    let order = res.result
+    order.repair_imgs = getImages(order.repair_imgs)
+    order.logistics_imgs = getImages(order.logistics_imgs)
+    order.product_imgs = getImages(order.product_imgs)
+    order.is_checked = order.is_checked && parseInt(order.is_checked)
     dispatch(RECEIVE_ORDER_DETAIL, res.result)
   })
 }
@@ -108,15 +117,18 @@ export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
 /*
 * 保存师傅
 * */
-export const saveOrder = ({state, dispatch}, newOrder) => {
+export const saveOrder = ({state, dispatch}, order) => {
   let url = baseUrl
-  /*
-  dispatch(SAVE_ORDER, newOrder)
-  */
-  return Server.request({
+  let newOrder = order || clone(state.order.detail) || {}
+  forEach(['repair_imgs', 'logistics_imgs', 'product_imgs'], (key) => {
+    newOrder[key] = newOrder[key].join(',')
+  })
+  delete newOrder.workman
+  Server.request({
     method: 'post',
     url,
     data: newOrder
+  }).then((res) => {
   })
 }
 
@@ -135,4 +147,22 @@ export const updateOrderComment = ({dispatch, state}, {id, description}) => {
       })
     }
   })
+}
+
+/*
+ * 设置师傅内容
+ * */
+export const setOrder = ({state, dispatch}, map) => {
+  dispatch(SET_ORDER, map)
+}
+export const dealOrderImage = ({state, dispatch}, {key, src, type}) => {
+  let arr = clone(state.order[key] || [])
+  if (type === 'del') {
+    arr.splice(src, 1)
+  }else {
+    arr.push(src)
+  }
+  let obj = {}
+  obj[key] = arr
+  dispatch(SET_ORDER, obj)
 }
