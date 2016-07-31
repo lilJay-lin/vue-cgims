@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",
+    "cookies-js": "^1.2.2",
     "lodash": "^4.13.1",
     "qwest": "^4.4.4",
     "vue": "^1.0.21",

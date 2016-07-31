@@ -28,7 +28,6 @@ export const searchOrder = ({dispatch}, {search = {
     url,
     method: 'get'
   }).then((res) => {
-    console.log(res)
     let result = res.result
     let list = result.datas.map((order) => {
       order.checked = false
@@ -58,10 +57,10 @@ export const showOrderDetail = ({dispatch}, id) => {
     url
   }).then((res) => {
     let order = res.result
-    order.repair_imgs = getImages(order.repair_imgs)
-    order.logistics_imgs = getImages(order.logistics_imgs)
-    order.product_imgs = getImages(order.product_imgs)
-    order.is_checked = order.is_checked && parseInt(order.is_checked)
+    order.repairImgs = getImages(order.repairImgs)
+    order.logisticsImgs = getImages(order.logisticsImgs)
+    order.productImgs = getImages(order.productImgs)
+    order.isChecked = order.isChecked && parseInt(order.isChecked)
     dispatch(RECEIVE_ORDER_DETAIL, res.result)
   })
 }
@@ -120,7 +119,7 @@ export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
 export const saveOrder = ({state, dispatch}, order) => {
   let url = baseUrl
   let newOrder = order || clone(state.order.detail) || {}
-  forEach(['repair_imgs', 'logistics_imgs', 'product_imgs'], (key) => {
+  forEach(['repairImgs', 'logisticsImgs', 'productImgs'], (key) => {
     newOrder[key] = newOrder[key].join(',')
   })
   delete newOrder.workman
@@ -159,7 +158,7 @@ export const dealOrderImage = ({state, dispatch}, {key, src, type}) => {
   let arr = clone(state.order[key] || [])
   if (type === 'del') {
     arr.splice(src, 1)
-  }else {
+  } else {
     arr.push(src)
   }
   let obj = {}

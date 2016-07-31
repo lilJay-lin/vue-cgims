@@ -5,83 +5,83 @@
         <div class="control-group">
           <label class="control-label">订单号</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="订单号" @change="setData('order_number', $event)" :value="order.order_number"/>
+            <input type="text" class="span5" placeholder="订单号" :readOnly="isQuery" @change="setData('orderNumber', $event)" :value="order.orderNumber"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">订单状态</label>
           <div class="controls">
-            <radio-group :radios="orderStatus" :name="'order.order_status'" :checked="order.order_status" @radio-checked="setOrderStatus"></radio-group>
+            <radio-group :radios="orderStatus" :name="'order.orderStatus'":readOnly="isQuery" :checked="order.orderStatus" @radio-checked="setOrderStatus"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">订单类型</label>
           <div class="controls label-inline">
-            <radio-group :radios="serviceTypes" :name="'order.service_type'" :checked="order.service_type" @radio-checked="setServiceType"></radio-group>
+            <radio-group :radios="serviceTypes" :name="'order.serviceType'" :readOnly="isQuery" :checked="order.serviceType" @radio-checked="setServiceType"></radio-group>
           </div>
         </div>
         <div class="control-group-box">
           <div class="control-group">
             <label class="control-label">客户名称</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="客户名称" @change="setData('customer_name', $event)" :value="order.customer_name"/>
+              <input type="text" class="span12" :readOnly="isQuery" placeholder="客户名称" @change="setData('customerName', $event)" :value="order.customerName"/>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">客户电话</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="客户电话" @change="setData('customer_phone_num', $event)":value="order.customer_phone_num"/>
+              <input type="text" class="span12" placeholder="客户电话" :readOnly="isQuery" @change="setData('customerPhoneNum', $event)":value="order.customerPhoneNum"/>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">备用电话</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="备用电话" @change="setData('customer_tel', $event)":value="order.customer_tel"/>
+              <input type="text" class="span12" placeholder="备用电话" :readOnly="isQuery" @change="setData('customerTel', $event)":value="order.customerTel"/>
             </div>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">客户地址</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="客户地址"@change="setData('customer_address', $event)":value="order.customer_address"/>
+            <input type="text" class="span5" placeholder="客户地址" :readOnly="isQuery" @change="setData('customerAddress', $event)":value="order.customerAddress"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">产品信息</label>
           <div class="controls">
-            <input type="text" @change="setData('product_info', $event)":value="order.product_info"/>
-            <file-upload title="添加图片" :url="productUploadURL" @file-upload-success="uploadProductSuccess" @file-upload-review="showProductInfo"></file-upload>
+            <input type="text" :readOnly="isQuery" @change="setData('productInfo', $event)":value="order.productInfo"/>
+            <file-upload title="添加图片" :disabled="isQuery"  :url="productUploadURL" @file-upload-success="productUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in product_imgs">
+            <div class="controls-pics-item" v-for="src in productImgs">
               <img :src="src" alt="src">
-              <a href="javascript:void(0)" @click="onDealOrderImage('product_imgs', $index, 'del')"><i class="icon-remove"></i></a>
+              <a href="javascript:void(0)" @click="onDealOrderImage('productImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">物流信息</label>
           <div class="controls">
-            <input type="text" @change="setData('logistics_info', $event)":value="order.logistics_info"/>
-            <file-upload title='添加图片' :url="logisticsUploadURL" @file-upload-success="uploadLogisticsSuccess" @file-upload-review="showProductInfo"></file-upload>
+            <input type="text" :readOnly="isQuery" @change="setData('logisticsInfo', $event)":value="order.logisticsInfo"/>
+            <file-upload title='添加图片' :disabled="isQuery" :url="logisticsUploadURL" @file-upload-success="logisticsUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in logistics_imgs">
+            <div class="controls-pics-item" v-for="src in logisticsImgs">
               <img :src="src" alt="src">
-              <a  href="javascript:void(0)" @click="onDealOrderImage('logistics_imgs', $index, 'del')"><i class="icon-remove"></i></a>
+              <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('logisticsImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">物流信息</label>
           <div class="controls">
-            <input type="text" @change="setData('repair_info', $event)":value="order.repair_info"/>
-            <file-upload title="添加图片" :url="repairUploadURL" @file-upload-success="uploadRepairSuccess" @file-upload-review="showProductInfo"></file-upload>
+            <input type="text" :readOnly="isQuery" @change="setData('repairInfo', $event)":value="order.repairInfo"/>
+            <file-upload title="添加图片" :disabled="isQuery" :url="repairUploadURL" @file-upload-success="repairUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in repair_imgs">
+            <div class="controls-pics-item" v-for="src in repairImgs">
               <img :src="src" alt="src">
-              <a  href="javascript:void(0)" @click="onDealOrderImage('repair_imgs', $index, 'del')"><i class="icon-remove"></i></a>
+              <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('repairImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
@@ -90,17 +90,17 @@
           <div class="controls label-inline">
             <label>
               <div class="radio" >
-                <span :class="{checked: order.is_checked === 1}">
-                  <input type="radio" value=1 name="is_checked" @change="setData('is_checked', $event)"/>
+                <span :class="{checked: order.isChecked === 1}">
+                  <input type="radio" :disabled="isQuery" value=1 name="isChecked" @change="setData('isChecked', $event)"/>
                 </span>
               </div>
               是
-              <input type="text" :value="order.check_info" v-show="order.is_checked === 0" @change="setData('check_info', $event)"/>
+              <input type="text" :readOnly="isQuery" :value="order.checkInfo" v-show="order.isChecked === 1" @change="setData('checkInfo', $event)"/>
             </label>
             <label>
               <div class="radio" >
-                <span :class="{checked: order.is_checked === 0}">
-                  <input type="radio" name="is_checked" value=0 @change="setData('is_checked', $event)"/>
+                <span :class="{checked: order.isChecked === 0}">
+                  <input type="radio" name="isChecked" :disabled="isQuery" value=0 @change="setData('isChecked', $event)"/>
                 </span>
               </div>
               否
@@ -110,57 +110,57 @@
         <div class="control-group">
           <label class="control-label">商家信息</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="旺旺号" @change="setData('shop_info', $event)" :value="order.shop_info"/>
+            <input type="text" :readOnly="isQuery" class="span5" placeholder="旺旺号" @change="setData('shopInfo', $event)" :value="order.shopInfo"/>
           </div>
         </div>
         <div class="control-group-box">
           <div class="control-group">
             <label class="control-label">接单价</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="接单价" @change="setData('order_price', $event)" :value="order.order_price"/>
+              <input type="text":readOnly="isQuery" class="span12" placeholder="接单价" @change="setData('orderPrice', $event)" :value="order.orderPrice"/>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">服务价</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="服务价" @change="setData('service_price', $event)" :value="order.service_price"/>
+              <input type="text" :readOnly="isQuery" class="span12" placeholder="服务价" @change="setData('servicePrice', $event)" :value="order.servicePrice"/>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">利润</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="利润" @change="setData('profit', $event)" :value="order.profit"/>
+              <input type="text" :readOnly="isQuery" class="span12" placeholder="利润" @change="setData('profit', $event)" :value="order.profit"/>
             </div>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">价格变动原因</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="价格变动原因" @change="setData('price_change_reason', $event)" :value="order.price_change_reason"/>
+            <input type="text" :readOnly="isQuery" class="span5" placeholder="价格变动原因" @change="setData('priceChangeReason', $event)" :value="order.priceChangeReason"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">订单评分</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="订单评分" @change="setData('judgment', $event)" :value="order.judgment"/>
+            <input type="text":readOnly="isQuery" class="span5" placeholder="订单评分" @change="setData('judgment', $event)" :value="order.judgment"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">评价备注</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="评价备注" @change="setData('judge_reason', $event)" :value="order.judge_reason"/>
+            <input type="text" :readOnly="isQuery" class="span5" placeholder="评价备注" @change="setData('judge_reason', $event)" :value="order.judge_reason"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">备注</label>
           <div class="controls">
-            <textarea class="span10" @change="setData('description', $event)">{{order.description}}</textarea>
+            <textarea class="span10" :readOnly="isQuery" @change="setData('description', $event)">{{order.description}}</textarea>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">创建人</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="创建人"  :value="order.creator_id" readonly="true" />
+            <input type="text" class="span5" placeholder="创建人"  :value="order.creatorId" readonly="true" />
           </div>
         </div>
         <div class="control-group">
@@ -181,10 +181,10 @@
             <input type="text" class="span5" placeholder="对接师傅" readonly="true" :value="order.workman.name"/>
           </div>
         </div>
-        <div class="form-title">
+        <div class="form-title" v-if="isEdit">
           <h3>选择对接师傅</h3>
         </div>
-        <div class="control-group">
+        <div class="control-group" v-if="isEdit">
           <div class="control-box ">
             <div class="search-table-box">
               <div class="dataTables-filter-wrap worker">
@@ -219,13 +219,13 @@
                 </thead>
                 <tbody>
                 <tr v-for="worker in workers.list">
-                  <td>{{worker.workman_number}}</td>
+                  <td>{{worker.workmanNumber}}</td>
                   <td>{{worker.name}}</td>
-                  <td>{{worker.phone_num}}</td>
+                  <td>{{worker.phoneNum}}</td>
                   <td>{{worker.qq}}</td>
-                  <td>{{worker.service_area}}</td>
+                  <td>{{worker.serviceArea}}</td>
                   <td>{{worker.score}}</td>
-                  <td>{{worker.cooperate_times}}</td>
+                  <td>{{worker.cooperateTimes}}</td>
                   <td>{{worker.description}}</td>
                   <td>
                     <div class="operation-group">
@@ -243,8 +243,9 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-success" @click="saveOrder()">保存</button>
-          <button type="button" class="btn btn-success">返回</button>
+          <button type="button" class="btn btn-success" @click="saveOrder()" v-if="isEdit">保存</button>
+          <button type="button" class="btn btn-success" @click="setOrderMode('edit')" v-if="isQuery">编辑</button>
+          <a v-link="'/admin/order'" class="btn btn-success">返回</a>
         </div>
       </form>
     </Widget>
@@ -259,7 +260,7 @@
   import Region from 'components/Region'
   import FileUpload from 'components/FileUpload'
   import {getDetailOrder, getUIOptions, getOrderStatus} from 'my_vuex/getters/order'
-  import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage} from 'my_vuex/actions/order'
+  import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder} from 'my_vuex/actions/order'
   import {getWorkers} from 'my_vuex/getters/worker'
   import {searchWorker} from 'my_vuex/actions/worker'
   export default {
@@ -326,7 +327,7 @@
       },
       setOrderStatus: function (value) {
         this.setOrder({
-          order_status: value
+          orderStatus: value
         })
       },
       setWorkman: function (id, name) {
@@ -340,13 +341,13 @@
       },
       setServiceType: function (value) {
         this.setOrder({
-          service_type: value
+          serviceType: value
         })
       },
       setData: function (key, e) {
         let obj = {}
         let val = e.target.value
-        if (key === 'check_info') {
+        if (key === 'isChecked') {
           val = parseInt(val, 10)
         }
         obj[key] = val
@@ -355,14 +356,14 @@
       showProductInfo: function (files) {
         console.log(files)
       },
-      uploadProductSuccess: function (src) {
-        this.onDealOrderImage('product_imgs', src, 'add')
+      productUploadSuccess: function (src) {
+        this.onDealOrderImage('productImgs', src, 'add')
       },
-      uploadLogisticsSuccess: function (src) {
-        this.onDealOrderImage('logistics_imgs', src, 'add')
+      logisticsUploadSuccess: function (src) {
+        this.onDealOrderImage('logisticsImgs', src, 'add')
       },
-      uploadRepairSuccess: function (src) {
-        this.onDealOrderImage('repair_imgs', src, 'add')
+      repairUploadSuccess: function (src) {
+        this.onDealOrderImage('repairImgs', src, 'add')
       },
       onDealOrderImage: function (key, src, type) {
         this.dealOrderImage({
@@ -374,7 +375,9 @@
     },
     route: {
       data ({to: {path, params: {id}, query: {type}}}) {
-        if (!id) {
+        if (id && !type) {
+          type = 'query'
+        } else if (!type) {
           type = 'new'
         }
         this.setOrderMode(type)

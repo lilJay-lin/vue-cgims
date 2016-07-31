@@ -57,8 +57,8 @@ export const showWorkerDetail = ({dispatch}, id) => {
   }).then((res) => {
     let worker = res.result
     if (worker) {
-      worker.receive_type = worker.receive_type && parseInt(worker.receive_type, 10)
-      let serviceItems = worker.service_items
+      worker.receiveType = worker.receiveType && parseInt(worker.receiveType, 10)
+      let serviceItems = worker.serviceItems
       if (serviceItems) {
         let items = JSON.parse(serviceItems)
         forEach(items, (val, key) => {
@@ -123,7 +123,7 @@ export const saveWorker = ({state, dispatch}) => {
     items[val] = worker[val]
     delete worker[val]
   })
-  worker['service_items'] = JSON.stringify(items)
+  worker['serviceItems'] = JSON.stringify(items)
   /*
   dispatch(SAVE_WORKER, newWorker)
   */

@@ -13,7 +13,7 @@ import EditWorker from 'components/worker/EditWorker.vue'
 import SearchOrder from 'components/order/SearchOrder.vue'
 import EditOrder from 'components/order/EditOrder.vue'
 import store from 'my_vuex/store'
-import {isLogin} from 'my_vuex/getters/getters'
+import {isLogin} from 'my_vuex/getters/auth'
 import {setActiveMenu} from 'my_vuex/actions/actions'
 
 let loginUrl = '/login'
@@ -75,6 +75,10 @@ export default (router) => {
           name: '/admin/order/:id',
           component: EditOrder
         },
+        '/order/add': {
+          name: '/admin/order/add',
+          component: EditOrder
+        },
         '/order/user': {
           name: '/admin/order/user',
           component: SearchOrder
@@ -97,12 +101,17 @@ export default (router) => {
   *  全局路由权限控制，无权限跳转至forbidden
   */
   router.beforeEach(function (transition) {
-    if (!isLogin(store.state) && transition.to.path !== loginUrl) {
+    let toPath = transition.to.path
+    let login = isLogin(store.state)
+    if (toPath === loginUrl) {
+      if (login) {
+        transition.redirect('/admin')
+      }
+    } else if (!login) {
       transition.redirect(loginUrl)
       return
     }
     let to = transition.to
-    console.log(to.name)
     setActiveMenu(store, to.name)
     transition.next()
   })

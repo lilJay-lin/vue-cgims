@@ -122,7 +122,9 @@
     },
     route: {
       data ({to: {path, params: {id}, query: {type}}}) {
-        if (!id && !type) {
+        if (id && !type) {
+          type = 'query'
+        } else if (!type) {
           type = 'new'
         }
         this.setRoleMode(type)

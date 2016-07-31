@@ -30,7 +30,7 @@
             <input type="date" v-el:end_time/>
             <input type="text" @keydown.enter="startSearchOrder(1)" v-el:search/>
             <button type="button" class="btn btn-info" @click="startSearchOrder(1)">搜索</button>
-            <button type="button" class="btn btn-info">新增</button>
+            <a v-link="'/admin/order/add'" class="btn btn-info">新增</a>
           </label>
         </div>
       </div>
@@ -67,11 +67,11 @@
               <span :class="{checked: order.checked}"><input type="checkbox" :checked="order.checked" @change="toggleCheck($event, order.id)"></span>
             </div>
           </td>
-          <td><a v-link="'/admin/order/' + order.id">{{order.order_number}}</a></td>
-          <td>{{order.shop_info}}</td>
-          <td>{{order.order_price}}/{{order.service_price}}</td>
-          <td>{{order.order_number}}</td>
-          <td>{{order.customer_name}}{{order.customer_phone_num || order.customer_address}}{{order.customer_address}}</td>
+          <td><a v-link="'/admin/order/' + order.id + '?type=query'">{{order.orderNumber}}</a></td>
+          <td>{{order.shopInfo}}</td>
+          <td>{{order.orderPrice}}/{{order.servicePrice}}</td>
+          <td>{{order.orderNumber}}</td>
+          <td>{{order.customerName}}{{order.customerPhoneNum || order.customerAddress}}{{order.customerAddress}}</td>
           <td>
             <div class="operation-group">
               <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>

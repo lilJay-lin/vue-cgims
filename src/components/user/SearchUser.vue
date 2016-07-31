@@ -30,9 +30,9 @@
               <span :class="{checked: user.checked}"><input type="checkbox" :checked="user.checked" @change="toggleCheck($event, user.id)"></span>
             </div>
           </td>
-          <td>{{user.login_name}}</td>
+          <td>{{user.loginName}}</td>
           <td>{{user.name}}</td>
-          <td>{{user.phone_num}}</td>
+          <td>{{user.phoneNum}}</td>
           <td>
             <div class="operation-group">
               <a v-link="'/admin/user/' + user.id + '?type=query'" title="详情"><i class="icon-search"></i></a>

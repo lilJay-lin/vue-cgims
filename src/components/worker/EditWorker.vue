@@ -15,7 +15,7 @@
           <div class="control-group">
             <label class="control-label">手机</label>
             <div class="controls">
-              <input type="text" class="span12" placeholder="手机" :readonly="isQuery" :value="worker.phone_num" @change="setData('phone_num', $event)"/>
+              <input type="text" class="span12" placeholder="手机" :readonly="isQuery" :value="worker.phoneNum" @change="setData('phoneNum', $event)"/>
             </div>
           </div>
           <div class="control-group">
@@ -28,43 +28,43 @@
         <div class="control-group">
           <label class="control-label">收款账号</label>
           <div class="controls" v-if="isQuery">
-            <label v-if="worker.receive_type === 0">
+            <label v-if="worker.receiveType === 0">
               <div class="radio">
-                <span :class="{checked: worker.receive_type === 0}">
-                  <input value='0' type="radio" name="receive_type" :checked="worker.receive_type === 0" @change="setData('receive_type', $event)">
+                <span :class="{checked: worker.receiveType === 0}">
+                  <input value='0' type="radio" name="receiveType" :checked="worker.receiveType === 0" @change="setData('receiveType', $event)">
                 </span>
               </div>
-              <input :readOnly="isQuery" type="text" class="span4" placeholder="支付宝帐号" :value="worker.alipay_account" @change="setData('alipay_account', $event)"/>
+              <input :readOnly="isQuery" type="text" class="span4" placeholder="支付宝帐号" :value="worker.alipayAccount" @change="setData('alipayAccount', $event)"/>
             </label>
             <label v-else>
               <div class="radio" >
-                <span :class="{checked: worker.receive_type === 1}">
-                  <input value='1' type="radio" name="receive_type" :checked="worker.receive_type === 1" @change="setData('receive_type', $event)">
+                <span :class="{checked: worker.receiveType === 1}">
+                  <input value='1' type="radio" name="receiveType" :checked="worker.receiveType === 1" @change="setData('receiveType', $event)">
                 </span>
               </div>
               银行卡
               <input  :readOnly="isQuery" type="text" class="span2" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
-              <input :readOnly="isQuery" type="text" class="span3" placeholder="银行卡帐号" :value="worker.card_num" @change="setData('card_num', $event)"/>
+              <input :readOnly="isQuery" type="text" class="span3" placeholder="银行卡帐号" :value="worker.cardNum" @change="setData('cardNum', $event)"/>
             </label>
           </div>
           <div class="controls" v-else>
             <label>
               <div class="radio">
-                <span :class="{checked: worker.receive_type === 0}">
-                  <input value='0' type="radio" name="receive_type" :checked="worker.receive_type === 0" @change="setData('receive_type', $event)">
+                <span :class="{checked: worker.receiveType === 0}">
+                  <input value='0' type="radio" name="receiveType" :checked="worker.receiveType === 0" @change="setData('receiveType', $event)">
                 </span>
               </div>
-              <input  type="text" class="span4" placeholder="支付宝帐号" :value="worker.alipay_account" @change="setData('alipay_account', $event)"/>
+              <input  type="text" class="span4" placeholder="支付宝帐号" :value="worker.alipayAccount" @change="setData('alipayAccount', $event)"/>
             </label>
             <label>
               <div class="radio" >
-                <span :class="{checked: worker.receive_type === '1'}">
-                  <input value='1' type="radio" name="receive_type" :checked="worker.receive_type === '1'" @change="setData('receive_type', $event)">
+                <span :class="{checked: worker.receiveType === '1'}">
+                  <input value='1' type="radio" name="receiveType" :checked="worker.receiveType === '1'" @change="setData('receiveType', $event)">
                 </span>
               </div>
               银行卡
-              <input  :readOnly="worker.receive_type === 0" type="text" class="span2" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
-              <input :readOnly="worker.receive_type === 0" type="text" class="span3" placeholder="银行卡帐号" :value="worker.card_num" @change="setData('card_num', $event)"/>
+              <input  :readOnly="worker.receiveType === 0" type="text" class="span2" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
+              <input :readOnly="worker.receiveType === 0" type="text" class="span3" placeholder="银行卡帐号" :value="worker.cardNum" @change="setData('cardNum', $event)"/>
             </label>
           </div>
         </div>
@@ -88,27 +88,19 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <div class="uploader-identity">
-                <span class="btn btn-success">身份证正面
-                    <input type="file" :readonly="isQuery"/>
-                </span>
-            </div>
+            <file-upload :disabled="isQuery" title="身份证正面" url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box">
-              <img :src="worker.id_card_face" alt="">
+              <img :src="worker.idCardFace" alt="">
             </div>
             <div class="inner-control-group">
               <label class="control-label">
-                <div class="uploader-identity">
-                    <span class="btn btn-success">身份证背面
-                        <input type="file" :readonly="isQuery"/>
-                    </span>
-                </div>
+                <file-upload :disabled="isQuery" title="身份证背面" url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardBackUploadSuccess" ></file-upload>
               </label>
               <div class="controls">
                 <div class="identity-box">
-                  <img :src="worker.id_care_back" alt="">
+                  <img :src="worker.idCardBack" alt="">
                 </div>
               </div>
             </div>
@@ -120,7 +112,7 @@
         <div class="control-group">
           <label class="control-label">服务类型</label>
           <div class="controls service-region-radio">
-            <radio-group :readonly="isQuery" :radios="service_types" :name="'service_type'" :checked="worker.service_type" @radio-checked="setServiceType"></radio-group>
+            <radio-group :readonly="isQuery" :radios="service_types" :name="'serviceType'" :checked="worker.serviceType" @radio-checked="setServiceType"></radio-group>
           </div>
         </div>
         <div class="form-title">
@@ -159,20 +151,20 @@
         <div class="control-group">
           <label class="control-label">服务区域</label>
           <div class="controls service-region-radio ">
-            <radio-group :readonly="isQuery" :radios="service_areas" :name="'service_area'" :checked="worker.service_area" @radio-checked="setServiceArea"></radio-group>
+            <radio-group :readonly="isQuery" :radios="service_areas" :name="'serviceArea'" :checked="worker.serviceArea" @radio-checked="setServiceArea"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">团队人数</label>
           <div class="controls ">
-            <input type="text" class="span30":readonly="isQuery" :value="team_people_num" @change="setData('team_people_num', $event)"/>
+            <input type="text" class="span30":readonly="isQuery" :value="teamPeopleNum" @change="setData('teamPeopleNum', $event)"/>
             人
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">货车数量</label>
           <div class="controls ">
-            <input type="text" class="span30":readonly="isQuery" :value="truck_num" @change="setData('truck_num', $event)"/>
+            <input type="text" class="span30":readonly="isQuery" :value="truckNum" @change="setData('truckNum', $event)"/>
             辆
           </div>
         </div>
@@ -181,7 +173,7 @@
           <div class="control-group">
             <label class="control-label">推荐提货点</label>
             <div class="controls">
-              <input type="text"placeholder="推荐提货点":readonly="isQuery" :value="willing_pick_address" @change="setData('willing_pick_address', $event)"/>
+              <input type="text"placeholder="推荐提货点":readonly="isQuery" :value="willingPickAddress" @change="setData('willingPickAddress', $event)"/>
             </div>
           </div>
           <div class="control-group">
@@ -202,7 +194,7 @@
           <div class="control-group">
             <label class="control-label">合作次数</label>
             <div class="controls">
-              <input type="text"placeholder="合作次数":readonly="isQuery" :value="cooperate_times" @change="setData('cooperate_times', $event)"/>
+              <input type="text"placeholder="合作次数":readonly="isQuery" :value="cooperateTimes" @change="setData('cooperateTimes', $event)"/>
             </div>
           </div>
           <div class="control-group">
@@ -227,6 +219,7 @@
   import Pagination from 'components/Pagination'
   import Region from 'components/Region'
   import RadioGroup from 'components/RadioGroup'
+  import FileUpload from 'components/FileUpload'
   import {getDetailWorker, getUIOptions} from 'my_vuex/getters/worker'
   import {showWorkerDetail, saveWorker, setWorkerMode, clearWorkerDetail, setWorker} from 'my_vuex/actions/worker'
   export default {
@@ -235,7 +228,8 @@
       Widget,
       Pagination,
       Region,
-      RadioGroup
+      RadioGroup,
+      FileUpload
     },
     detached () {
       this.clearWorkerDetail()
@@ -287,7 +281,7 @@
       },
       setServiceType: function (value) {
         this.setWorker({
-          service_type: value
+          serviceType: value
         })
       },
       setFurnitureType: function (value) {
@@ -317,7 +311,7 @@
       },
       setServiceArea: function (value) {
         this.setWorker({
-          service_area: value
+          serviceArea: value
         })
       },
       selectRegion: function (region) {
@@ -327,10 +321,16 @@
           'area': region[2]
         })
       },
+      cardFaceUploadSuccess: function (src) {
+        this.setData('idCardFace', src)
+      },
+      cardBackUploadSuccess: function (src) {
+        this.setData('idCardBack', src)
+      },
       setData: function (key, e) {
         let obj = {}
         let val = e.target.value
-        if (key === 'receive_type') {
+        if (key === 'receiveType') {
           val = parseInt(val, 10)
         }
         obj[key] = val
@@ -339,7 +339,9 @@
     },
     route: {
       data ({to: {path, params: {id}, query: {type}}}) {
-        if (!id && !type) {
+        if (id && !type) {
+          type = 'query'
+        } else if (!type) {
           type = 'new'
         }
         this.setWorkerMode(type)

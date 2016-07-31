@@ -9,6 +9,9 @@ const state = {
   },
   checkAll: false,
   detail: {
+    repairImgs: [],
+    logisticsImgs: [],
+    productImgs: [],
     workman: {}
   },
   list: [],

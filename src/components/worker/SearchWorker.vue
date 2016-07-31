@@ -43,13 +43,13 @@
               <span :class="{checked: worker.checked}"><input type="checkbox" :checked="worker.checked" @change="toggleCheck($event, worker.id)"></span>
             </div>
           </td>
-          <td>{{worker.workman_number}}</td>
+          <td>{{worker.workmanNumber}}</td>
           <td>{{worker.name}}</td>
-          <td>{{worker.phone_num}}</td>
+          <td>{{worker.phoneNum}}</td>
           <td>{{worker.qq}}</td>
-          <td>{{worker.service_area}}</td>
+          <td>{{worker.serviceArea}}</td>
           <td>{{worker.score}}</td>
-          <td>{{worker.cooperate_times}}</td>
+          <td>{{worker.cooperateTimes}}</td>
           <td>{{worker.description}}</td>
           <td>
             <div class="operation-group">

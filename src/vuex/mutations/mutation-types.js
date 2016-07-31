@@ -10,5 +10,5 @@ export const SET_ACTIVE_MENU = 'set_active_menu'
 /*
 * 登录页
 * */
-export const AUTH_SUCCESS = 'login_success'
-export const AUTH_PRIVILEGE = 'auth_privilege'
+export const AUTH_LOGIN_SUCCESS = 'auth_login_success'
+export const AUTH_LOGOUT = 'login_out'

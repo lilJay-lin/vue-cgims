@@ -5,13 +5,13 @@
         <div class="control-group">
           <label class="control-label">登录名</label>
           <div class="controls">
-            <input type="text" class="span5" :value="user.login_name" :readonly="isQuery" placeholder="登录名" v-el:login_name>
+            <input type="text" class="span5" :value="user.loginName" :readonly="isQuery" placeholder="登录名" v-el:login_name>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">手机</label>
           <div class="controls">
-            <input type="phone":value="user.phone_num" class="span5" :readonly="isQuery"  placeholder="手机" v-el:phone_num>
+            <input type="phone":value="user.phoneNum" class="span5" :readonly="isQuery"  placeholder="手机" v-el:phone_num>
           </div>
         </div>
         <div class="control-group">
@@ -96,7 +96,7 @@
                 <div class="dataTables-filter-wrap">
                   <label>
                     <input type="text" @keydown.enter="startSearchUser(1)" v-el:search_user/>
-                    <button type="submit" class="btn btn-info" @click="startSearchUser(1)">搜索</button>
+                    <button type="button" class="btn btn-info" @click="startSearchUser(1)">搜索</button>
                   </label>
                 </div>
                 <table class="table">
@@ -110,9 +110,9 @@
                   </thead>
                   <tbody>
                   <tr v-for="user in users.list">
-                    <td>{{user.login_name}}</td>
+                    <td>{{user.loginName}}</td>
                     <td >{{user.name}}</td>
-                    <td>{{user.phone_num}}</td>
+                    <td>{{user.phoneNum}}</td>
                     <td>
                       <div class="operation-group">
                         <a  href="javascript:void(0)" title="添加" @click="addRelSlave(user)"><i class="icon-plus"></i></a>
@@ -192,8 +192,8 @@
         vm.saveUser(user, {
           id: user.id,
           name: els.name.value,
-          login_name: els.login_name.value,
-          phone_num: els.phone_num.value,
+          loginName: els.login_name.value,
+          phoneNum: els.phone_num.value,
           identity: els.identity.value,
           password: els.password.value,
           description: els.description.value
@@ -202,13 +202,15 @@
     },
     route: {
       data ({to: {params: {id}, query: {type}}}) {
-        if (!id && !type) {
+        if (id && !type) {
+          type = 'query'
+        } else if (!type) {
           type = 'new'
         }
         this.setUserMode(type)
-        type !== 'new' && this.showUserDetail(id)
         this.searchRole({})
         this.searchUser({})
+        return type !== 'new' && this.showUserDetail(id)
       }
     },
     vuex: {

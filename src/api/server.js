@@ -10,7 +10,6 @@ qwest.base = window.__BASE_PATH__ || '/'
 qwest.setDefaultOptions({
   responseType: 'json'
 })
-
 export default {
   request: ({
     url,

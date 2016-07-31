@@ -9,14 +9,15 @@
     <header class="top-nav"  v-el:header>
       <div class="nav-menu">
         <ul class="nav">
-          <li>
+          <li v-if="auth.login">
             <a href="">
               <img src="../assets/img/avatar.jpg" alt="" class="img-user">
-              <strong>@john</strong>
+              <strong>{{auth.name}}</strong>
             </a>
           </li>
-          <li><a href="">退出</a></li>
-          <li><a href="">登录</a></li>
+          <li>
+            <a v-link="'/login'" v-if="auth.login" @click="logout">退出</a>
+            <a v-link="'/login'" v-else>登录</a></li>
         </ul>
       </div>
     </header>
@@ -33,6 +34,8 @@
 <script>
 import Slider from './components/Slider.vue'
 import {getSlider} from './vuex/getters/getters'
+import {getAuth} from 'my_vuex/getters/auth'
+import {logout} from 'my_vuex/actions/auth'
 import {css} from './util/dom.js'
 export default {
   components: {
@@ -52,7 +55,11 @@ export default {
   },
   vuex: {
     getters: {
-      slider: getSlider
+      slider: getSlider,
+      auth: getAuth
+    },
+    actions: {
+      logout
     }
   },
   route: {
@@ -84,5 +91,8 @@ export default {
   }
   table.table  td{
     padding:10px;
+  }
+  .hide{
+    display: none;
   }
 </style>
