@@ -86,6 +86,12 @@ export default (router) => {
         '/order/user/add': {
           name: '/admin/order/user/add',
           component: EditOrder
+        },
+        '/forbidden': {
+          name: '/admin/forbidden',
+          component: {
+            template: '<p>没有权限访问</p>'
+          }
         }
       }
     },

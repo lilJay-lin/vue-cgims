@@ -50,7 +50,7 @@
                 </table>
 
                 <div class="fg-toolbar">
-                  <Pagination :cur-page="permissions.pageInfo.curPage" :total-page="permissions.pageInfo.totalPage" @go-page="startSearchPermission"></Pagination>
+                  <Pagination  :total="permissions.pageInfo.total"  :page-size="permissions.pageInfo.pageSize"  :cur-page="permissions.pageInfo.curPage" :total-page="permissions.pageInfo.totalPage" @go-page="startSearchPermission"></Pagination>
                 </div>
               </div>
               </div>
@@ -82,6 +82,7 @@
   import Pagination from 'components/Pagination'
   import {getDetailRole, getUIOptions} from 'my_vuex/getters/role'
   import {showRoleDetail, deleteRelPermission, addRelPermission, saveRole, setRoleMode, clearRoleDetail} from 'my_vuex/actions/role'
+  import {getPermission} from 'my_vuex/getters/auth'
   import {getPermissions} from 'my_vuex/getters/permission'
   import {searchPermission} from 'my_vuex/actions/permission'
   export default {
@@ -121,11 +122,15 @@
       }
     },
     route: {
-      data ({to: {path, params: {id}, query: {type}}}) {
+      data (transition) {
+        let {to: {params: {id}, query: {type}}} = transition
         if (id && !type) {
           type = 'query'
         } else if (!type) {
           type = 'new'
+        }
+        if ((type === 'edit' || type === 'new') && !this.permission.roleManager) {
+          transition.redirect('/admin/forbidden')
         }
         this.setRoleMode(type)
         type !== 'new' && this.showRoleDetail(id)
@@ -137,7 +142,8 @@
         breads: getBreadCrumb,
         role: getDetailRole,
         permissions: getPermissions,
-        mode: getUIOptions
+        mode: getUIOptions,
+        permission: getPermission
       },
       actions: {
         showRoleDetail,

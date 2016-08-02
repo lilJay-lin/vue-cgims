@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/16.
  */
-import {SET_ACTIVE_MENU} from '../mutations/mutation-types'
+import {SET_ACTIVE_MENU, SET_SLIDER} from '../mutations/mutation-types'
 /*
 * contains: 所有指定链接都定位到当前name菜单上
 * */
@@ -96,6 +96,9 @@ const state = {
 }
 
 const mutations = {
+  [SET_SLIDER]: (state, menus) => {
+    state.menus = menus
+  },
   [SET_ACTIVE_MENU]: (state, url) => {
     state.active = url
   }

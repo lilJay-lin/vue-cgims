@@ -88,7 +88,7 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="身份证正面" url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
+            <file-upload :disabled="isQuery" title="身份证正面" :url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box">
@@ -96,9 +96,9 @@
             </div>
             <div class="inner-control-group">
               <label class="control-label">
-                <file-upload :disabled="isQuery" title="身份证背面" url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardBackUploadSuccess" ></file-upload>
+                <file-upload :disabled="isQuery" title="身份证背面" :url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardBackUploadSuccess" ></file-upload>
               </label>
-              <div class="controls">
+              <div class="controls" style="padding-top:0">
                 <div class="identity-box">
                   <img :src="worker.idCardBack" alt="">
                 </div>
@@ -220,6 +220,7 @@
   import Region from 'components/Region'
   import RadioGroup from 'components/RadioGroup'
   import FileUpload from 'components/FileUpload'
+  import {getPermission} from 'my_vuex/getters/auth'
   import {getDetailWorker, getUIOptions} from 'my_vuex/getters/worker'
   import {showWorkerDetail, saveWorker, setWorkerMode, clearWorkerDetail, setWorker} from 'my_vuex/actions/worker'
   export default {
@@ -322,10 +323,14 @@
         })
       },
       cardFaceUploadSuccess: function (src) {
-        this.setData('idCardFace', src)
+        this.setWorker({
+          idCardFace: src
+        })
       },
       cardBackUploadSuccess: function (src) {
-        this.setData('idCardBack', src)
+        this.setWorker({
+          idCardBack: src
+        })
       },
       setData: function (key, e) {
         let obj = {}
@@ -338,15 +343,19 @@
       }
     },
     route: {
-      data ({to: {path, params: {id}, query: {type}}}) {
+      data (transition) {
+        let {to: {params: {id}, query: {type}}} = transition
         if (id && !type) {
           type = 'query'
         } else if (!type) {
           type = 'new'
         }
+        if ((type === 'edit' || type === 'new') && !this.permission.workmanManager) {
+          transition.redirect('/admin/forbidden')
+        }
         this.setWorkerMode(type)
         if (type !== 'new') {
-          return this.showOrderDetail(id)
+          return this.showWorkerDetail(id)
         }
       }
     },
@@ -355,6 +364,7 @@
         breads: getBreadCrumb,
         worker: getDetailWorker,
         mode: getUIOptions,
+        permission: getPermission,
         region: getRegion
       },
       actions: {
@@ -367,3 +377,8 @@
     }
   }
 </script>
+<style>
+  .inner-control-group{
+    vertical-align: top;
+  }
+</style>

@@ -65,7 +65,12 @@ export const showOrderDetail = ({dispatch}, id) => {
   })
 }
 export const clearOrderDetail = ({dispatch}) => {
-  dispatch(RECEIVE_ORDER_DETAIL, {permissions: []})
+  dispatch(RECEIVE_ORDER_DETAIL, {
+    repairImgs: [],
+    logisticsImgs: [],
+    productImgs: [],
+    workman: {}
+  })
 }
 
 /*
@@ -155,7 +160,8 @@ export const setOrder = ({state, dispatch}, map) => {
   dispatch(SET_ORDER, map)
 }
 export const dealOrderImage = ({state, dispatch}, {key, src, type}) => {
-  let arr = clone(state.order[key] || [])
+  let arr = clone(state.order.detail[key] || [])
+  console.log(arr)
   if (type === 'del') {
     arr.splice(src, 1)
   } else {

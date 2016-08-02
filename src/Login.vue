@@ -3,7 +3,7 @@
     <div class="login">
       <form class="login-form form-vertical">
         <div class="control-group normal-text">
-          <h3>后台系统登录{{auth.login}}</h3>
+          <h3>后台系统登录</h3>
         </div>
         <div class="control-group">
           <div class="controls">
@@ -48,7 +48,7 @@
   </div>
 </template>
 <script>
-  import {login} from 'my_vuex/actions/auth'
+  import {login, setPermission} from 'my_vuex/actions/auth'
   import {getAuth} from 'my_vuex/getters/auth'
   export default {
     computed: {
@@ -75,12 +75,14 @@
         auth: getAuth
       },
       actions: {
-        login
+        login,
+        setPermission
       }
     },
     watch: {
       isLogin: function (login) {
         if (login) {
+          this.setPermission()
           this.$router.go('/admin')
         }
       }

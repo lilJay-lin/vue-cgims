@@ -34,8 +34,8 @@
           <td>
             <div class="operation-group">
               <a v-link="'/admin/role/' + role.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
-              <a  v-link="'/admin/role/' + role.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
-              <a  href="javascript:void(0)" title="删除" @click="deleteRole(role.id)"><i class="icon-remove"></i></a>
+              <a  v-show="permission.roleManager" v-link="'/admin/role/' + role.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
+              <a  v-show="permission.roleManager" href="javascript:void(0)" title="删除" @click="deleteRole(role.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
         </tr>
@@ -45,10 +45,10 @@
 
       <div class="fg-toolbar">
         <div class="fg-toolbar-operation">
-          <button type="button" class="btn btn-success" @click="deleteRole()">删除</button>
-          <a v-link="'/admin/role/add?type=new'" class="btn btn-success">新增</a>
+          <button type="button" class="btn btn-success" @click="deleteRole()" v-show="permission.roleManager">删除</button>
+          <a v-link="'/admin/role/add?type=new'" class="btn btn-success" v-show="permission.roleManager">新增</a>
         </div>
-        <Pagination :cur-page="roles.pageInfo.curPage" :total-page="roles.pageInfo.totalPage" @go-page="startSearchRole"></Pagination>
+        <Pagination :cur-page="roles.pageInfo.curPage"  :page-size="roles.pageInfo.pageSize"   :total="roles.pageInfo.total" :total-page="roles.pageInfo.totalPage" @go-page="startSearchRole"></Pagination>
       </div>
       </div>
     </Widget>
@@ -61,6 +61,7 @@
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
+  import {getPermission} from 'my_vuex/getters/auth'
   export default {
     components: {
       Content,
@@ -93,7 +94,8 @@
       getters: {
         breads: getBreadCrumb,
         roles: getRoles,
-        checkAll: getCheckAll
+        checkAll: getCheckAll,
+        permission: getPermission
       },
       actions: {
         searchRole,

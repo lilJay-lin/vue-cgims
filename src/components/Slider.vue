@@ -1,7 +1,7 @@
 <template>
   <ul>
     <template v-for="menu in menus">
-      <li :class="{submenu: menu.sub.length, active: menu.name === active}" v-open="active | canOpen menu">
+      <li :class="{submenu: menu.sub.length, active: menu.name === active}" class="open">
         <a href="javascript:void(0)" @click.prevent="onItemClick($event, menu)">
           <i class="icon icon-th-list"></i>
           <span>{{menu.title}}</span>

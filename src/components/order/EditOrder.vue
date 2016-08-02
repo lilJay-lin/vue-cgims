@@ -53,7 +53,7 @@
             <file-upload title="添加图片" :disabled="isQuery"  :url="productUploadURL" @file-upload-success="productUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in productImgs">
+            <div class="controls-pics-item" v-for="src in order.productImgs" track-by="$index">
               <img :src="src" alt="src">
               <a href="javascript:void(0)" @click="onDealOrderImage('productImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
@@ -66,7 +66,7 @@
             <file-upload title='添加图片' :disabled="isQuery" :url="logisticsUploadURL" @file-upload-success="logisticsUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in logisticsImgs">
+            <div class="controls-pics-item" v-for="src in order.logisticsImgs" track-by="$index">
               <img :src="src" alt="src">
               <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('logisticsImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
@@ -79,7 +79,7 @@
             <file-upload title="添加图片" :disabled="isQuery" :url="repairUploadURL" @file-upload-success="repairUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in repairImgs">
+            <div class="controls-pics-item" v-for="src in order.repairImgs" track-by="$index">
               <img :src="src" alt="src">
               <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('repairImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
@@ -227,7 +227,7 @@
                   <td>{{worker.score}}</td>
                   <td>{{worker.cooperateTimes}}</td>
                   <td>{{worker.description}}</td>
-                  <td>
+                  <td >
                     <div class="operation-group">
                       <a  href="javascript:void(0)" title="选中" class="{worker.id === order.workman.id}" @click="setWorkman(worker.id, worker.name)"><i class="icon-check"></i></a>
                     </div>
@@ -243,8 +243,8 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-success" @click="saveOrder()" v-if="isEdit">保存</button>
-          <button type="button" class="btn btn-success" @click="setOrderMode('edit')" v-if="isQuery">编辑</button>
+          <button v-show="permission.orderManager" type="button" class="btn btn-success" @click="saveOrder()" v-if="isEdit">保存</button>
+          <button v-show="permission.orderManager" type="button" class="btn btn-success" @click="setOrderMode('edit')" v-if="isQuery">编辑</button>
           <a v-link="'/admin/order'" class="btn btn-success">返回</a>
         </div>
       </form>
@@ -259,8 +259,9 @@
   import Pagination from 'components/Pagination'
   import Region from 'components/Region'
   import FileUpload from 'components/FileUpload'
+  import {getPermission} from 'my_vuex/getters/auth'
   import {getDetailOrder, getUIOptions, getOrderStatus} from 'my_vuex/getters/order'
-  import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder} from 'my_vuex/actions/order'
+  import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage} from 'my_vuex/actions/order'
   import {getWorkers} from 'my_vuex/getters/worker'
   import {searchWorker} from 'my_vuex/actions/worker'
   export default {
@@ -374,11 +375,15 @@
       }
     },
     route: {
-      data ({to: {path, params: {id}, query: {type}}}) {
+      data (transition) {
+        let {to: {params: {id}, query: {type}}} = transition
         if (id && !type) {
           type = 'query'
         } else if (!type) {
           type = 'new'
+        }
+        if ((type === 'edit' || type === 'new') && !this.permission.orderManager) {
+          transition.redirect('/admin/forbidden')
         }
         this.setOrderMode(type)
         this.searchWorker({})
@@ -394,7 +399,8 @@
         workers: getWorkers,
         mode: getUIOptions,
         region: getRegion,
-        status: getOrderStatus
+        status: getOrderStatus,
+        permission: getPermission
       },
       actions: {
         showOrderDetail,
@@ -402,7 +408,8 @@
         saveOrder,
         setOrderMode,
         clearOrderDetail,
-        setOrder
+        setOrder,
+        dealOrderImage
       }
     }
   }

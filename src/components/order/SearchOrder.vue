@@ -30,7 +30,7 @@
             <input type="date" v-el:end_time/>
             <input type="text" @keydown.enter="startSearchOrder(1)" v-el:search/>
             <button type="button" class="btn btn-info" @click="startSearchOrder(1)">搜索</button>
-            <a v-link="'/admin/order/add'" class="btn btn-info">新增</a>
+            <a v-show="permission.orderManager" v-link="'/admin/order/add'" class="btn btn-info">新增</a>
           </label>
         </div>
       </div>
@@ -57,7 +57,7 @@
           <th>接单价/服务价</th>
           <th>师傅</th>
           <th class="detail">详情</th>
-          <th class="operation-group">操作</th>
+          <th v-show="permission.orderManager" class="operation-group">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -72,7 +72,7 @@
           <td>{{order.orderPrice}}/{{order.servicePrice}}</td>
           <td>{{order.orderNumber}}</td>
           <td>{{order.customerName}}{{order.customerPhoneNum || order.customerAddress}}{{order.customerAddress}}</td>
-          <td>
+          <td v-show="permission.orderManager">
             <div class="operation-group">
               <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>
               <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-info-sign"></i>备注</a>
@@ -83,7 +83,7 @@
 
       </table>
       <div class="fg-toolbar">
-        <div class="fg-toolbar-operation">
+        <div class="fg-toolbar-operation" v-show="permission.orderManager">
           <select class="form-control" v-el:action>
             <option value="删除" selected>删除</option>
             <option value="status" v-for="status in orderStatus">{{status}}</option>
@@ -99,6 +99,7 @@
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getOrders, getCheckAll, getOrderStatus} from 'my_vuex/getters/order'
   import {searchOrder, checkOrder, dealOrder, updateOrderComment} from 'my_vuex/actions/order'
+  import {getPermission} from 'my_vuex/getters/auth'
   import {getUsers} from 'my_vuex/getters/user'
   import {searchUser} from 'my_vuex/actions/user'
   import Content from 'components/Content'
@@ -236,7 +237,8 @@
         checkAll: getCheckAll,
         region: getRegion,
         users: getUsers,
-        orderStatus: getOrderStatus
+        orderStatus: getOrderStatus,
+        permission: getPermission
       },
       actions: {
         searchOrder,

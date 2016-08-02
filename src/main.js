@@ -17,5 +17,7 @@ new Vue({
   components: { App }
 })
 */
-
+/*
+document.cookie = 'permissionCodes=analysisManager, userManager, orderManager, orderView, userOrderManager, workmanManager, analysisManager'
+*/
 router.start(App, 'body')

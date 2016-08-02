@@ -13,7 +13,7 @@
             </select>
             <input type="text" placeholder="师傅名、电话" @keydown.enter="startSearchWorker(1)" v-el:search/>
             <button type="button" class="btn btn-info"  @click="startSearchWorker(1)">搜索</button>
-            <a v-link="'/admin/worker/add?type=new'" class="btn btn-success">新增</a>
+            <a v-show="permission.workmanManager" v-link="'/admin/worker/add?type=new'" class="btn btn-success">新增</a>
           </label>
         </div>
       </div>
@@ -54,8 +54,8 @@
           <td>
             <div class="operation-group">
               <a v-link="'/admin/worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
-              <a  v-link="'/admin/worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
-              <a  href="javascript:void(0)" title="删除" @click="deleteWorker(worker.id)"><i class="icon-remove"></i></a>
+              <a v-show="permission.workmanManager" v-link="'/admin/worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
+              <a v-show="permission.workmanManager" href="javascript:void(0)" title="删除" @click="deleteWorker(worker.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
         </tr>
@@ -63,7 +63,7 @@
 
       </table>
       <div class="fg-toolbar">
-        <div class="fg-toolbar-operation">
+        <div class="fg-toolbar-operation" v-show="permission.workmanManager">
           <button type="button" class="btn btn-success" @click="deleteWorker()">批量删除</button>
         </div>
         <Pagination :cur-page="workers.pageInfo.curPage" :total="workers.pageInfo.total" :page-size="workers.pageInfo.pageSize" :total-page="workers.pageInfo.totalPage" @go-page="startSearchWorker"></Pagination>
@@ -73,6 +73,7 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
+  import {getPermission} from 'my_vuex/getters/auth'
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getWorkers, getCheckAll} from 'my_vuex/getters/worker'
   import {searchWorker, checkWorker, deleteWorker} from 'my_vuex/actions/worker'
@@ -122,7 +123,8 @@
         breads: getBreadCrumb,
         workers: getWorkers,
         checkAll: getCheckAll,
-        region: getRegion
+        region: getRegion,
+        permission: getPermission
       },
       actions: {
         searchWorker,

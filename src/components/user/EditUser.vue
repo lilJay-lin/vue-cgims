@@ -72,7 +72,7 @@
                   </tbody>
                 </table>
                 <div class="fg-toolbar">
-                  <Pagination :cur-page="roles.pageInfo.curPage" :total-page="roles.pageInfo.totalPage" @go-page="startSearchRole"></Pagination>
+                  <Pagination  :total="roles.pageInfo.total"  :page-size="roles.pageInfo.pageSize" :cur-page="roles.pageInfo.curPage" :total-page="roles.pageInfo.totalPage" @go-page="startSearchRole"></Pagination>
                 </div>
               </div>
             </div>
@@ -156,6 +156,7 @@
   import {searchUser, showUserDetail, deleteRelRole, addRelRole, deleteRelSlave, addRelSlave, saveUser, setUserMode, clearUserDetail} from 'my_vuex/actions/user'
   import {getRoles} from 'my_vuex/getters/role'
   import {searchRole} from 'my_vuex/actions/role'
+  import {getPermission} from 'my_vuex/getters/auth'
   export default {
     components: {
       Content,
@@ -201,11 +202,15 @@
       }
     },
     route: {
-      data ({to: {params: {id}, query: {type}}}) {
+      data (transition) {
+        let {to: {params: {id}, query: {type}}} = transition
         if (id && !type) {
           type = 'query'
         } else if (!type) {
           type = 'new'
+        }
+        if ((type === 'edit' || type === 'new') && !this.permission.userManager) {
+          transition.redirect('/admin/forbidden')
         }
         this.setUserMode(type)
         this.searchRole({})
@@ -219,7 +224,8 @@
         user: getDetailUser,
         roles: getRoles,
         users: getUsers,
-        mode: getUIOptions
+        mode: getUIOptions,
+        permission: getPermission
       },
       actions: {
         showUserDetail,

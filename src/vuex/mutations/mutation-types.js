@@ -5,10 +5,12 @@
 /*
 * 菜单
 * */
+export const SET_SLIDER = 'set_slider'
 export const SET_ACTIVE_MENU = 'set_active_menu'
 
 /*
 * 登录页
 * */
 export const AUTH_LOGIN_SUCCESS = 'auth_login_success'
+export const AUTH_PERMISSION = 'auth_permission'
 export const AUTH_LOGOUT = 'login_out'

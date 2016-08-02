@@ -50,7 +50,7 @@
           <button type="button" class="btn btn-success" @click="deleteUser()">删除</button>
           <a v-link="'/admin/user/add?type=new'" class="btn btn-success">新增</a>
         </div>
-        <Pagination :cur-page="users.pageInfo.curPage" :total-page="users.pageInfo.totalPage" @go-page="startSearchUser"></Pagination>
+        <Pagination :cur-page="users.pageInfo.curPage"  :page-size="users.pageInfo.pageSize"   :total="users.pageInfo.total" :total-page="users.pageInfo.totalPage" @go-page="startSearchUser"></Pagination>
       </div>
       </div>
     </Widget>
