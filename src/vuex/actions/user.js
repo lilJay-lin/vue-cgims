@@ -119,7 +119,7 @@ export const addRelSlave = ({dispatch}, slave) => {
  * 保存角色
  * */
 export const saveUser = ({state, dispatch}, user, newUser) => {
-  let url = baseUrl
+  let url = baseUrl + (user.id ? '/' + user.id : '')
   /*
    dispatch(SAVE_ROLE, newUser)
    */

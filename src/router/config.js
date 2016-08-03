@@ -15,6 +15,7 @@ import EditOrder from 'components/order/EditOrder.vue'
 import store from 'my_vuex/store'
 import {isLogin} from 'my_vuex/getters/auth'
 import {setActiveMenu} from 'my_vuex/actions/actions'
+import {resolveLogin} from 'my_vuex/actions/auth'
 
 let loginUrl = '/login'
 export default (router) => {
@@ -71,20 +72,24 @@ export default (router) => {
           name: '/admin/order',
           component: SearchOrder
         },
-        '/order/:id': {
-          name: '/admin/order/:id',
-          component: EditOrder
-        },
         '/order/add': {
           name: '/admin/order/add',
           component: EditOrder
         },
-        '/order/user': {
-          name: '/admin/order/user',
+        '/order/:id': {
+          name: '/admin/order/:id',
+          component: EditOrder
+        },
+        '/user/order': {
+          name: '/admin/user/order',
           component: SearchOrder
         },
-        '/order/user/add': {
-          name: '/admin/order/user/add',
+        '/user/order/add': {
+          name: '/admin/user/order/add',
+          component: EditOrder
+        },
+        '/user/order/:id': {
+          name: '/admin/user/order/:id',
           component: EditOrder
         },
         '/forbidden': {
@@ -100,16 +105,19 @@ export default (router) => {
     }
   })
   router.redirect({
-    '/': '/admin'
+    '*': '/admin'
   })
 
   /*
   *  全局路由权限控制，无权限跳转至forbidden
   */
   router.beforeEach(function (transition) {
-    let toPath = transition.to.path
     let login = isLogin(store.state)
-    if (toPath === loginUrl) {
+    if (!login && window.__LOGIN_USER__) {
+      resolveLogin(store, window.__LOGIN_USER__)
+    }
+    let toPath = transition.to.path
+    if (~toPath.indexOf(loginUrl)) {
       if (login) {
         transition.redirect('/admin')
       }
@@ -117,6 +125,7 @@ export default (router) => {
       transition.redirect(loginUrl)
       return
     }
+    console.log(toPath)
     let to = transition.to
     setActiveMenu(store, to.name)
     transition.next()

@@ -6,6 +6,7 @@ let forEach = require('lodash/forEach')
 const state = {
   login: false,
   name: '',
+  id: '',
   permission: {
     roleManager: false,
     userManager: false,
@@ -29,10 +30,12 @@ const mutations = {
     })
   },
   [AUTH_LOGOUT]: (state) => {
-    forEach(state.permission, (val, key) => {
-      state[key] = false
-    })
+    state.id = ''
     state.name = ''
+    state.login = false
+    forEach(state.permission, (val, key) => {
+      state.permission[key] = false
+    })
   }
 }
 

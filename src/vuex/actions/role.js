@@ -104,7 +104,8 @@ export const addRelPermission = ({dispatch}, permission) => {
 * 保存角色
 * */
 export const saveRole = ({state, dispatch}, role, newRole) => {
-  let url = baseUrl
+  let id = role.id ? '/' + role.id : ''
+  let url = baseUrl + id
   /*
   dispatch(SAVE_ROLE, newRole)
   */

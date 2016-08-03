@@ -6,7 +6,7 @@ import {RECEIVE_WORKER, CHECK_ALL_WORKER, CHECK_WORKER, DELETE_WORKER, RECEIVE_W
 /*
  * 获取师傅列表
  * */
-let baseUrl = '/worker'
+let baseUrl = '/workman'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
 export const searchWorker = ({dispatch}, {search = {
@@ -70,7 +70,7 @@ export const showWorkerDetail = ({dispatch}, id) => {
   })
 }
 export const clearWorkerDetail = ({dispatch}) => {
-  dispatch(RECEIVE_WORKER_DETAIL, {})
+  dispatch(RECEIVE_WORKER_DETAIL, {receiveType: 0})
 }
 
 /*
@@ -116,8 +116,8 @@ export const deleteWorker = ({state, dispatch}, id) => {
 * 保存师傅
 * */
 export const saveWorker = ({state, dispatch}) => {
-  let url = baseUrl
   let worker = clone(state.worker.detail || {})
+  let url = baseUrl + (worker.id ? '/' + worker.id : '')
   let items = {}
   forEach(serviceItems, (val, idx) => {
     items[val] = worker[val]

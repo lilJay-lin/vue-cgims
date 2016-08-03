@@ -84,7 +84,12 @@
       }
     },
     route: {
-      data ({to: {query: {back}}}) {
+      data (transition) {
+        let {to: {query: {back}}} = transition
+        let permission = this.permission
+        if (!(permission.userManager || permission.roleManager)) {
+          transition.redirect('/admin/forbidden')
+        }
         let roles = this.roles
         let searchKeyword = this.$els.search && this.$els.search.value || roles.searchKeyword
         back ? this.searchRole({searchKeyword: searchKeyword, curPage: roles.pageInfo.curPage}) : this.searchRole({})

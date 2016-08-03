@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/26.
  */
-import {SET_SEARCH, RECIEVE_VALUE} from 'my_vuex/mutations/statistic'
+import {SET_SEARCH, RECEIVE_VALUE} from 'my_vuex/mutations/statistic'
 import Server from 'src/api/server.js'
 
 let baseUrl = '/analysis'
@@ -21,6 +21,6 @@ export const startStatistic = ({state: {statistic: {search}}, dispatch}) => {
     method: 'get',
     url
   }).then((res) => {
-    dispatch(RECIEVE_VALUE, res.result)
+    dispatch(RECEIVE_VALUE, res.result)
   })
 }

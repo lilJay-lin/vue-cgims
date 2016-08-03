@@ -67,12 +67,12 @@ const state = {
       title: '个人订单管理',
       sub: [
         {
-          name: '/admin/order/user',
-          contains: ['/admin/order/user', '/admin/order/user/:id'],
+          name: '/admin/user/order',
+          contains: ['/admin/user/order', '/admin/user/order/:id'],
           title: '搜索订单'
         },
         {
-          name: '/admin/order/user/add',
+          name: '/admin/user/order/add',
           title: '添加订单'
         }
       ]

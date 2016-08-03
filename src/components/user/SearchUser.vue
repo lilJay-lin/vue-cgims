@@ -57,6 +57,7 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
+  import {getPermission} from 'my_vuex/getters/auth'
   import {getBreadCrumb} from 'my_vuex/getters/getters'
   import {getUsers, getCheckAll} from 'my_vuex/getters/user'
   import {searchUser, checkUser, deleteUser} from 'my_vuex/actions/user'
@@ -85,7 +86,11 @@
       }
     },
     route: {
-      data ({to: {query: {back}}}) {
+      data (transition) {
+        let {to: {query: {back}}} = transition
+        if (!this.permission.userManager) {
+          transition.redirect('/admin/forbidden')
+        }
         let users = this.users
         let searchKeyword = this.$els.search && this.$els.search.value || users.searchKeyword
         back ? this.searchUser({searchKeyword: searchKeyword, curPage: users.pageInfo.curPage}) : this.searchUser({})
@@ -95,7 +100,8 @@
       getters: {
         breads: getBreadCrumb,
         users: getUsers,
-        checkAll: getCheckAll
+        checkAll: getCheckAll,
+        permission: getPermission
       },
       actions: {
         searchUser,

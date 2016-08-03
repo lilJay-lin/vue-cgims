@@ -30,7 +30,7 @@
             <input type="date" v-el:end_time/>
             <input type="text" @keydown.enter="startSearchOrder(1)" v-el:search/>
             <button type="button" class="btn btn-info" @click="startSearchOrder(1)">搜索</button>
-            <a v-show="permission.orderManager" v-link="'/admin/order/add'" class="btn btn-info">新增</a>
+            <a v-show="hasPermission" v-link="detailUrl + '/add'" class="btn btn-info">新增</a>
           </label>
         </div>
       </div>
@@ -57,7 +57,7 @@
           <th>接单价/服务价</th>
           <th>师傅</th>
           <th class="detail">详情</th>
-          <th v-show="permission.orderManager" class="operation-group">操作</th>
+          <th v-show="hasPermission" class="operation-group">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -67,12 +67,12 @@
               <span :class="{checked: order.checked}"><input type="checkbox" :checked="order.checked" @change="toggleCheck($event, order.id)"></span>
             </div>
           </td>
-          <td><a v-link="'/admin/order/' + order.id + '?type=query'">{{order.orderNumber}}</a></td>
+          <td><a v-link="detailUrl + '/' + order.id + '?type=query'">{{order.orderNumber}}</a></td>
           <td>{{order.shopInfo}}</td>
           <td>{{order.orderPrice}}/{{order.servicePrice}}</td>
           <td>{{order.orderNumber}}</td>
           <td>{{order.customerName}}{{order.customerPhoneNum || order.customerAddress}}{{order.customerAddress}}</td>
-          <td v-show="permission.orderManager">
+          <td v-show="hasPermission">
             <div class="operation-group">
               <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>
               <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-info-sign"></i>备注</a>
@@ -83,7 +83,7 @@
 
       </table>
       <div class="fg-toolbar">
-        <div class="fg-toolbar-operation" v-show="permission.orderManager">
+        <div class="fg-toolbar-operation" v-show="hasPermission">
           <select class="form-control" v-el:action>
             <option value="删除" selected>删除</option>
             <option value="status" v-for="status in orderStatus">{{status}}</option>
@@ -97,8 +97,8 @@
 </template>
 <script type="text/ecmascript-6">
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {getOrders, getCheckAll, getOrderStatus} from 'my_vuex/getters/order'
-  import {searchOrder, checkOrder, dealOrder, updateOrderComment} from 'my_vuex/actions/order'
+  import {getOrders, getCheckAll, getOrderStatus, isPersonal} from 'my_vuex/getters/order'
+  import {searchOrder, checkOrder, dealOrder, updateOrderComment, setOrderPersonal} from 'my_vuex/actions/order'
   import {getPermission} from 'my_vuex/getters/auth'
   import {getUsers} from 'my_vuex/getters/user'
   import {searchUser} from 'my_vuex/actions/user'
@@ -125,6 +125,12 @@
     computed: {
       title: function () {
         return '订单管理'
+      },
+      hasPermission: function () {
+        return this.isPersonal ? this.permission.userOrderManager : this.permission.orderManager
+      },
+      detailUrl: function () {
+        return this.isPersonal ? '/admin/user/order' : '/admin/order'
       }
     },
     methods: {
@@ -224,9 +230,21 @@
       }
     },
     route: {
-      data ({to: {query: {back}}}) {
+      data (transition) {
+        let {to: {path, query: {back}}} = transition
         let orders = this.orders
         this.searchUser({page: 9999})
+        let isPersonal = false
+        let permission = this.permission
+        let hasPermission = permission.orderManager || permission.orderView
+        if (path === '/admin/user/order') {
+          isPersonal = true
+          hasPermission = permission.userOrderManager
+        }
+        if (!hasPermission) {
+          transition.redirect('/admin/forbidden')
+        }
+        this.setOrderPersonal(isPersonal)
         back ? this.searchOrder({search: orders.search, curPage: orders.pageInfo.curPage}) : this.searchOrder({})
       }
     },
@@ -238,14 +256,16 @@
         region: getRegion,
         users: getUsers,
         orderStatus: getOrderStatus,
-        permission: getPermission
+        permission: getPermission,
+        isPersonal: isPersonal
       },
       actions: {
         searchOrder,
         checkOrder,
         dealOrder,
         searchUser,
-        updateOrderComment
+        updateOrderComment,
+        setOrderPersonal
       }
     }
   }

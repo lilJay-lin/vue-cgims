@@ -73,17 +73,22 @@
         })
         creators.unshift({
           name: '不限',
-          value: '不限'
+          value: ''
         })
         return creators
       },
       serviceTypes: function () {
-        return ['不限', '配送安装', '维修'].map((val) => {
+        let serviceTyps = ['配送安装', '维修'].map((val) => {
           return {
             name: val,
             value: val
           }
         })
+        serviceTyps.unshift({
+          name: '不限',
+          value: ''
+        })
+        return serviceTyps
       },
       searchTypes: function () {
         let arrs = ['orderCount', 'income', 'expenditure', 'profit', 'profitMargin']

@@ -12,7 +12,9 @@ const state = {
     server_type: '服务'
   },
   checkAll: false,
-  detail: {},
+  detail: {
+    receiveType: 0
+  },
   list: [],
   pageInfo: {
     curPage: 1,

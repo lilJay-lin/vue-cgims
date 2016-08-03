@@ -2,14 +2,14 @@
  * Created by linxiaojie on 2016/7/20.
  */
 import Server from 'src/api/server.js'
-import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
+import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_PERSONAL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
+import {getBaseUrl} from 'my_vuex/getters/order'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
 /*
  * 获取订单列表
  * */
-let baseUrl = '/order'
-export const searchOrder = ({dispatch}, {search = {
+export const searchOrder = ({dispatch, state}, {search = {
   searchKeyword: '',
   orderStatus: '',
   serviceType: '',
@@ -17,7 +17,7 @@ export const searchOrder = ({dispatch}, {search = {
   beginTime: '',
   endTime: ''
 }, curPage = 1}) => {
-  let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword) +
+  let url = getBaseUrl(state) + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword) +
     '&orderStatus=' + window.encodeURIComponent(search.orderStatus) +
     '&serviceType=' + window.encodeURIComponent(search.serviceType) +
     '&creatorId=' + window.encodeURIComponent(search.creatorId) +
@@ -50,8 +50,8 @@ export const searchOrder = ({dispatch}, {search = {
 const getImages = (str) => {
   return str ? str.split(',') : []
 }
-export const showOrderDetail = ({dispatch}, id) => {
-  let url = baseUrl + '/' + id
+export const showOrderDetail = ({dispatch, state}, id) => {
+  let url = getBaseUrl(state) + '/' + id
   return Server.request({
     method: 'get',
     url
@@ -88,7 +88,7 @@ export const checkOrder = ({dispatch}, checked, id) => {
  * 删除订单
  * */
 export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
-  let url = baseUrl + '/batch'
+  let url = getBaseUrl(state) + '/batch'
   let ids = []
   let orders = state.order
   let data = {
@@ -122,7 +122,7 @@ export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
 * 保存师傅
 * */
 export const saveOrder = ({state, dispatch}, order) => {
-  let url = baseUrl
+  let url = getBaseUrl(state) + (order.id ? '/' + order.id : '')
   let newOrder = order || clone(state.order.detail) || {}
   forEach(['repairImgs', 'logisticsImgs', 'productImgs'], (key) => {
     newOrder[key] = newOrder[key].join(',')
@@ -138,6 +138,10 @@ export const saveOrder = ({state, dispatch}, order) => {
 
 export const setOrderMode = ({dispatch}, type) => {
   dispatch(SET_ORDER_MODE, type || 'query')
+}
+
+export const setOrderPersonal = ({dispatch}, personal) => {
+  dispatch(SET_ORDER_PERSONAL, personal)
 }
 
 export const updateOrderComment = ({dispatch, state}, {id, description}) => {

@@ -243,9 +243,9 @@
           </div>
         </div>
         <div class="form-actions">
-          <button v-show="permission.orderManager" type="button" class="btn btn-success" @click="saveOrder()" v-if="isEdit">保存</button>
-          <button v-show="permission.orderManager" type="button" class="btn btn-success" @click="setOrderMode('edit')" v-if="isQuery">编辑</button>
-          <a v-link="'/admin/order'" class="btn btn-success">返回</a>
+          <button v-show="hasPermission" type="button" class="btn btn-success" @click="saveOrder()" v-if="isEdit">保存</button>
+          <button v-show="hasPermission" type="button" class="btn btn-success" @click="setOrderMode('edit')" v-if="isQuery">编辑</button>
+          <a v-link="detailUrl" class="btn btn-success">返回</a>
         </div>
       </form>
     </Widget>
@@ -260,8 +260,8 @@
   import Region from 'components/Region'
   import FileUpload from 'components/FileUpload'
   import {getPermission} from 'my_vuex/getters/auth'
-  import {getDetailOrder, getUIOptions, getOrderStatus} from 'my_vuex/getters/order'
-  import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage} from 'my_vuex/actions/order'
+  import {getDetailOrder, getUIOptions, getOrderStatus, isPersonal, getBaseUrl} from 'my_vuex/getters/order'
+  import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage, setOrderPersonal} from 'my_vuex/actions/order'
   import {getWorkers} from 'my_vuex/getters/worker'
   import {searchWorker} from 'my_vuex/actions/worker'
   export default {
@@ -280,14 +280,17 @@
       title: function () {
         return '角色信息'
       },
+      hasPermission: function () {
+        return this.isPersonal ? this.permission.userOrderManager : this.permission.orderManager
+      },
       productUploadURL: function () {
-        return '/order/upload/product '
+        return this.baseUrl + '/upload/product '
       },
       logisticsUploadURL: function () {
-        return '/order/ upload/logistics '
+        return this.baseUrl + '/ upload/logistics '
       },
       repairUploadURL: function () {
-        return '/order/upload/repair '
+        return this.baseUrl + '/upload/repair '
       },
       isEdit: function () {
         return this.mode !== 'query'
@@ -310,6 +313,10 @@
             value: this.status[idx]
           }
         })
+      },
+      detailUrl: function () {
+        let base = this.isPersonal ? '/admin/user/order' : '/admin/order'
+        return base + '?back=true'
       }
     },
     methods: {
@@ -376,15 +383,27 @@
     },
     route: {
       data (transition) {
-        let {to: {params: {id}, query: {type}}} = transition
+        let {to: {path, params: {id}, query: {type}}} = transition
         if (id && !type) {
           type = 'query'
         } else if (!type) {
           type = 'new'
         }
-        if ((type === 'edit' || type === 'new') && !this.permission.orderManager) {
+        let isPersonal = false
+        let permission = this.permission
+        let hasPermission = permission.orderManager || permission.orderView
+        if (~path.indexOf('/admin/user/order/')) {
+          isPersonal = true
+          hasPermission = permission.userOrderManager
+        }
+        if ((type === 'edit' || type === 'new') && !this.hasPermission) {
+          hasPermission = false
+        }
+
+        if (!hasPermission) {
           transition.redirect('/admin/forbidden')
         }
+        this.setOrderPersonal(isPersonal)
         this.setOrderMode(type)
         this.searchWorker({})
         if (type !== 'new') {
@@ -398,9 +417,11 @@
         order: getDetailOrder,
         workers: getWorkers,
         mode: getUIOptions,
+        isPersonal: isPersonal,
         region: getRegion,
         status: getOrderStatus,
-        permission: getPermission
+        permission: getPermission,
+        baseUrl: getBaseUrl
       },
       actions: {
         showOrderDetail,
@@ -409,7 +430,8 @@
         setOrderMode,
         clearOrderDetail,
         setOrder,
-        dealOrderImage
+        dealOrderImage,
+        setOrderPersonal
       }
     }
   }

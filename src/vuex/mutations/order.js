@@ -23,3 +23,4 @@ export const SAVE_ORDER = 'save_order'
  * 界面状态
  * */
 export const SET_ORDER_MODE = 'set_order_mode'
+export const SET_ORDER_PERSONAL = 'set_order_personal'

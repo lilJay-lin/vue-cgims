@@ -48,7 +48,7 @@
   </div>
 </template>
 <script>
-  import {login, setPermission} from 'my_vuex/actions/auth'
+  import {login} from 'my_vuex/actions/auth'
   import {getAuth} from 'my_vuex/getters/auth'
   export default {
     computed: {
@@ -75,14 +75,13 @@
         auth: getAuth
       },
       actions: {
-        login,
-        setPermission
+        login
       }
     },
     watch: {
       isLogin: function (login) {
+        console.log(login)
         if (login) {
-          this.setPermission()
           this.$router.go('/admin')
         }
       }

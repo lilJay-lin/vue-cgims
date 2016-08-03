@@ -58,8 +58,8 @@
             </label>
             <label>
               <div class="radio" >
-                <span :class="{checked: worker.receiveType === '1'}">
-                  <input value='1' type="radio" name="receiveType" :checked="worker.receiveType === '1'" @change="setData('receiveType', $event)">
+                <span :class="{checked: worker.receiveType === 1}">
+                  <input value='1' type="radio" name="receiveType" :checked="worker.receiveType === 1" @change="setData('receiveType', $event)">
                 </span>
               </div>
               银行卡
@@ -88,7 +88,7 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="身份证正面" :url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
+            <file-upload :disabled="isQuery" title="身份证正面" url="/workman/update/idCardFace" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box">
@@ -96,7 +96,7 @@
             </div>
             <div class="inner-control-group">
               <label class="control-label">
-                <file-upload :disabled="isQuery" title="身份证背面" :url="'/ workman/' + worker.id + '/upload/headImg'" @file-upload-success="cardBackUploadSuccess" ></file-upload>
+                <file-upload :disabled="isQuery" title="身份证背面" url="/workman/update/idCardBack" @file-upload-success="cardBackUploadSuccess" ></file-upload>
               </label>
               <div class="controls" style="padding-top:0">
                 <div class="identity-box">
@@ -151,7 +151,7 @@
         <div class="control-group">
           <label class="control-label">服务区域</label>
           <div class="controls service-region-radio ">
-            <radio-group :readonly="isQuery" :radios="service_areas" :name="'serviceArea'" :checked="worker.serviceArea" @radio-checked="setServiceArea"></radio-group>
+            <checkbox-group :readonly="isQuery" :radios="service_areas" :name="'serviceArea'" @radio-checked="setServiceArea"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
@@ -219,6 +219,7 @@
   import Pagination from 'components/Pagination'
   import Region from 'components/Region'
   import RadioGroup from 'components/RadioGroup'
+  import CheckboxGroup from 'components/CheckboxGroup'
   import FileUpload from 'components/FileUpload'
   import {getPermission} from 'my_vuex/getters/auth'
   import {getDetailWorker, getUIOptions} from 'my_vuex/getters/worker'
@@ -230,7 +231,8 @@
       Pagination,
       Region,
       RadioGroup,
-      FileUpload
+      FileUpload,
+      CheckboxGroup
     },
     detached () {
       this.clearWorkerDetail()
@@ -269,11 +271,8 @@
     },
     methods: {
       createRadios: function (arr) {
-        let key = arr.slice(0)
-        key.unshift('全部')
-        let all = arr.slice(0)
-        arr.unshift(JSON.stringify(all))
-        return key.map((val, idx) => {
+        arr.unshift('全部')
+        return arr.map((val, idx) => {
           return {
             name: val,
             value: arr[idx]
@@ -311,6 +310,7 @@
         })
       },
       setServiceArea: function (value) {
+        console.log(value)
         this.setWorker({
           serviceArea: value
         })

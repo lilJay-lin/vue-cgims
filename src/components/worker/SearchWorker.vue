@@ -113,7 +113,12 @@
       }
     },
     route: {
-      data ({to: {query: {back}}}) {
+      data (transition) {
+        let {to: {query: {back}}} = transition
+        let permission = this.permission
+        if (!(permission.orderManager || permission.orderView || permission.workmanManager || permission.userOrderManager)) {
+          transition.redirect('/admin/forbidden')
+        }
         let workers = this.workers
         back ? this.searchWorker({search: workers.search, curPage: this.workers.pageInfo.curPage}) : this.searchWorker({})
       }

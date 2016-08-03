@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/26.
  */
-import {SET_SEARCH, RECIEVE_VALUE} from 'my_vuex/mutations/statistic'
+import {SET_SEARCH, RECEIVE_VALUE} from 'my_vuex/mutations/statistic'
 const forEach = require('lodash/forEach')
 const state = {
   search: {
@@ -20,7 +20,7 @@ const mutations = {
       state.search[key] = val
     })
   },
-  [RECIEVE_VALUE]: (state, value) => {
+  [RECEIVE_VALUE]: (state, value) => {
     state.value = value
   }
 }

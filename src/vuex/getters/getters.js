@@ -34,7 +34,7 @@ let subMenuRelPermission = {
   '/admin/user/add': 'userManager',
   '/admin/role/add': 'roleManager',
   '/admin/order/add': 'orderManager',
-  '/admin/order/user/add': 'userOrderManager',
+  '/admin/user/order/add': 'userOrderManager',
   '/admin/worker/add': 'workmanManager'
 }
 const filterMenus = (menus, permission, relPermission) => {
