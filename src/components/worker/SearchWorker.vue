@@ -7,7 +7,7 @@
             <Region @select-region="selectRegion" :region="region"></Region>
             <input type="hidden" v-el:search_region/>
             <select class="form-control" v-el:search_service>
-              <option value="配送安装,维修" selected>全部</option>
+              <option value="" selected>全部</option>
               <option value="配送安装">配送安装</option>
               <option value="维修">维修</option>
             </select>
@@ -105,7 +105,7 @@
         this.searchWorker({search: {
           searchKeyword,
           region,
-          server_type: service
+          serverType: service
         }, curPage: page || 1})
       },
       selectRegion: function (region) {

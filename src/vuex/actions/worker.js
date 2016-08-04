@@ -12,9 +12,10 @@ let clone = require('lodash/cloneDeep')
 export const searchWorker = ({dispatch}, {search = {
   searchKeyword: '',
   region: '',
-  serverType: '服务'
+  serverType: ''
 }, curPage = 1}) => {
   let regions = search.region.split('/')
+  console.log(search.serverType)
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword) +
     '&province=' + window.encodeURIComponent(regions[0] || '') +
     '&city=' + window.encodeURIComponent(regions[1] || '') +
