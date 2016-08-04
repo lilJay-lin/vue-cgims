@@ -55,7 +55,7 @@
           <div class="controls-pics">
             <div class="controls-pics-item" v-for="src in order.productImgs" track-by="$index">
               <img :src="src" alt="src">
-              <a href="javascript:void(0)" @click="onDealOrderImage('productImgs', $index, 'del')"><i class="icon-remove"></i></a>
+              <a href="javascript:void(0)" v-if="isEdit" @click="onDealOrderImage('productImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@
           <div class="controls-pics">
             <div class="controls-pics-item" v-for="src in order.logisticsImgs" track-by="$index">
               <img :src="src" alt="src">
-              <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('logisticsImgs', $index, 'del')"><i class="icon-remove"></i></a>
+              <a v-if="isEdit" v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('logisticsImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
@@ -287,7 +287,7 @@
         return this.baseUrl + '/upload/product '
       },
       logisticsUploadURL: function () {
-        return this.baseUrl + '/ upload/logistics '
+        return this.baseUrl + '/upload/logistics '
       },
       repairUploadURL: function () {
         return this.baseUrl + '/upload/repair '

@@ -6,16 +6,7 @@
           <label>
             <select class="form-control" v-el:order_status>
               <option value="全部" selected>全部状态</option>
-              <option value="未收未付">未收未付</option>
-              <option value="未收需付">未收需付</option>
-              <option value="已收未付">已收未付</option>
-              <option value="已收需付">已收需付</option>
-              <option value="未收未完">未收未完</option>
-              <option value="未收完成">未收完成</option>
-              <option value="已收未完">已收未完</option>
-              <option value="已收完成">已收完成</option>
-              <option value="未收失败">未收失败</option>
-              <option value="已收失败">已收失败</option>
+              <option :value="status" v-for="status in queryOrderStatus">{{status}}</option>
             </select>
             <select class="form-control" v-el:service_type>
               <option value="全部" selected>全部类型</option>
@@ -97,7 +88,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {getOrders, getCheckAll, getOrderStatus, isPersonal} from 'my_vuex/getters/order'
+  import {getOrders, getCheckAll, getOrderStatus, getQueryOrderStatus, isPersonal} from 'my_vuex/getters/order'
   import {searchOrder, checkOrder, dealOrder, updateOrderComment, setOrderPersonal} from 'my_vuex/actions/order'
   import {getPermission} from 'my_vuex/getters/auth'
   import {getUsers} from 'my_vuex/getters/user'
@@ -256,6 +247,7 @@
         region: getRegion,
         users: getUsers,
         orderStatus: getOrderStatus,
+        queryOrderStatus: getQueryOrderStatus,
         permission: getPermission,
         isPersonal: isPersonal
       },

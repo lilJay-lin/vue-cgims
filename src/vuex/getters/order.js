@@ -25,11 +25,13 @@ export const getUIOptions = (state) => {
 export const isPersonal = (state) => {
   return state.order.ui.personal
 }
-
-export const getOrderStatus = () => {
-  return ['未收未付', '未收需付', '已收未付', '已收需付', '未收未完', '未收完成', '已收未完', '已收完成', '未收失败', '已收失败']
+let allOrderStatus = ['未收未付', '未收需付', '已收未付', '已收需付', '未收未完', '未收完成', '已收未完', '已收完成', '未收失败', '已收失败']
+export const getOrderStatus = (state) => {
+  return state.order.ui.personal ? ['未收未付', '未收需付', '已收未付', '已收需付', '未收失败', '已收失败'] : allOrderStatus
 }
-
+export const getQueryOrderStatus = (state) => {
+  return state.order.ui.personal ? ['未收未付', '未收需付', '已收未付', '已收需付'] : allOrderStatus
+}
 export const getBaseUrl = (state) => {
   return state.order.ui.personal ? '/user/' + state.auth.id + '/order' : '/order'
 }

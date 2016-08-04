@@ -12,14 +12,14 @@ let clone = require('lodash/cloneDeep')
 export const searchWorker = ({dispatch}, {search = {
   searchKeyword: '',
   region: '',
-  server_type: '服务'
+  serverType: '服务'
 }, curPage = 1}) => {
   let regions = search.region.split('/')
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword) +
     '&province=' + window.encodeURIComponent(regions[0] || '') +
     '&city=' + window.encodeURIComponent(regions[1] || '') +
     '&area=' + window.encodeURIComponent(regions[2] || '') +
-    '&serviceType=' + window.encodeURIComponent(search.server_type) +
+    '&serviceType=' + window.encodeURIComponent(search.serverType) +
     '&curPage=' + curPage
   Server.request({
     url,
@@ -48,7 +48,13 @@ export const searchWorker = ({dispatch}, {search = {
 /*
  * 服务项目拆分字段
  * */
-let serviceItems = ['furniture_type', 'stool_type', 'light_type', 'metals_type', 'household_type']
+let serviceItems = [
+  {label: '家具类', name: 'furnitureType'},
+  {label: '灯具类', name: 'stoolType'},
+  {label: '卫浴类', name: 'lightType'},
+  {label: '门窗五金', name: 'metalsType'},
+  {label: '家电', name: 'householdType'}
+]
 export const showWorkerDetail = ({dispatch}, id) => {
   let url = baseUrl + '/' + id
   return Server.request({
@@ -58,11 +64,14 @@ export const showWorkerDetail = ({dispatch}, id) => {
     let worker = res.result
     if (worker) {
       worker.receiveType = worker.receiveType && parseInt(worker.receiveType, 10)
-      let serviceItems = worker.serviceItems
-      if (serviceItems) {
-        let items = JSON.parse(serviceItems)
-        forEach(items, (val, key) => {
-          worker[key] = val
+      let itemsValue = worker.serviceItems
+      if (itemsValue) {
+        let items = JSON.parse(itemsValue)
+        forEach(serviceItems, (obj) => {
+          let label = obj.label
+          let name = obj.name
+          let val = items[label]
+          worker[name] = val ? val.split(',') : []
         })
       }
     }
@@ -70,7 +79,18 @@ export const showWorkerDetail = ({dispatch}, id) => {
   })
 }
 export const clearWorkerDetail = ({dispatch}) => {
-  dispatch(RECEIVE_WORKER_DETAIL, {receiveType: 0})
+  dispatch(RECEIVE_WORKER_DETAIL, {
+    receiveType: 0,
+    province: '',
+    city: '',
+    area: '',
+    'furnitureType': [],
+    'stoolType': [],
+    'lightType': [],
+    'metalsType': [],
+    'householdType': []
+  }
+  )
 }
 
 /*
@@ -119,11 +139,13 @@ export const saveWorker = ({state, dispatch}) => {
   let worker = clone(state.worker.detail || {})
   let url = baseUrl + (worker.id ? '/' + worker.id : '')
   let items = {}
-  forEach(serviceItems, (val, idx) => {
-    items[val] = worker[val]
-    delete worker[val]
+  forEach(serviceItems, (obj, idx) => {
+    let name = obj.name
+    items[obj.label] = worker[name].join(',')
+    delete worker[name]
   })
   worker['serviceItems'] = JSON.stringify(items)
+  console.log(JSON.stringify(items))
   /*
   dispatch(SAVE_WORKER, newWorker)
   */

@@ -26,6 +26,16 @@
           </div>
         </div>
         <div class="control-group">
+          <label class="control-label uploader-identity-wrap">
+            <file-upload :disabled="isQuery" title="头像" url="/workman/upload/headImg" @file-upload-success="headImgUploadSuccess" ></file-upload>
+          </label>
+          <div class="controls">
+            <div class="identity-box">
+              <img :src="worker.headImg" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
           <label class="control-label">收款账号</label>
           <div class="controls" v-if="isQuery">
             <label v-if="worker.receiveType === 0">
@@ -88,7 +98,7 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="身份证正面" url="/workman/update/idCardFace" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
+            <file-upload :disabled="isQuery" title="身份证正面" url="/workman/upload/idCardFace" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box">
@@ -96,7 +106,7 @@
             </div>
             <div class="inner-control-group">
               <label class="control-label">
-                <file-upload :disabled="isQuery" title="身份证背面" url="/workman/update/idCardBack" @file-upload-success="cardBackUploadSuccess" ></file-upload>
+                <file-upload :disabled="isQuery" title="身份证背面" url="/workman/upload/idCardBack" @file-upload-success="cardBackUploadSuccess" ></file-upload>
               </label>
               <div class="controls" style="padding-top:0">
                 <div class="identity-box">
@@ -112,7 +122,7 @@
         <div class="control-group">
           <label class="control-label">服务类型</label>
           <div class="controls service-region-radio">
-            <radio-group :readonly="isQuery" :radios="service_types" :name="'serviceType'" :checked="worker.serviceType" @radio-checked="setServiceType"></radio-group>
+            <checkbox-group :readonly="isQuery" :has-all="true" :radios="serviceTypes" :name="'serviceType'" :checked="worker.serviceType | toArray" @radio-checked="setServiceType"></checkbox-group>
           </div>
         </div>
         <div class="form-title">
@@ -121,37 +131,37 @@
         <div class="control-group">
           <label class="control-label">家具类</label>
           <div class="controls service-region-radio">
-            <radio-group :readonly="isQuery" :radios="furniture_types" :name="'furniture_type'"  :checked="worker.furniture_type" @radio-checked="setFurnitureType"></radio-group>
+            <checkbox-group :readonly="isQuery" :has-other="true" :has-all="true" :radios="furnitureTypes" :name="'furnitureType'" :other-value="allCheckboxes.furnitureType.other" :checked="allCheckboxes.furnitureType.checked" @radio-checked="setFurnitureType"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">灯具类</label>
           <div class="controls service-region-radio">
-            <radio-group :readonly="isQuery" :radios="light_types" :name="'light_type'" :checked="worker.light_type" @radio-checked="setLightType"></radio-group>
+            <checkbox-group :readonly="isQuery" :has-other="true" :has-all="true" :radios="lightTypes" :name="'lightType'"  :other-value="allCheckboxes.lightType.other" :checked="allCheckboxes.lightType.checked" @radio-checked="setLightType"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">卫浴类</label>
           <div class="controls  service-region-radio">
-            <radio-group :readonly="isQuery" :radios="stool_types" :name="'stool_type'" :checked="worker.stool_type" @radio-checked="setStoolType"></radio-group>
+            <checkbox-group :has-other="true" :has-all="true" :readonly="isQuery" :radios="stoolTypes" :name="'stoolType'"  :other-value="allCheckboxes.stoolType.other" :checked="allCheckboxes.stoolType.checked" @radio-checked="setStoolType"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">门窗五金</label>
           <div class="controls service-region-radio">
-            <radio-group :readonly="isQuery" :radios="metals_types"  :name="'metals_type'" :checked="worker.metals_type" @radio-checked="setMetalsType"></radio-group>
+            <checkbox-group :has-other="true" :has-all="true" :readonly="isQuery" :radios="metalsTypes"  :name="'metalsType'"  :other-value="allCheckboxes.metalsType.other" :checked="allCheckboxes.metalsType.checked" @radio-checked="setMetalsType"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">家电</label>
           <div class="controls service-region-radio">
-            <radio-group :readonly="isQuery" :radios="household_types" :name="'household_type'" :checked="worker.household_type" @radio-checked="setHouseholdType"></radio-group>
+            <checkbox-group  :has-other="true" :has-all="true":readonly="isQuery" :radios="householdTypes" :name="'householdType'" :other-value="allCheckboxes.householdType.other" :checked="allCheckboxes.householdType.checked" @radio-checked="setHouseholdType"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">服务区域</label>
           <div class="controls service-region-radio ">
-            <checkbox-group :readonly="isQuery" :radios="service_areas" :name="'serviceArea'" @radio-checked="setServiceArea"></checkbox-group>
+            <checkbox-group :readonly="isQuery" :radios="service_areas" :name="'serviceArea'" :checked="worker.serviceArea | toArray" @radio-checked="setServiceArea"></checkbox-group>
           </div>
         </div>
         <div class="control-group">
@@ -224,6 +234,7 @@
   import {getPermission} from 'my_vuex/getters/auth'
   import {getDetailWorker, getUIOptions} from 'my_vuex/getters/worker'
   import {showWorkerDetail, saveWorker, setWorkerMode, clearWorkerDetail, setWorker} from 'my_vuex/actions/worker'
+  let forEach = require('lodash/forEach')
   export default {
     components: {
       Content,
@@ -247,23 +258,62 @@
       isQuery: function () {
         return this.mode === 'query'
       },
-      service_types: function () {
+      allCheckboxes: function () {
+        let vm = this
+        let obj = {}
+        forEach(['furnitureType', 'stoolType', 'lightType', 'metalsType', 'householdType'], (key) => {
+          let other = ''
+          let values = vm[key + 'Arr']
+          let arr = vm.worker[key] || []
+          if (arr.length === 0 || !arr) {
+            arr = []
+          } else {
+            let newArr = arr.filter((val) => {
+              let res = ~values.indexOf(val)
+              !res && (other = val)
+              return res
+            })
+            arr = newArr
+          }
+          obj[key] = {
+            other,
+            checked: arr
+          }
+        })
+        return obj
+      },
+      furnitureTypeArr: () => {
+        return ['办公家具', '定制家具', '民用家具']
+      },
+      stoolTypeArr: () => {
+        return ['马桶', '花洒', '淋浴屏', '水盆类', '浴室柜', '储物架']
+      },
+      lightTypeArr: () => {
+        return ['吸顶灯', '吊灯', '大型水晶灯', '筒灯']
+      },
+      metalsTypeArr: () => {
+        return ['晾衣杆', '饰品', '挂件', '内门']
+      },
+      householdTypeArr: () => {
+        return ['电视', '空调', '净水器', '热水器', '浴霸', '吊扇']
+      },
+      serviceTypes: function () {
         return this.createRadios(['配送安装', '维修'])
       },
-      furniture_types: function () {
-        return this.createRadios(['办公家具', '定制家具', '民用家具'])
+      furnitureTypes: function () {
+        return this.createRadios(this.furnitureTypeArr)
       },
-      light_types: function () {
-        return this.createRadios(['吸顶灯', '吊灯', '大型水晶灯', '筒灯'])
+      lightTypes: function () {
+        return this.createRadios(this.lightTypeArr)
       },
-      stool_types: function () {
-        return this.createRadios(['马桶', '花洒', '淋浴屏', '水盆类', '浴室柜', '储物架'])
+      stoolTypes: function () {
+        return this.createRadios(this.stoolTypeArr)
       },
-      metals_types: function () {
-        return this.createRadios(['晾衣杆', '饰品', '挂件', '内门'])
+      metalsTypes: function () {
+        return this.createRadios(this.metalsTypeArr)
       },
-      household_types: function () {
-        return this.createRadios(['电视', '空调', '净水器', '热水器', '浴霸', '吊扇'])
+      householdTypes: function () {
+        return this.createRadios(this.householdTypeArr)
       },
       service_areas: function () {
         return this.createRadios(['端州区', '鼎湖区', '大旺区', '四会', '怀集', '广宁', '封开', '高要'])
@@ -271,7 +321,6 @@
     },
     methods: {
       createRadios: function (arr) {
-        arr.unshift('全部')
         return arr.map((val, idx) => {
           return {
             name: val,
@@ -285,32 +334,26 @@
         })
       },
       setFurnitureType: function (value) {
-        this.setWorker({
-          furniture_type: value
-        })
+        this.multipleData('furnitureType', value)
       },
       setLightType: function (value) {
-        this.setWorker({
-          light_type: value
-        })
+        this.multipleData('lightType', value)
       },
       setStoolType: function (value) {
-        this.setWorker({
-          stool_type: value
-        })
+        this.multipleData('stoolType', value)
       },
       setMetalsType: function (value) {
-        this.setWorker({
-          metals_type: value
-        })
+        this.multipleData('metalsType', value)
       },
       setHouseholdType: function (value) {
-        this.setWorker({
-          household_type: value
-        })
+        this.multipleData('householdType', value)
+      },
+      multipleData: function (key, value) {
+        let obj = {}
+        obj[key] = value.split(',')
+        this.setWorker(obj)
       },
       setServiceArea: function (value) {
-        console.log(value)
         this.setWorker({
           serviceArea: value
         })
@@ -320,6 +363,11 @@
           'province': region[0],
           'city': region[1],
           'area': region[2]
+        })
+      },
+      headImgUploadSuccess: function (src) {
+        this.setWorker({
+          headImg: src
         })
       },
       cardFaceUploadSuccess: function (src) {
@@ -349,6 +397,7 @@
           type = 'query'
         } else if (!type) {
           type = 'new'
+          this.clearWorkerDetail()
         }
         if ((type === 'edit' || type === 'new') && !this.permission.workmanManager) {
           transition.redirect('/admin/forbidden')
@@ -373,6 +422,11 @@
         setWorkerMode,
         clearWorkerDetail,
         setWorker
+      }
+    },
+    filters: {
+      toArray: function (val) {
+        return val ? val.split(',') : []
       }
     }
   }

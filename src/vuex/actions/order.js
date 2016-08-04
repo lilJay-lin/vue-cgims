@@ -121,9 +121,9 @@ export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
 /*
 * 保存师傅
 * */
-export const saveOrder = ({state, dispatch}, order) => {
-  let url = getBaseUrl(state) + (order.id ? '/' + order.id : '')
-  let newOrder = order || clone(state.order.detail) || {}
+export const saveOrder = ({state, dispatch}) => {
+  let newOrder = clone(state.order.detail) || {}
+  let url = getBaseUrl(state) + (newOrder.id ? '/' + newOrder.id : '')
   forEach(['repairImgs', 'logisticsImgs', 'productImgs'], (key) => {
     newOrder[key] = newOrder[key].join(',')
   })

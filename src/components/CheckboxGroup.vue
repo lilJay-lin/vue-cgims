@@ -1,12 +1,29 @@
 <template>
   <div class="label-inline">
-    <label v-for="radio in radios | showChecked" track-by="$index">
+    <label v-show="hasAll">
       <div class="radio">
-        <span :class="{'checked': checked.indexOf(radio.value) !== -1}">
+        <span :class="{'checked': all}">
+          <input type="checkbox" @change="checkAll" :name="name" value="" :disabled="readonly"/>
+        </span>
+      </div>
+      {{allText}}
+    </label>
+    <label v-for="radio in radios" track-by="$index">
+      <div class="radio">
+        <span :class="{'checked': ~checked.indexOf(radio.value)}">
           <input type="checkbox" @change="change($event, $index)" :name="name" :value="radio.value" :disabled="readonly"/>
         </span>
       </div>
       {{radio.name}}
+    </label>
+    <label v-show="hasOther" class="other-checkbox">
+      <div class="radio">
+        <span :class="{'checked': other}">
+          <input type="checkbox" @change="checkOther" :name="name" :disabled="readonly"/>
+        </span>
+      </div>
+      其他
+      <input type="text" :disabled="!other" :value="otherValue" @input="onOtherText"/>
     </label>
   </div>
 </template>
@@ -14,6 +31,30 @@
   export default {
     props: {
       name: String,
+      hasAll: {
+        type: Boolean,
+        default: false
+      },
+      hasOther: {
+        type: Boolean,
+        default: false
+      },
+      allText: {
+        type: String,
+        default: '全部'
+      },
+      all: {
+        type: Boolean,
+        default: false
+      },
+      other: {
+        type: Boolean,
+        default: false
+      },
+      otherValue: {
+        type: String,
+        default: ''
+      },
       radios: {
         type: Array,
         default: function () {
@@ -21,7 +62,7 @@
         }
       },
       checked: {
-        type: [Array],
+        type: Array,
         default: function () {
           return []
         }
@@ -34,48 +75,70 @@
     computed: {
       allRadio: function () {
         return this.radios.reduce((pre, cur) => {
-          cur.value !== '全部' && pre.push(cur.value)
+          pre.push(cur.value)
           return pre
         }, [])
       }
     },
     methods: {
+      checkAll: function (e) {
+        let vm = this
+        vm.all = !vm.all
+        vm.all ? vm.checked = vm.allRadio : (vm.checked = [], this.other = false)
+        vm.dispatchCheckValue(vm.checked)
+      },
+      checkOther: function (e) {
+        let vm = this
+        vm.other = !vm.other
+        vm.addOtherValue()
+      },
+      onOtherText: function (e) {
+        let vm = this
+        vm.otherValue = e.target.value
+        vm.addOtherValue()
+      },
+      addOtherValue: function () {
+        let vm = this
+        let checked = vm.checked.slice(0)
+        vm.other && vm.otherValue.trim() !== '' && checked.push(vm.otherValue)
+        vm.dispatchCheckValue(checked)
+      },
       change: function (e) {
-        if (this.readonly) {
+        let vm = this
+        if (vm.readonly) {
           return
         }
-        let checked = e.target.checked
         let val = e.target.value
-        let oldValue = this.checked
+        let checked = !(~vm.checked.indexOf(val))
+        let oldValue = vm.checked.slice(0)
         let idx = oldValue.indexOf(val)
-        if (val === '全部') {
-          this.checked = checked ? this.allRadio : []
-        } else {
-          if (checked && idx === -1) {
-            this.checked.push(val)
-          } else if (!checked && ~idx) {
-            idx = oldValue.indexOf(val)
-            if (~idx) {
-              oldValue.splice(idx, 1)
-            }
+        if (checked && idx === -1) {
+          oldValue.push(val)
+        } else if (!checked && ~idx) {
+          idx = oldValue.indexOf(val)
+          if (~idx) {
+            oldValue.splice(idx, 1)
           }
         }
-        this.$dispatch('radio-checked', oldValue.join(','))
-      }
-    },
-    filters: {
-      showChecked: function (radios) {
+        vm.checked = oldValue
+        vm.dispatchCheckValue()
+      },
+      dispatchCheckValue: function (arr) {
+        let val = null
         let vm = this
-        let checked = vm.checked || vm.radios.length > 0 && [vm.radios[0].value]
-        return radios.map((radio) => {
-          if (checked.indexOf(radio.value)) {
-            radio.checked = true
-          } else {
-            radio.checked = false
-          }
-          return radio
-        })
+        if (arr) {
+          val = arr
+        } else {
+          val = vm.checked.slice(0)
+          vm.other && this.otherValue && val.push(this.otherValue)
+        }
+        vm.$dispatch('radio-checked', val.join(','))
       }
     }
   }
 </script>
+<style>
+  label.other-checkbox{
+    width: 230px;
+  }
+</style>

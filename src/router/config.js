@@ -115,6 +115,7 @@ export default (router) => {
     let login = isLogin(store.state)
     if (!login && window.__LOGIN_USER__) {
       resolveLogin(store, window.__LOGIN_USER__)
+      login = isLogin(store.state)
     }
     let toPath = transition.to.path
     if (~toPath.indexOf(loginUrl)) {

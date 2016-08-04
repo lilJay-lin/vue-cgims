@@ -110,7 +110,7 @@
             method: 'post',
             data: formData
           }).then((res) => {
-            vm.$dispatch('file-upload-success', 'assets/img/avatar.jpg')
+            vm.$dispatch('file-upload-success', res.result)
           })
         }
       }
