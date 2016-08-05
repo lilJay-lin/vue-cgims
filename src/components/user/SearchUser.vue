@@ -33,7 +33,7 @@
           <td>{{user.loginName}}</td>
           <td>{{user.name}}</td>
           <td>{{user.phoneNum}}</td>
-          <td>
+          <td class="operation-group-td">
             <div class="operation-group">
               <a v-link="'/admin/user/' + user.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
               <a  v-link="'/admin/user/' + user.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>

@@ -3,6 +3,8 @@
  */
 import Server from 'src/api/server.js'
 import {RECEIVE_WORKER, CHECK_ALL_WORKER, CHECK_WORKER, DELETE_WORKER, RECEIVE_WORKER_DETAIL, SET_WORKER_MODE, SET_WORKER} from 'my_vuex/mutations/worker'
+import {trim} from 'src/util/util'
+import {toggleDialog} from 'my_vuex/actions/actions'
 /*
  * 获取师傅列表
  * */
@@ -150,11 +152,16 @@ export const saveWorker = ({state, dispatch}) => {
   /*
   dispatch(SAVE_WORKER, newWorker)
   */
-  Server.request({
+  trim(worker)
+  return Server.request({
     method: 'post',
     url,
     data: worker
-  }).then((res) => {
+  }).then(() => {
+    toggleDialog({state, dispatch}, {
+      show: true,
+      content: '师傅保存成功'
+    })
   })
 }
 

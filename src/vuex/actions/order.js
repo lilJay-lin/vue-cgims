@@ -4,6 +4,8 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_PERSONAL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
 import {getBaseUrl} from 'my_vuex/getters/order'
+import {trim} from 'src/util/util'
+import {toggleDialog} from 'my_vuex/actions/actions'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
 /*
@@ -128,11 +130,16 @@ export const saveOrder = ({state, dispatch}) => {
     newOrder[key] = newOrder[key].join(',')
   })
   delete newOrder.workman
-  Server.request({
+  trim(newOrder)
+  return Server.request({
     method: 'post',
     url,
     data: newOrder
-  }).then((res) => {
+  }).then(() => {
+    toggleDialog({state, dispatch}, {
+      show: true,
+      content: '订单保存成功'
+    })
   })
 }
 

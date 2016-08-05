@@ -139,6 +139,6 @@
 </script>
 <style>
   label.other-checkbox{
-    width: 230px;
+    width: 260px;
   }
 </style>

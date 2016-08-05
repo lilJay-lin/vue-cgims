@@ -1074,8 +1074,163 @@ input[type="reset"].btn-block,
 input[type="button"].btn-block {
   width: 100%;
 }
+.close {
+  float: right;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+button.close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+}
+.modal-open {
+  overflow: hidden;
+}
+.modal {
+  display: none;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+}
+.modal.fade .modal-dialog {
+  -webkit-transform: translate(0, -25%);
+  -ms-transform: translate(0, -25%);
+  transform: translate(0, -25%);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+}
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 10px;
+}
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  -webkit-background-clip: padding-box;
+          background-clip: padding-box;
+  outline: 0;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+}
+.modal-backdrop.fade {
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.modal-backdrop.in {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.modal-header {
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.modal-header .close {
+  margin-top: -2px;
+}
+.modal-title {
+  margin: 0;
+  line-height: 1.42857143;
+}
+.modal-body {
+  position: relative;
+  padding: 15px;
+}
+.modal-footer {
+  padding: 15px;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
+}
+.modal-footer .btn + .btn {
+  margin-left: 5px;
+  margin-bottom: 0;
+}
+.modal-footer .btn-group .btn + .btn {
+  margin-left: -1px;
+}
+.modal-footer .btn-block + .btn-block {
+  margin-left: 0;
+}
+.modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+}
+.modal-dialog {
+  width: 600px;
+  margin: 30px auto;
+}
+.modal-content {
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+/*@media (min-width: @screen-sm-min) {
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    width: @modal-md;
+    margin: 30px auto;
+  }
+  .modal-content {
+    .box-shadow(0 5px 15px rgba(0,0,0,.5));
+  }
+
+  // Modal sizes
+  .modal-sm { width: @modal-sm; }
+}
+
+@media (min-width: @screen-md-min) {
+  .modal-lg { width: @modal-lg; }
+}*/
 html,
 body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: 100%;
   height: 100%;
 }
@@ -1084,14 +1239,23 @@ body {
   color: #666;
   line-height: 20px;
 }
-.table td {
-  text-align: center;
-}
 a,
 a:hover {
   color: #08c;
   text-decoration: none;
-  outline: none;
+}
+h1,
+h2,
+h3 {
+  line-height: 40px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 10px 0;
 }
 hr {
   margin: 20px 0;
@@ -1227,6 +1391,63 @@ input[type="checkbox"] {
   width: 30px;
 }
 /*
+ 收起，置顶
+*/
+.go-up {
+  position: fixed;
+  z-index: 1000;
+  right: 5px;
+  bottom: 100px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: url('../img/go.png') #383e4b 0 0 no-repeat;
+  -webkit-background-size: cover;
+          background-size: cover;
+}
+.slider-toggle {
+  position: fixed;
+  z-index: 1000;
+  left: 165px;
+  bottom: 100px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: url('../img/go.png') #28b779 0 0 no-repeat;
+  -webkit-background-size: cover;
+          background-size: cover;
+  -webkit-transform: rotate3d(0, 0, 1, -90deg);
+          transform: rotate3d(0, 0, 1, -90deg);
+  -webkit-transition: -webkit-transform 1s linear;
+  transition: -webkit-transform 1s linear;
+  transition: transform 1s linear;
+  transition: transform 1s linear, -webkit-transform 1s linear;
+}
+.slider-toggle.extend {
+  -webkit-transform: translate3d(-165px, 0, 0) rotate3d(0, 0, 1, 90deg);
+          transform: translate3d(-165px, 0, 0) rotate3d(0, 0, 1, 90deg);
+}
+.top-nav,
+.right-content,
+.left-slider {
+  -webkit-transition: all  1s linear;
+  transition: all  1s linear;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+.left-slider {
+  -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+}
+.extend .top-nav,
+.extend .right-content {
+  margin-left: 0;
+}
+.extend .left-slider {
+  -webkit-transform: translate3d(-220px, 0, 0);
+          transform: translate3d(-220px, 0, 0);
+}
+/*
   base
 */
 html,
@@ -1242,7 +1463,7 @@ body {
   position: relative;
   background-color: #383e4b;
   width: 100%;
-  color: #fff;
+  /*color: #fff;*/
 }
 /*头部导航*/
 .top-nav {
@@ -1517,9 +1738,9 @@ footer {
   color: #878787;
   font-size: 11px;
   left: 0;
-  top: 5px;
-  /*    margin: 10px 15px 0px 20px;
-    position: absolute;*/
+  top: 0px;
+  /*    margin: 10px 15px 0px 20px;*/
+  position: absolute;
   text-align: left;
 }
 .dataTables-filter .btn {
@@ -2582,6 +2803,37 @@ select.form-control {
   background: #2E363F;
   color: #fff;
 }
+.error_ex {
+  text-align: center;
+}
+.error_ex h1 {
+  font-size: 140px;
+  font-weight: bold;
+  padding: 50px 0;
+  color: #28B779;
+}
+/*
+    button.less
+*/
+.btn,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  border-radius: 4px;
+}
 /*表格列最长限制*/
 .role,
 .user {
@@ -2718,7 +2970,7 @@ select.form-control {
   display: inline;
 }
 /*
-    师傅管理
+  师傅管理
 */
 .worker-search .form-control {
   width: 150px;

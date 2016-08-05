@@ -120,3 +120,10 @@ export const isLogin = (state) => {
 export const getRegion = (state) => {
   return state.region.region[0]
 }
+
+/*
+* 弹窗
+* */
+export const getDialog = (state) => {
+  return state.admin.dialog
+}

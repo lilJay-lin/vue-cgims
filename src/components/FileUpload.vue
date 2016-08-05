@@ -105,12 +105,15 @@
            *
            * */
           formData.append('theFile', files[0])
+          vm.$dispatch('file-upload-loading')
           Server.request({
             url,
             method: 'post',
             data: formData
           }).then((res) => {
             vm.$dispatch('file-upload-success', res.result)
+          }, (res) => {
+            vm.$dispatch('file-upload-error')
           })
         }
       }

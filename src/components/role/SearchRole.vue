@@ -30,8 +30,8 @@
             </div>
           </td>
           <td>{{role.name}}</td>
-          <td>{{role.description}}</td>
-          <td>
+          <td class="description">{{role.description}}</td>
+          <td class="operation-group-td">
             <div class="operation-group">
               <a v-link="'/admin/role/' + role.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
               <a  v-show="permission.roleManager" v-link="'/admin/role/' + role.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>

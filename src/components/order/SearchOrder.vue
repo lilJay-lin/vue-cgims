@@ -5,11 +5,11 @@
         <div class="dataTables-filter">
           <label>
             <select class="form-control" v-el:order_status>
-              <option value="全部" selected>全部状态</option>
+              <option value="" selected>全部状态</option>
               <option :value="status" v-for="status in queryOrderStatus">{{status}}</option>
             </select>
             <select class="form-control" v-el:service_type>
-              <option value="全部" selected>全部类型</option>
+              <option value="" selected>全部类型</option>
               <option value="配送安装">配送安装</option>
               <option value="维修">维修</option>
             </select>
@@ -47,7 +47,7 @@
           <th>商家信息</th>
           <th>接单价/服务价</th>
           <th>师傅</th>
-          <th class="detail">详情</th>
+          <th>详情</th>
           <th v-show="hasPermission" class="operation-group">操作</th>
         </tr>
         </thead>
@@ -60,13 +60,15 @@
           </td>
           <td><a v-link="detailUrl + '/' + order.id + '?type=query'">{{order.orderNumber}}</a></td>
           <td>{{order.shopInfo}}</td>
-          <td>{{order.orderPrice}}/{{order.servicePrice}}</td>
+          <td><span class="orderPrice" :class="{'change': order.order_price_changed}">{{order.orderPrice}}</span>/<span class="servicePrice" :class="{'change': order.service_price_changed}">{{order.servicePrice}}</span></td>
           <td>{{order.orderNumber}}</td>
-          <td>{{order.customerName}}{{order.customerPhoneNum || order.customerAddress}}{{order.customerAddress}}</td>
-          <td v-show="hasPermission">
+          <td>
+            <span>{{order.customerName}}</span><span>{{order.customerPhoneNum}}</span><span>{{order.customerAddress}}</span>
+          </td>
+          <td v-show="hasPermission" class="operation-group-td">
             <div class="operation-group">
               <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>
-              <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-info-sign"></i>备注</a>
+              <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-flag" :class="{'red': order.description !== ''}"></i>备注</a>
             </div>
           </td>
         </tr>
@@ -185,7 +187,7 @@
         let left = e.clientX
         let height = window.innerHeight
         let width = window.innerWidth
-        top = top + elHeight > height ? height - elHeight - 80 : top
+        top = top + elHeight > height ? height - elHeight - (this.isPersonal ? 50 : 80) : top
         left = left + elWidth > width ? width - elWidth - 40 : left
         css(el, {
           display: 'block',
@@ -266,6 +268,13 @@
   .order.dataTables-filter-wrap select {
     width: 120px
   }
+  .orderPrice, .servicePrice{
+    color: red;
+    margin:0 5px;
+  }
+  .orderPrice.change, .servicePrice.change{
+    font-size: 16px;
+  }
   .order .operation-group{
     width: 150px
   }
@@ -301,5 +310,11 @@
     border: 0;
     border-top: 1px solid #e2e2e2;
     outline: 0;
+  }
+  .order .icon-flag{
+    color: gray;
+  }
+  .order .icon-flag.red{
+    color: red;
   }
 </style>

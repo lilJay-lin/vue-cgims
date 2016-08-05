@@ -1,7 +1,7 @@
 <template>
   <Content :breads="breads" :title="title">
     <Widget :padding="false" :title="title">
-      <div class="dataTables-filter-wrap worker">
+      <div class="dataTables-filter-wrap">
         <div class="dataTables-filter">
           <label>
             <Region @select-region="selectRegion" :region="region"></Region>
@@ -17,7 +17,7 @@
           </label>
         </div>
       </div>
-      <table class="table with-check" >
+      <table class="table with-check worker" >
         <thead>
         <tr>
           <th>
@@ -50,8 +50,8 @@
           <td>{{worker.serviceArea}}</td>
           <td>{{worker.score}}</td>
           <td>{{worker.cooperateTimes}}</td>
-          <td>{{worker.description}}</td>
-          <td>
+          <td class="description">{{worker.description}}</td>
+          <td class="operation-group-td">
             <div class="operation-group">
               <a v-link="'/admin/worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
               <a v-show="permission.workmanManager" v-link="'/admin/worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
@@ -140,7 +140,7 @@
   }
 </script>
 <style>
-  .worker.dataTables-filter-wrap select {
+  .dataTables-filter-wrap select {
     width: 130px
   }
 </style>

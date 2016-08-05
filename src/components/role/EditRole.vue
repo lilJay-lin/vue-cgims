@@ -27,11 +27,11 @@
                     </label>
                   </div>
                 </div>
-                <table class="table ">
+                <table class="table permission">
                   <thead>
                   <tr>
                     <th>权限</th>
-                    <th class="desc">描述</th>
+                    <th>描述</th>
                     <th class="operation-group">操作</th>
                   </tr>
                   </thead>
@@ -39,7 +39,7 @@
                   <tr v-for="permission in permissions.list">
                     <td>{{permission.name}}</td>
                     <td>{{permission.description}}</td>
-                    <td>
+                    <td class="operation-group-td">
                       <div class="operation-group">
                         <a  href="javascript:void(0)" title="添加" @click="addRelPermission(permission)"><i class="icon-plus"></i></a>
                       </div>

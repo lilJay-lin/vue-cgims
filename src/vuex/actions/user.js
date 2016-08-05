@@ -4,6 +4,8 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER, RECEIVE_USER_DETAIL,
   DELETE_USER_REL_ROLE, ADD_USER_REL_ROLE, DELETE_USER_REL_SLAVE, ADD_USER_REL_SLAVE, SET_USER_MODE} from 'my_vuex/mutations/user'
+import {trim} from 'src/util/util'
+import {toggleDialog} from 'my_vuex/actions/actions'
 /*
 * 获取用户列表
 * */
@@ -118,7 +120,7 @@ export const addRelSlave = ({dispatch}, slave) => {
 /*
  * 保存角色
  * */
-export const saveUser = ({state, dispatch}, user, newUser) => {
+export const saveUser = (store, user, newUser) => {
   let url = baseUrl + (user.id ? '/' + user.id : '')
   /*
    dispatch(SAVE_ROLE, newUser)
@@ -127,10 +129,16 @@ export const saveUser = ({state, dispatch}, user, newUser) => {
   let slaves = user.slaves.map((slave) => { return slave.id }) || []
   newUser['roleIds'] = roles.join(',')
   newUser['slaveIds'] = slaves.join(',')
-  Server.request({
+  trim(newUser)
+  return Server.request({
     method: 'post',
     url,
     data: newUser
+  }).then(() => {
+    toggleDialog(store, {
+      show: true,
+      content: '用户保存成功'
+    })
   })
 }
 

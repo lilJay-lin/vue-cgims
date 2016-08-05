@@ -193,7 +193,7 @@
                     <Region @select-region="selectRegion" :region="region"></Region>
                     <input type="hidden" v-el:search_region/>
                     <select class="form-control" v-el:search_service>
-                      <option value="配送安装,维修" selected>全部</option>
+                      <option value="" selected>全部</option>
                       <option value="配送安装">配送安装</option>
                       <option value="维修">维修</option>
                     </select>
@@ -227,7 +227,7 @@
                   <td>{{worker.score}}</td>
                   <td>{{worker.cooperateTimes}}</td>
                   <td>{{worker.description}}</td>
-                  <td >
+                  <td class="operation-group-td">
                     <div class="operation-group">
                       <a  href="javascript:void(0)" title="选中" class="{worker.id === order.workman.id}" @click="setWorkman(worker.id, worker.name)"><i class="icon-check"></i></a>
                     </div>
@@ -327,7 +327,7 @@
         this.searchWorker({search: {
           searchKeyword,
           region,
-          server_type: service
+          serverType: service
         }, curPage: page || 1})
       },
       selectRegion: function (region) {
