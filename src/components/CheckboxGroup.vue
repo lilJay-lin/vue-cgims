@@ -1,7 +1,7 @@
 <template>
   <div class="label-inline">
     <label v-show="hasAll">
-      <div class="radio">
+      <div class="checker">
         <span :class="{'checked': all}">
           <input type="checkbox" @change="checkAll" :name="name" value="" :disabled="readonly"/>
         </span>
@@ -9,7 +9,7 @@
       {{allText}}
     </label>
     <label v-for="radio in radios" track-by="$index">
-      <div class="radio">
+      <div class="checker">
         <span :class="{'checked': ~checked.indexOf(radio.value)}">
           <input type="checkbox" @change="change($event, $index)" :name="name" :value="radio.value" :disabled="readonly"/>
         </span>
@@ -17,7 +17,7 @@
       {{radio.name}}
     </label>
     <label v-show="hasOther" class="other-checkbox">
-      <div class="radio">
+      <div class="checker">
         <span :class="{'checked': other}">
           <input type="checkbox" @change="checkOther" :name="name" :disabled="readonly"/>
         </span>

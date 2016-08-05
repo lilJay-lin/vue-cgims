@@ -1,6 +1,6 @@
 <template>
   <div class="widget-box"  slot="widget">
-    <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
+    <div class="widget-title"><span class="icon"><i :class="icon"></i></span>
       <h5>{{title}}</h5>
     </div>
     <div class="widget-content" :class="{nopadding: padding}">
@@ -15,6 +15,10 @@ export default {
     padding: {
       type: Boolean,
       default: true
+    },
+    icon: {
+      type: String,
+      default: 'icon-th'
     }
   }
 }
