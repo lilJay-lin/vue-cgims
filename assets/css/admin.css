@@ -1395,6 +1395,7 @@ input[type="checkbox"] {
 */
 .go-up {
   position: fixed;
+  cursor: pointer;
   z-index: 1000;
   right: 5px;
   bottom: 100px;
@@ -1407,6 +1408,7 @@ input[type="checkbox"] {
 }
 .slider-toggle {
   position: fixed;
+  cursor: pointer;
   z-index: 1000;
   left: 165px;
   bottom: 100px;
@@ -1420,8 +1422,8 @@ input[type="checkbox"] {
           transform: rotate3d(0, 0, 1, -90deg);
   -webkit-transition: -webkit-transform 1s linear;
   transition: -webkit-transform 1s linear;
-  transition: transform 1s linear;
-  transition: transform 1s linear, -webkit-transform 1s linear;
+  transition: transform 0.5s linear;
+  transition: transform 0.5s linear, -webkit-transform 1s linear;
 }
 .slider-toggle.extend {
   -webkit-transform: translate3d(-165px, 0, 0) rotate3d(0, 0, 1, 90deg);
@@ -1430,8 +1432,8 @@ input[type="checkbox"] {
 .top-nav,
 .right-content,
 .left-slider {
-  -webkit-transition: all  1s linear;
-  transition: all  1s linear;
+  -webkit-transition: all  0.5s linear;
+  transition: all  0.5s linear;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
 }

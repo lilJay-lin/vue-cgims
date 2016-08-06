@@ -5,7 +5,7 @@
         <div class="control-group">
           <label class="control-label">登录名</label>
           <div class="controls">
-            <input type="text" class="span5" :value="user.loginName" :readonly="isQuery" placeholder="登录名" v-el:login_name>
+            <input type="text" class="span5" :value="user.loginName" :readonly="!isEdit" placeholder="登录名" v-el:login_name>
           </div>
         </div>
         <div class="control-group">
@@ -140,7 +140,7 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-success" @click="onSaveUser" v-if="isEdit" >保存</button>
+          <button type="button" class="btn btn-success" @click="onSaveUser" v-if="!isQuery" >保存</button>
           <a v-link="{path: '/admin/user', query: {back: true}}" class="btn btn-success">返回</a>
         </div>
       </form>
@@ -153,7 +153,7 @@
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
   import {getUsers, getDetailUser, getUIOptions} from 'my_vuex/getters/user'
-  import {searchUser, showUserDetail, deleteRelRole, addRelRole, deleteRelSlave, addRelSlave, saveUser, setUserMode, clearUserDetail} from 'my_vuex/actions/user'
+  import {searchUser, showUserDetail, deleteRelRole, addRelRole, deleteRelSlave, addRelSlave, saveUser, setUserMode, clearUserDetail, showSelfUserDetail} from 'my_vuex/actions/user'
   import {getRoles} from 'my_vuex/getters/role'
   import {searchRole} from 'my_vuex/actions/role'
   import {getPermission} from 'my_vuex/getters/auth'
@@ -171,7 +171,7 @@
         return '用户管理'
       },
       isEdit: function () {
-        return this.mode !== 'query'
+        return this.mode === 'selfEdit' ? false : this.mode === 'new' || this.mode === 'edit'
       },
       isQuery: function () {
         return this.mode === 'query'
@@ -203,19 +203,28 @@
     },
     route: {
       data (transition) {
-        let {to: {params: {id}, query: {type}}} = transition
-        if (id && !type) {
-          type = 'query'
-        } else if (!type) {
-          type = 'new'
-        }
-        if ((type === 'edit' || type === 'new') && !this.permission.userManager) {
-          transition.redirect('/admin/forbidden')
+        let {to: {path, params: {id}, query: {type}}} = transition
+        let selfEdit = 'selfEdit'
+        let newType = 'new'
+        /*
+        * 个人信息修改只能修改个人信息，不能修改其他信息
+        * */
+        if (path === '/admin/user/self') {
+          type = selfEdit
+        } else {
+          if (id && !type) {
+            type = 'query'
+          } else if (!type) {
+            type = newType
+          }
+          if ((type === 'edit' || type === newType) && !this.permission.userManager) {
+            transition.redirect('/admin/forbidden')
+          }
+          this.searchRole({})
+          this.searchUser({})
         }
         this.setUserMode(type)
-        this.searchRole({})
-        this.searchUser({})
-        return type !== 'new' && this.showUserDetail(id)
+        return type !== newType ? (type === selfEdit ? this.showSelfUserDetail() : this.showUserDetail(id)) : transition.next()
       }
     },
     vuex: {
@@ -237,7 +246,8 @@
         addRelSlave,
         saveUser,
         setUserMode,
-        clearUserDetail
+        clearUserDetail,
+        showSelfUserDetail
       }
     }
   }

@@ -58,11 +58,11 @@
               <span :class="{checked: order.checked}"><input type="checkbox" :checked="order.checked" @change="toggleCheck($event, order.id)"></span>
             </div>
           </td>
-          <td><a v-link="detailUrl + '/' + order.id + '?type=query'">{{order.orderNumber}}</a></td>
+          <td><a v-link="detailUrl + '/' + order.id">{{order.orderNumber}}</a></td>
           <td>{{order.shopInfo}}</td>
-          <td><span class="orderPrice" :class="{'change': order.order_price_changed}">{{order.orderPrice}}</span>/<span class="servicePrice" :class="{'change': order.service_price_changed}">{{order.servicePrice}}</span></td>
+          <td><span class="orderPrice" :class="{'change': order.orderPriceChanged}">{{order.orderPrice}}</span>/<span class="servicePrice" :class="{'change': order.servicePriceChanged}">{{order.servicePrice}}</span></td>
           <td>{{order.orderNumber}}</td>
-          <td>
+          <td class="description">
             <span>{{order.customerName}}</span><span>{{order.customerPhoneNum}}</span><span>{{order.customerAddress}}</span>
           </td>
           <td v-show="hasPermission" class="operation-group-td">
@@ -79,7 +79,7 @@
         <div class="fg-toolbar-operation" v-show="hasPermission">
           <select class="form-control" v-el:action>
             <option value="删除" selected>删除</option>
-            <option value="status" v-for="status in orderStatus">{{status}}</option>
+            <option :value="status" v-for="status in orderStatus">{{status}}</option>
           </select>
           <button type="button" class="btn btn-success" @click="onDealBatch()">批量操作</button>
         </div>
@@ -89,8 +89,9 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
+  import {toggleDialog} from 'my_vuex/actions/actions'
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {getOrders, getCheckAll, getOrderStatus, getQueryOrderStatus, isPersonal} from 'my_vuex/getters/order'
+  import {getOrders, getCheckAll, getOrderStatus, getQueryOrderStatus, isPersonal, hasCheck} from 'my_vuex/getters/order'
   import {searchOrder, checkOrder, dealOrder, updateOrderComment, setOrderPersonal} from 'my_vuex/actions/order'
   import {getPermission} from 'my_vuex/getters/auth'
   import {getUsers} from 'my_vuex/getters/user'
@@ -162,6 +163,8 @@
       onDealBatch: function (id, orderStatus) {
         let val = ''
         let action = ''
+        let vm = this
+        let state = '更新'
         /*
         *  非批量操作
         * */
@@ -169,11 +172,32 @@
           val = orderStatus
           action = 'update'
         } else {
-          val = this.$els.action.value
+          val = vm.$els.action.value
           action = val === '删除' ? 'delete' : 'update'
+          if (action === 'delete') {
+            state = '删除'
+          }
+          if (!vm.hasCheck) {
+            vm.toggleDialog({
+              content: '请选择要' + state + '的订单',
+              show: true,
+              auto: true,
+              hasSuccessBtn: false,
+              hasCloseBtn: false
+            })
+            return
+          }
         }
-        let data = {id: id, action, orderStatus: val}
-        this.dealOrder(data)
+        vm.toggleDialog({
+          content: '是否' + state + '的订单',
+          show: true,
+          hasSuccessBtn: true,
+          hasCloseBtn: true,
+          auto: false,
+          success: () => {
+            vm.dealOrder({id: id, action, orderStatus: val})
+          }
+        })
       },
       showOrderOpera: function (e, id) {
         let el = this.$els.order_operation
@@ -251,7 +275,8 @@
         orderStatus: getOrderStatus,
         queryOrderStatus: getQueryOrderStatus,
         permission: getPermission,
-        isPersonal: isPersonal
+        isPersonal: isPersonal,
+        hasCheck: hasCheck
       },
       actions: {
         searchOrder,
@@ -259,7 +284,8 @@
         dealOrder,
         searchUser,
         updateOrderComment,
-        setOrderPersonal
+        setOrderPersonal,
+        toggleDialog
       }
     }
   }
@@ -272,8 +298,12 @@
     color: red;
     margin:0 5px;
   }
-  .orderPrice.change, .servicePrice.change{
+  .servicePrice {
     font-size: 16px;
+    color: #666
+  }
+  .orderPrice.change, .servicePrice.change{
+    color: red
   }
   .order .operation-group{
     width: 150px

@@ -27,11 +27,12 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="头像" url="/workman/upload/headImg" @file-upload-success="headImgUploadSuccess" ></file-upload>
+            <file-upload :disabled="isQuery" title="头像" url="/workman/upload/headImg" @file-upload-loading="headImgUploadSuccess" @file-upload-success="headImgUploadSuccess" ></file-upload>
           </label>
           <div class="controls">
-            <div class="identity-box">
-              <img :src="worker.headImg" alt="">
+            <div class="identity-box headImg">
+              <span v-if="worker.headImg === 'loading'" class="loading"></span>
+              <img :src="worker.headImg" alt="" v-else>
             </div>
           </div>
         </div>
@@ -54,7 +55,7 @@
               </div>
               银行卡
               <input  :readOnly="isQuery" type="text" class="span2" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
-              <input :readOnly="isQuery" type="text" class="span3" placeholder="银行卡帐号" :value="worker.cardNum" @change="setData('cardNum', $event)"/>
+              <input :readOnly="isQuery" type="text" class="span3" placeholder="银行卡帐号" :value="newCardNum" @change="setData('cardNum', $event)"/>
             </label>
           </div>
           <div class="controls" v-else>
@@ -74,7 +75,7 @@
               </div>
               银行卡
               <input  :readOnly="worker.receiveType === 0" type="text" class="span2" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
-              <input :readOnly="worker.receiveType === 0" type="text" class="span3" placeholder="银行卡帐号" :value="worker.cardNum" @change="setData('cardNum', $event)"/>
+              <input :readOnly="worker.receiveType === 0" type="text" class="span3" placeholder="银行卡帐号" :value="newCardNum" @change="setData('cardNum', $event)"/>
             </label>
           </div>
         </div>
@@ -98,19 +99,21 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="身份证正面" url="/workman/upload/idCardFace" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
+            <file-upload :disabled="isQuery" title="身份证正面" url="/workman/upload/idCardFace" @file-upload-loading="cardFaceUploadSuccess" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box">
-              <img :src="worker.idCardFace" alt="">
+              <span v-if="worker.idCardFace === 'loading'" class="loading"></span>
+              <img :src="worker.idCardFace" alt="" v-else>
             </div>
             <div class="inner-control-group">
               <label class="control-label">
-                <file-upload :disabled="isQuery" title="身份证背面" url="/workman/upload/idCardBack" @file-upload-success="cardBackUploadSuccess" ></file-upload>
+                <file-upload :disabled="isQuery" title="身份证背面" url="/workman/upload/idCardBack" @file-upload-loading="cardBackUploadSuccess" @file-upload-success="cardBackUploadSuccess" ></file-upload>
               </label>
               <div class="controls" style="padding-top:0">
                 <div class="identity-box">
-                  <img :src="worker.idCardBack" alt="">
+                  <span v-if="worker.idCardBack === 'loading'" class="loading"></span>
+                  <img :src="worker.idCardBack" alt="" v-else>
                 </div>
               </div>
             </div>
@@ -317,6 +320,14 @@
       },
       service_areas: function () {
         return this.createRadios(['端州区', '鼎湖区', '大旺区', '四会', '怀集', '广宁', '封开', '高要'])
+      },
+      newCardNum: function () {
+        let vm = this
+        let val = this.worker.cardNum || ''
+        val = vm.insertSpace(val, 4)
+        val = vm.insertSpace(val, 9)
+        val = vm.insertSpace(val, 14)
+        return val
       }
     },
     methods: {
@@ -388,7 +399,16 @@
         }
         obj[key] = val
         this.setWorker(obj)
+      },
+      insertSpace: function (str, position) {
+        if (str.length > position) {
+          if (str.charAt(position) !== ' ') {
+            str = str.substr(0, position) + ' ' + str.substring(position, str.length)
+          }
+        }
+        return str
       }
+
     },
     route: {
       data (transition) {
@@ -434,5 +454,13 @@
 <style>
   .inner-control-group{
     vertical-align: top;
+  }
+  .headImg.identity-box{
+    width: 200px;
+    height: 200px;
+  }
+  .identity-box{
+    width: 428px;
+    height: 270px;
   }
 </style>

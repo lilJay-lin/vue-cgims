@@ -1,17 +1,18 @@
 /**
  * Created by liljay on 2016/7/26.
  */
-import {SET_SEARCH, RECEIVE_VALUE} from 'my_vuex/mutations/statistic'
+import {SET_SEARCH, RECEIVE_VALUE, REQUEST_STATE} from 'my_vuex/mutations/statistic'
 const forEach = require('lodash/forEach')
 const state = {
   search: {
-    creatorId: '不限',
-    serviceType: '不限',
+    creatorId: '',
+    serviceType: '',
     beginTime: '',
     endTime: '',
     searchType: 'orderCount'
   },
-  value: ''
+  value: '',
+  state: true
 }
 
 const mutations = {
@@ -22,6 +23,9 @@ const mutations = {
   },
   [RECEIVE_VALUE]: (state, value) => {
     state.value = value
+  },
+  [REQUEST_STATE]: (state, value) => {
+    state.state = value
   }
 }
 

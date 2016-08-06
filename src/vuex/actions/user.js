@@ -10,8 +10,8 @@ import {toggleDialog} from 'my_vuex/actions/actions'
 * 获取用户列表
 * */
 let baseUrl = '/user'
-export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
-  let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage
+export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1, pageSize = ''}) => {
+  let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage + '&pageSize=' + pageSize
   return Server.request({
     url,
     method: 'get'
@@ -39,6 +39,15 @@ export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
 * */
 export const showUserDetail = ({dispatch}, id) => {
   let url = baseUrl + '/' + id
+  Server.request({
+    method: 'get',
+    url
+  }).then((res) => {
+    dispatch(RECEIVE_USER_DETAIL, res.result)
+  })
+}
+export const showSelfUserDetail = ({dispatch}) => {
+  let url = baseUrl + '/self'
   Server.request({
     method: 'get',
     url

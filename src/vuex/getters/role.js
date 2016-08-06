@@ -23,3 +23,9 @@ export const getCheckAll = (state) => {
 export const getUIOptions = (state) => {
   return state.role.ui.mode
 }
+
+export const hasCheck = (state) => {
+  return state.role.list.some((role) => {
+    return role.checked
+  })
+}

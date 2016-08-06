@@ -21,14 +21,17 @@
             </div>
           </div>
         </div>
-        <div class="form-actions">
-          <span class="pull-left">
+        <div class="login-btn">
+          <a href="javascript:void(0)" class="btn btn-success" @click="onUserLogin">登录</a>
+        </div>
+<!--        <div class="form-actions">
+          <span class="pull-left" style="display: none">
             <a href="javascript:void(0)" class="flip-link btn btn-info" id="to-recover">忘记密码?</a>
           </span>
           <span class="pull-right">
             <a href="javascript:void(0)" class="btn btn-success" @click="onUserLogin">登录</a>
           </span>
-        </div>
+        </div>-->
       </form>
       <!--<form action="#" class="recover-form form-vertical">
           <p class="normal-text">Enter your e-mail address below and we will send you instructions how to recover a password.</p>
@@ -80,7 +83,6 @@
     },
     watch: {
       isLogin: function (login) {
-        console.log(login)
         if (login) {
           this.$router.go('/admin')
         }
@@ -88,3 +90,12 @@
     }
   }
 </script>
+<style>
+  .login-btn{
+    margin-top: 15px;
+    text-align: center;
+  }
+  .login-btn a{
+    width: 200px;
+  }
+</style>

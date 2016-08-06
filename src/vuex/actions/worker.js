@@ -17,7 +17,6 @@ export const searchWorker = ({dispatch}, {search = {
   serverType: ''
 }, curPage = 1}) => {
   let regions = search.region.split('/')
-  console.log(search.serverType)
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword) +
     '&province=' + window.encodeURIComponent(regions[0] || '') +
     '&city=' + window.encodeURIComponent(regions[1] || '') +
@@ -87,11 +86,17 @@ export const clearWorkerDetail = ({dispatch}) => {
     province: '',
     city: '',
     area: '',
-    'furnitureType': [],
-    'stoolType': [],
-    'lightType': [],
-    'metalsType': [],
-    'householdType': []
+    cardNum: '',
+    headImg: '',
+    idCardFace: '',
+    idCardBack: '',
+    'serviceType': '配送安装',
+    serviceArea: '端州区',
+    'furnitureType': ['办公家具'],
+    'stoolType': ['马桶'],
+    'lightType': ['吸顶灯'],
+    'metalsType': ['晾衣杆'],
+    'householdType': ['电视']
   }
   )
 }
@@ -146,6 +151,10 @@ export const saveWorker = ({state, dispatch}) => {
     let name = obj.name
     items[obj.label] = worker[name].join(',')
     delete worker[name]
+  })
+  forEach(['idCardFace', 'idCardBack', 'headImg'], (key) => {
+    let src = worker[key]
+    worker[key] = src === 'loading' ? '' : src
   })
   worker['serviceItems'] = JSON.stringify(items)
   console.log(JSON.stringify(items))

@@ -62,12 +62,15 @@ export const showOrderDetail = ({dispatch, state}, id) => {
     order.repairImgs = getImages(order.repairImgs)
     order.logisticsImgs = getImages(order.logisticsImgs)
     order.productImgs = getImages(order.productImgs)
-    order.isChecked = order.isChecked && parseInt(order.isChecked)
+    order.checked = order.checked && parseInt(order.checked)
     dispatch(RECEIVE_ORDER_DETAIL, res.result)
   })
 }
 export const clearOrderDetail = ({dispatch}) => {
   dispatch(RECEIVE_ORDER_DETAIL, {
+    orderStatus: '未收未付',
+    serviceType: '配送安装',
+    checked: 1,
     repairImgs: [],
     logisticsImgs: [],
     productImgs: [],
@@ -108,7 +111,7 @@ export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
   if (action === 'delete') {
     dispatch(DELETE_ORDER, ids)
   } else {
-    data.orderStatus = window.encodeURIComponent(orderStatus)
+    data.orderStatus = orderStatus
   }
   data.ids = ids.join(',')
   Server.request({
@@ -123,22 +126,30 @@ export const dealOrder = ({state, dispatch}, {id, action, orderStatus}) => {
 /*
 * 保存师傅
 * */
-export const saveOrder = ({state, dispatch}) => {
-  let newOrder = clone(state.order.detail) || {}
-  let url = getBaseUrl(state) + (newOrder.id ? '/' + newOrder.id : '')
+export const saveOrder = ({state, dispatch}, order) => {
+  let newOrder = clone(order || state.order.detail) || {}
   forEach(['repairImgs', 'logisticsImgs', 'productImgs'], (key) => {
-    newOrder[key] = newOrder[key].join(',')
+    let arr = (newOrder[key] || []).filter((src) => {
+      return src !== '' && src !== 'loading'
+    })
+    newOrder[key] = arr.join(',')
   })
   delete newOrder.workman
-  trim(newOrder)
+  save({state, dispatch}, newOrder)
+}
+const save = ({state, dispatch}, order) => {
+  let url = getBaseUrl(state) + (order.id ? '/' + order.id : '')
+  trim(order)
   return Server.request({
     method: 'post',
     url,
-    data: newOrder
+    data: order
   }).then(() => {
     toggleDialog({state, dispatch}, {
       show: true,
-      content: '订单保存成功'
+      content: '订单保存成功',
+      hasSuccessBtn: false,
+      hasCloseBtn: false
     })
   })
 }
@@ -155,9 +166,10 @@ export const updateOrderComment = ({dispatch, state}, {id, description}) => {
   let orders = state.order.list
   forEach(orders, (order, idx) => {
     if (order.id === id) {
-      let newOrder = clone(order)
-      newOrder.description = description
-      saveOrder({dispatch, state}, newOrder).then((res) => {
+      save({state, dispatch}, {
+        id: id,
+        description: description
+      }).then((res) => {
         dispatch(UPDATE_ORDER_DESCRIPTION, {idx, description})
       })
     }
@@ -170,13 +182,12 @@ export const updateOrderComment = ({dispatch, state}, {id, description}) => {
 export const setOrder = ({state, dispatch}, map) => {
   dispatch(SET_ORDER, map)
 }
-export const dealOrderImage = ({state, dispatch}, {key, src, type}) => {
+export const dealOrderImage = ({state, dispatch}, {key, src, type, idx}) => {
   let arr = clone(state.order.detail[key] || [])
-  console.log(arr)
   if (type === 'del') {
-    arr.splice(src, 1)
+    arr.splice(src, 1, '')
   } else {
-    arr.push(src)
+    idx === undefined ? arr.push(src) : arr.splice(idx, 1, src)
   }
   let obj = {}
   obj[key] = arr

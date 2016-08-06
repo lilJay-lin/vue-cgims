@@ -5,19 +5,19 @@
         <div class="control-group">
           <label class="control-label">订单号</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="订单号" :readOnly="isQuery" @change="setData('orderNumber', $event)" :value="order.orderNumber"/>
+            <input type="text" class="span5" placeholder="订单号" readonly @change="setData('orderNumber', $event)" :value="order.orderNumber"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">订单状态</label>
           <div class="controls">
-            <radio-group :radios="orderStatus" :name="'order.orderStatus'":readOnly="isQuery" :checked="order.orderStatus" @radio-checked="setOrderStatus"></radio-group>
+            <radio-group :radios="orderStatus" :name="'orderStatus'":readOnly="isQuery" :checked="order.orderStatus" @radio-checked="setOrderStatus"></radio-group>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">订单类型</label>
           <div class="controls label-inline">
-            <radio-group :radios="serviceTypes" :name="'order.serviceType'" :readOnly="isQuery" :checked="order.serviceType" @radio-checked="setServiceType"></radio-group>
+            <radio-group :radios="serviceTypes" :name="'serviceType'" :readOnly="isQuery" :checked="order.serviceType" @radio-checked="setServiceType"></radio-group>
           </div>
         </div>
         <div class="control-group-box">
@@ -46,41 +46,42 @@
             <input type="text" class="span5" placeholder="客户地址" :readOnly="isQuery" @change="setData('customerAddress', $event)":value="order.customerAddress"/>
           </div>
         </div>
-        <div class="control-group">
+        <div class="control-group" v-if="order.serviceType === '配送安装'">
           <label class="control-label">产品信息</label>
           <div class="controls">
             <input type="text" :readOnly="isQuery" @change="setData('productInfo', $event)":value="order.productInfo"/>
-            <file-upload title="添加图片" :disabled="isQuery"  :url="productUploadURL" @file-upload-success="productUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
+            <file-upload title="添加图片" :disabled="isQuery" :url="productUploadURL" @file-upload-loading="productUploadLoading" @file-upload-success="productUploadSuccess"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in order.productImgs" track-by="$index">
-              <img :src="src" alt="src">
+            <div class="controls-pics-item" v-for="src in order.productImgs" track-by="$index" v-show="src !== ''">
+              <span v-if="src === 'loading'" class="loading"></span>
+              <img :src="src" alt="" v-else>
               <a href="javascript:void(0)" v-if="isEdit" @click="onDealOrderImage('productImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
-        <div class="control-group">
+        <div class="control-group"  v-if="order.serviceType === '配送安装'">
           <label class="control-label">物流信息</label>
           <div class="controls">
             <input type="text" :readOnly="isQuery" @change="setData('logisticsInfo', $event)":value="order.logisticsInfo"/>
-            <file-upload title='添加图片' :disabled="isQuery" :url="logisticsUploadURL" @file-upload-success="logisticsUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
+            <file-upload title='添加图片' :disabled="isQuery" :url="logisticsUploadURL" @file-upload-loading="logisticsUploadLoading" @file-upload-success="logisticsUploadSuccess"></file-upload>
           </div>
           <div class="controls-pics">
             <div class="controls-pics-item" v-for="src in order.logisticsImgs" track-by="$index">
-              <img :src="src" alt="src">
+              <img :src="src" alt="">
               <a v-if="isEdit" v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('logisticsImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
         </div>
-        <div class="control-group">
-          <label class="control-label">物流信息</label>
+        <div class="control-group"  v-if="order.serviceType === '维修'">
+          <label class="control-label">维修信息</label>
           <div class="controls">
             <input type="text" :readOnly="isQuery" @change="setData('repairInfo', $event)":value="order.repairInfo"/>
-            <file-upload title="添加图片" :disabled="isQuery" :url="repairUploadURL" @file-upload-success="repairUploadSuccess" @file-upload-review="showProductInfo"></file-upload>
+            <file-upload title="添加图片" :disabled="isQuery" :url="repairUploadURL" @file-upload-loading="repairUploadLoading" @file-upload-success="repairUploadSuccess" ></file-upload>
           </div>
           <div class="controls-pics">
             <div class="controls-pics-item" v-for="src in order.repairImgs" track-by="$index">
-              <img :src="src" alt="src">
+              <img :src="src" alt="">
               <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('repairImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
@@ -90,17 +91,17 @@
           <div class="controls label-inline">
             <label>
               <div class="radio" >
-                <span :class="{checked: order.isChecked === 1}">
-                  <input type="radio" :disabled="isQuery" value=1 name="isChecked" @change="setData('isChecked', $event)"/>
+                <span :class="{checked: order.checked === 1}">
+                  <input type="radio" :disabled="isQuery" value=1 name="checked" @change="setData('checked', $event)"/>
                 </span>
               </div>
               是
-              <input type="text" :readOnly="isQuery" :value="order.checkInfo" v-show="order.isChecked === 1" @change="setData('checkInfo', $event)"/>
+              <input type="text" :readOnly="isQuery" :value="order.checkInfo" v-show="order.checked === 1" @change="setData('checkInfo', $event)"/>
             </label>
             <label>
               <div class="radio" >
-                <span :class="{checked: order.isChecked === 0}">
-                  <input type="radio" name="isChecked" :disabled="isQuery" value=0 @change="setData('isChecked', $event)"/>
+                <span :class="{checked: order.checked === 0}">
+                  <input type="radio" name="checked" :disabled="isQuery" value=0 @change="setData('checked', $event)"/>
                 </span>
               </div>
               否
@@ -142,7 +143,12 @@
         <div class="control-group">
           <label class="control-label">订单评分</label>
           <div class="controls">
-            <input type="text":readOnly="isQuery" class="span5" placeholder="订单评分" @change="setData('judgment', $event)" :value="order.judgment"/>
+            <div class="detail-star">
+              <div class="start" v-if="isEdit">
+                <i v-for="idx in 5" track-by='$index' @click="setJudgment($index)"></i>
+              </div>
+              <div :style="{width: judgmentPercent + '%'}" class="detail-star-status"></div>
+            </div>
           </div>
         </div>
         <div class="control-group">
@@ -229,12 +235,11 @@
                   <td>{{worker.description}}</td>
                   <td class="operation-group-td">
                     <div class="operation-group">
-                      <a  href="javascript:void(0)" title="选中" class="{worker.id === order.workman.id}" @click="setWorkman(worker.id, worker.name)"><i class="icon-check"></i></a>
+                      <a  href="javascript:void(0)" title="选中" :class="{'checked': worker.id === order.workman.id}" @click="setWorkman(worker.id, worker.name)"><i class="icon-check"></i></a>
                     </div>
                   </td>
                 </tr>
                 </tbody>
-
               </table>
               <div class="fg-toolbar">
                 <Pagination :cur-page="workers.pageInfo.curPage" :total="workers.pageInfo.total" :page-size="workers.pageInfo.pageSize" :total-page="workers.pageInfo.totalPage" @go-page="startSearchWorker"></Pagination>
@@ -244,7 +249,9 @@
         </div>
         <div class="form-actions">
           <button v-show="hasPermission" type="button" class="btn btn-success" @click="saveOrder()" v-if="isEdit">保存</button>
+<!--
           <button v-show="hasPermission" type="button" class="btn btn-success" @click="setOrderMode('edit')" v-if="isQuery">编辑</button>
+-->
           <a v-link="detailUrl" class="btn btn-success">返回</a>
         </div>
       </form>
@@ -260,7 +267,7 @@
   import Region from 'components/Region'
   import FileUpload from 'components/FileUpload'
   import {getPermission} from 'my_vuex/getters/auth'
-  import {getDetailOrder, getUIOptions, getOrderStatus, isPersonal, getBaseUrl} from 'my_vuex/getters/order'
+  import {getDetailOrder, getUIOptions, getOrderStatus, isPersonal, getBaseUrl, getAddOrderStatus} from 'my_vuex/getters/order'
   import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage, setOrderPersonal} from 'my_vuex/actions/order'
   import {getWorkers} from 'my_vuex/getters/worker'
   import {searchWorker} from 'my_vuex/actions/worker'
@@ -278,7 +285,7 @@
     },
     computed: {
       title: function () {
-        return '角色信息'
+        return '订单信息'
       },
       hasPermission: function () {
         return this.isPersonal ? this.permission.userOrderManager : this.permission.orderManager
@@ -299,24 +306,30 @@
         return this.mode === 'query'
       },
       orderStatus: function () {
-        return this.status.map((val, idx) => {
+        let status = this.mode === 'new' ? this.addStatus : this.status
+        return status.map((val, idx) => {
           return {
             name: val,
-            value: this.status[idx]
+            value: status[idx]
           }
         })
       },
       serviceTypes: function () {
-        return ['配送运输', '维修'].map((val, idx) => {
+        let arr = ['配送安装', '维修']
+        return arr.map((val, idx) => {
           return {
             name: val,
-            value: this.status[idx]
+            value: arr[idx]
           }
         })
       },
       detailUrl: function () {
         let base = this.isPersonal ? '/admin/user/order' : '/admin/order'
         return base + '?back=true'
+      },
+      judgmentPercent: function () {
+        let judgment = this.order.judgment
+        return judgment ? judgment * 100 / 5 : 0
       }
     },
     methods: {
@@ -338,6 +351,11 @@
           orderStatus: value
         })
       },
+      setJudgment: function (value) {
+        this.setOrder({
+          judgment: value + 1
+        })
+      },
       setWorkman: function (id, name) {
         this.setOrder({
           workman: {
@@ -355,60 +373,73 @@
       setData: function (key, e) {
         let obj = {}
         let val = e.target.value
-        if (key === 'isChecked') {
+        if (key === 'checked') {
           val = parseInt(val, 10)
         }
         obj[key] = val
         this.setOrder(obj)
       },
-      showProductInfo: function (files) {
-        console.log(files)
-      },
-      productUploadSuccess: function (src) {
+      productUploadLoading: function (src) {
         this.onDealOrderImage('productImgs', src, 'add')
       },
-      logisticsUploadSuccess: function (src) {
+      logisticsUploadLoading: function (src) {
         this.onDealOrderImage('logisticsImgs', src, 'add')
       },
-      repairUploadSuccess: function (src) {
+      repairUploadLoading: function (src) {
         this.onDealOrderImage('repairImgs', src, 'add')
       },
-      onDealOrderImage: function (key, src, type) {
+      productUploadSuccess: function (src, idx) {
+        this.order.productImgs[idx] === 'loading' && this.onDealOrderImage('productImgs', src, 'add', idx)
+      },
+      logisticsUploadSuccess: function (src, idx) {
+        this.order.logisticsImgs[idx] === 'loading' && this.onDealOrderImage('logisticsImgs', src, 'add', idx)
+      },
+      repairUploadSuccess: function (src, idx) {
+        this.order.logisticsImgs[idx] === 'loading' && this.onDealOrderImage('repairImgs', src, 'add', idx)
+      },
+      onDealOrderImage: function (key, src, type, idx) {
         this.dealOrderImage({
           key,
           src,
-          type
+          type,
+          idx
         })
       }
     },
     route: {
       data (transition) {
         let {to: {path, params: {id}, query: {type}}} = transition
-        if (id && !type) {
-          type = 'query'
-        } else if (!type) {
+        if (id) {
+          type = 'edit'
+        } else {
           type = 'new'
         }
         let isPersonal = false
         let permission = this.permission
-        let hasPermission = permission.orderManager || permission.orderView
+        let hasPermission = permission.orderManager
         if (~path.indexOf('/admin/user/order/')) {
           isPersonal = true
           hasPermission = permission.userOrderManager
         }
-        if ((type === 'edit' || type === 'new') && !this.hasPermission) {
-          hasPermission = false
-        }
-
+        /*
+        * 1.新增无权限或者无权限 跳转限制
+        * 2. 只有查询权限
+        * */
         if (!hasPermission) {
-          transition.redirect('/admin/forbidden')
+          if (type === 'new' || !permission.orderView) {
+            transition.redirect('/admin/forbidden')
+          } else if (permission.orderView) {
+            type = 'query'
+          }
         }
         this.setOrderPersonal(isPersonal)
         this.setOrderMode(type)
+        this.clearOrderDetail()
         this.searchWorker({})
         if (type !== 'new') {
           return this.showOrderDetail(id)
         }
+        return transition.next()
       }
     },
     vuex: {
@@ -420,6 +451,7 @@
         isPersonal: isPersonal,
         region: getRegion,
         status: getOrderStatus,
+        addStatus: getAddOrderStatus,
         permission: getPermission,
         baseUrl: getBaseUrl
       },
@@ -445,5 +477,15 @@
     display: inline-block;
     vertical-align: middle;
     margin-left: 20px;
+  }
+  .order .icon-check{
+    color: gray
+  }
+  .order .checked .icon-check{
+    color: red
+  }
+  .controls-pics-item{
+    width: 200px;
+    height: 200px;
   }
 </style>

@@ -36,6 +36,10 @@ export default (router) => {
           name: '/admin/user/add',
           component: EditUser
         },
+        '/user/self': {
+          name: '/admin/user/self',
+          component: EditUser
+        },
         '/user/:id': {
           name: '/admin/user/:id',
           component: EditUser
@@ -126,7 +130,6 @@ export default (router) => {
       transition.redirect(loginUrl)
       return
     }
-    console.log(toPath)
     let to = transition.to
     setActiveMenu(store, to.name)
     transition.next()

@@ -37,7 +37,7 @@
             <div class="operation-group">
               <a v-link="'/admin/user/' + user.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
               <a  v-link="'/admin/user/' + user.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
-              <a  href="javascript:void(0)" title="删除" @click="deleteUser(user.id)"><i class="icon-remove"></i></a>
+              <a  href="javascript:void(0)" title="删除" @click="onDeleteUser(user.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
         </tr>
@@ -47,7 +47,7 @@
 
       <div class="fg-toolbar">
         <div class="fg-toolbar-operation">
-          <button type="button" class="btn btn-success" @click="deleteUser()">删除</button>
+          <button type="button" class="btn btn-success" @click="onDeleteUser()">删除</button>
           <a v-link="'/admin/user/add?type=new'" class="btn btn-success">新增</a>
         </div>
         <Pagination :cur-page="users.pageInfo.curPage"  :page-size="users.pageInfo.pageSize"   :total="users.pageInfo.total" :total-page="users.pageInfo.totalPage" @go-page="startSearchUser"></Pagination>
@@ -59,11 +59,12 @@
 <script type="text/ecmascript-6">
   import {getPermission} from 'my_vuex/getters/auth'
   import {getBreadCrumb} from 'my_vuex/getters/getters'
-  import {getUsers, getCheckAll} from 'my_vuex/getters/user'
+  import {getUsers, getCheckAll, hasCheck} from 'my_vuex/getters/user'
   import {searchUser, checkUser, deleteUser} from 'my_vuex/actions/user'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
+  import {toggleDialog} from 'my_vuex/actions/actions'
   export default {
     components: {
       Content,
@@ -72,7 +73,7 @@
     },
     computed: {
       title: function () {
-        return '角色管理'
+        return '用户管理'
       }
     },
     methods: {
@@ -83,6 +84,29 @@
       startSearchUser: function (page) {
         let searchKeyword = this.$els.search.value.trim()
         this.searchUser({searchKeyword, curPage: page || 1})
+      },
+      onDeleteUser: function (id) {
+        let vm = this
+        if (!(id || vm.hasCheck)) {
+          vm.toggleDialog({
+            content: '请选择要删除的用户',
+            show: true,
+            auto: true,
+            hasSuccessBtn: false,
+            hasCloseBtn: false
+          })
+        } else {
+          vm.toggleDialog({
+            content: '是否删除用户',
+            show: true,
+            hasSuccessBtn: true,
+            hasCloseBtn: true,
+            auto: false,
+            success: () => {
+              vm.deleteUser(id)
+            }
+          })
+        }
       }
     },
     route: {
@@ -101,12 +125,14 @@
         breads: getBreadCrumb,
         users: getUsers,
         checkAll: getCheckAll,
-        permission: getPermission
+        permission: getPermission,
+        hasCheck: hasCheck
       },
       actions: {
         searchUser,
         checkUser,
-        deleteUser
+        deleteUser,
+        toggleDialog
       }
     }
   }

@@ -5,11 +5,11 @@
     </div>
     <div class="pagination " >
       <a tabindex="0" class="first pg-button  " :class="{'pg-state-disabled':isFirst}" @click="onPageClick($event, 1)">首页</a>
-      <a tabindex="0" class="previous pg-button " :class="{'pg-state-disabled' :hasPre}"  @click="onPageClick($event, 'next')">上一页</a>
+      <a tabindex="0" class="previous pg-button " :class="{'pg-state-disabled' :hasPre}"  @click="onPageClick($event, 'pre')">上一页</a>
     <span v-for = "page in pages" track-by="$index">
         <a tabindex="0" class=" pg-button" :class="{'pg-state-disabled':page.isCurrent}" @click="onPageClick($event, page.idx)">{{page.idx}}</a>
     </span>
-      <a tabindex="0" class="next pg-button " :class="{'pg-state-disabled':hasNext}" @click="onPageClick($event, 'pre')">下一页</a>
+      <a tabindex="0" class="next pg-button " :class="{'pg-state-disabled':hasNext}" @click="onPageClick($event, 'next')">下一页</a>
       <a tabindex="0" class="last pg-button " :class="{'pg-state-disabled':isLast}"  @click="onPageClick($event, totalPage)">尾页</a>
     </div>
   </div>
@@ -54,11 +54,11 @@
       },
       hasNext: function () {
         let vm = this
-        return !(vm.pages[vm.pages.length - 1] < vm.totalPage)
+        return vm.curPage === vm.totalPage
       },
       hasPre: function () {
         let vm = this
-        return !(vm.pages[0] > 1)
+        return vm.curPage === 1
       },
       pages: function () {
         let vm = this

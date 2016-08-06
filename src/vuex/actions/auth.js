@@ -3,6 +3,7 @@
  */
 import {AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_PERMISSION} from 'my_vuex/mutations/mutation-types'
 import Server from 'src/api/server.js'
+import {toggleDialog} from 'my_vuex/actions/actions'
 let forEach = require('lodash/forEach')
 let baseUrl = '/user'
 /*
@@ -10,7 +11,7 @@ let baseUrl = '/user'
  * */
 export const login = (store, {loginName, password}) => {
   let url = baseUrl + '/login'
-  Server.request({
+  return Server.request({
     method: 'post',
     url,
     data: {
@@ -18,6 +19,11 @@ export const login = (store, {loginName, password}) => {
       password
     }
   }).then((res) => {
+    toggleDialog(store, {
+      content: '登录成功',
+      show: true,
+      auto: true
+    })
     resolveLogin(store, res.result)
   })
 }

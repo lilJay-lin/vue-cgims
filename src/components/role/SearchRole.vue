@@ -35,7 +35,7 @@
             <div class="operation-group">
               <a v-link="'/admin/role/' + role.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
               <a  v-show="permission.roleManager" v-link="'/admin/role/' + role.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
-              <a  v-show="permission.roleManager" href="javascript:void(0)" title="删除" @click="deleteRole(role.id)"><i class="icon-remove"></i></a>
+              <a  v-show="permission.roleManager" href="javascript:void(0)" title="删除" @click="onDeleteRole(role.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
         </tr>
@@ -45,7 +45,7 @@
 
       <div class="fg-toolbar">
         <div class="fg-toolbar-operation">
-          <button type="button" class="btn btn-success" @click="deleteRole()" v-show="permission.roleManager">删除</button>
+          <button type="button" class="btn btn-success" @click="onDeleteRole()" v-show="permission.roleManager">删除</button>
           <a v-link="'/admin/role/add?type=new'" class="btn btn-success" v-show="permission.roleManager">新增</a>
         </div>
         <Pagination :cur-page="roles.pageInfo.curPage"  :page-size="roles.pageInfo.pageSize"   :total="roles.pageInfo.total" :total-page="roles.pageInfo.totalPage" @go-page="startSearchRole"></Pagination>
@@ -55,8 +55,9 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
+  import {toggleDialog} from 'my_vuex/actions/actions'
   import {getBreadCrumb} from 'my_vuex/getters/getters'
-  import {getRoles, getCheckAll} from 'my_vuex/getters/role'
+  import {getRoles, getCheckAll, hasCheck} from 'my_vuex/getters/role'
   import {searchRole, checkRole, deleteRole} from 'my_vuex/actions/role'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
@@ -81,6 +82,29 @@
       startSearchRole: function (page) {
         let searchKeyword = this.$els.search.value.trim()
         this.searchRole({searchKeyword, curPage: page || 1})
+      },
+      onDeleteRole: function (id) {
+        let vm = this
+        if (!(id || vm.hasCheck)) {
+          vm.toggleDialog({
+            content: '请选择要删除的角色',
+            show: true,
+            auto: true,
+            hasSuccessBtn: false,
+            hasCloseBtn: false
+          })
+        } else {
+          vm.toggleDialog({
+            content: '是否删除角色',
+            show: true,
+            hasSuccessBtn: true,
+            hasCloseBtn: true,
+            auto: false,
+            success: () => {
+              vm.deleteRole(id)
+            }
+          })
+        }
       }
     },
     route: {
@@ -100,12 +124,14 @@
         breads: getBreadCrumb,
         roles: getRoles,
         checkAll: getCheckAll,
-        permission: getPermission
+        permission: getPermission,
+        hasCheck: hasCheck
       },
       actions: {
         searchRole,
         checkRole,
-        deleteRole
+        deleteRole,
+        toggleDialog
       }
     }
   }
