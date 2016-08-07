@@ -2,14 +2,12 @@
   <div class="uploader-identity">
       <span class="btn" :class="classObject">
         {{title}}
-        <input type="file" :disabled="disabled" @change="onUploadFile"/>
+        <input type="file" :name="name" :disabled="disabled" @change="onUploadFile"/>
       </span>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import Server from 'src/api/server.js'
-  let forEach = require('lodash/forEach')
-  let isFunction = require('lodash/isFunction')
   export default {
     props: {
       classObject: {
@@ -31,9 +29,12 @@
         default: false
       },
       filter: {
-        type: [Array, Function],
-        default: () => {
-          return ['image']
+        type: Function,
+        default: (file) => {
+          let name = file.name
+          let type = file.type
+          type = !type && name.substring(name.lastIndexOf('.') + 1) || type
+          return /png|jpg|jpeg|gif/.test(type)
         }
       },
       filterMsg: {
@@ -48,6 +49,10 @@
           return []
         }
       },
+      name: {
+        type: String,
+        default: ''
+      },
       url: {
         type: String,
         default: ''
@@ -56,25 +61,17 @@
     methods: {
       onUploadFile: function (e) {
         let vm = this
-        let filter = vm.filter
         let file = e.target.files[0]
         let val = 1
         let idx = vm.files.length
-        if (isFunction(filter)) {
-          val = filter(file)
-        } else {
-          forEach(filter, (type) => {
-            val = ~file.type.indexOf(type) ? 1 : 0
-          })
-        }
-        vm.files.push(file)
-        val ? (vm.uploadFile(file, idx), vm.readAsDataURL(file, idx)) : vm.$dispatch('file-upload-error', vm.filterMsg)
+        val = vm.filter(file)
+        val ? (vm.uploadFile(file, idx), vm.readAsDataURL(file, idx), vm.files.push(file)) : vm.$dispatch('file-upload-error', vm.name, vm.filterMsg)
       },
       readAsDataURL: function (file, idx) {
         let vm = this
         let fileReader = new window.FileReader()
         fileReader.onload = (e) => {
-          vm.$dispatch('file-upload-review', e.target.result, idx)
+          vm.$dispatch('file-upload-review', vm.name, e.target.result, idx)
         }
         fileReader.readAsDataURL(file)
       },
@@ -84,15 +81,15 @@
         if (url) {
           let formData = new window.FormData()
           formData.append('theFile', file)
-          vm.$dispatch('file-upload-loading', 'loading', idx)
+          vm.$dispatch('file-upload-loading', vm.name, 'loading', idx)
           Server.request({
             url,
             method: 'post',
             data: formData
           }).then((res) => {
-            vm.$dispatch('file-upload-success', 'assets/img/upload_error.png', idx)
+            vm.$dispatch('file-upload-success', vm.name, res.result, idx)
           }, (res) => {
-            vm.$dispatch('file-upload-success', 'assets/img/upload_error.png', idx)
+            vm.$dispatch('file-upload-success', vm.name, '/assets/img/upload_error.png', idx)
           })
         }
       }

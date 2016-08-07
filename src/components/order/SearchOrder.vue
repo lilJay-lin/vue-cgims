@@ -4,16 +4,20 @@
       <div class="dataTables-filter-wrap order">
         <div class="dataTables-filter">
           <label>
-            <select class="form-control" v-el:order_status>
+            <select class="form-control" v-el:order_status @change="setOrderStatus">
               <option value="" selected>全部状态</option>
-              <option :value="status" v-for="status in queryOrderStatus">{{status}}</option>
+              <option :value="status" v-for="status in orderStatus | filterStatus 'select'" track-by="$index">{{status}}</option>
             </select>
             <select class="form-control" v-el:service_type>
               <option value="" selected>全部类型</option>
               <option value="配送安装">配送安装</option>
               <option value="维修">维修</option>
             </select>
-            <select class="form-control" v-el:creator_id>
+            <select class="form-control" v-el:creator_id v-if="isPersonal">
+              <option  v-for="slave in slaves" :value="slave.id">{{slave.name}}</option>
+            </select>
+            <select class="form-control" v-el:creator_id v-else>
+              <option value="" selected>全部</option>
               <option  v-for="user in users.list" :value="user.id">{{user.name}}</option>
             </select>
             <input type="date" v-el:begin_time/>
@@ -26,7 +30,7 @@
         </div>
       </div>
       <div class="operation-list"  v-el:order_operation @mouseover="keepOperaShow" @mouseout="hideOrderOpera">
-        <a href="javascript:void(0)" v-for="status in orderStatus"  :title="status" @click="onDealOrder(status)"><i class="icon-link"></i>{{status}}</a>
+        <a href="javascript:void(0)" track-by="$index" v-for="status in orderStatus | filterStatus 'change' "  :title="'status'" @click="onDealOrder(status)"><i class="icon-link"></i>{{status}}</a>
       </div>
       <div class="operation-list" v-el:order_comment  @mouseover="keepCommentShow" @mouseout="hideOrderComment">
         <div class="operation-comment-area">
@@ -67,7 +71,7 @@
           </td>
           <td v-show="hasPermission" class="operation-group-td">
             <div class="operation-group">
-              <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id)"><i class="icon-th-list"></i>操作</a>
+              <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id, order.orderStatus)"><i class="icon-th-list"></i>操作</a>
               <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-flag" :class="{'red': order.description !== ''}"></i>备注</a>
             </div>
           </td>
@@ -79,7 +83,7 @@
         <div class="fg-toolbar-operation" v-show="hasPermission">
           <select class="form-control" v-el:action>
             <option value="删除" selected>删除</option>
-            <option :value="status" v-for="status in orderStatus">{{status}}</option>
+            <option :value="status" v-for="status in orderStatus | filterStatus 'batch'" track-by="$index">{{status}}</option>
           </select>
           <button type="button" class="btn btn-success" @click="onDealBatch()">批量操作</button>
         </div>
@@ -91,9 +95,9 @@
 <script type="text/ecmascript-6">
   import {toggleDialog} from 'my_vuex/actions/actions'
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {getOrders, getCheckAll, getOrderStatus, getQueryOrderStatus, isPersonal, hasCheck} from 'my_vuex/getters/order'
+  import {getOrders, getCheckAll, getOrderStatus, isPersonal, hasCheck, getSlaves} from 'my_vuex/getters/order'
   import {searchOrder, checkOrder, dealOrder, updateOrderComment, setOrderPersonal} from 'my_vuex/actions/order'
-  import {getPermission} from 'my_vuex/getters/auth'
+  import {getPermission, getAuth} from 'my_vuex/getters/auth'
   import {getUsers} from 'my_vuex/getters/user'
   import {searchUser} from 'my_vuex/actions/user'
   import Content from 'components/Content'
@@ -102,6 +106,16 @@
   import Region from 'components/Region'
   import {css} from 'src/util/dom'
   export default {
+    props: {
+      searchStatus: {
+        type: String,
+        default: ''
+      },
+      checkStatus: {
+        type: String,
+        default: ''
+      }
+    },
     components: {
       Content,
       Widget,
@@ -199,9 +213,10 @@
           }
         })
       },
-      showOrderOpera: function (e, id) {
+      showOrderOpera: function (e, id, status) {
         let el = this.$els.order_operation
         el.setAttribute('curren', id)
+        this.checkStatus = status
         this.show(e, el)
       },
       show: function (e, el) {
@@ -211,7 +226,8 @@
         let left = e.clientX
         let height = window.innerHeight
         let width = window.innerWidth
-        top = top + elHeight > height ? height - elHeight - (this.isPersonal ? 50 : 80) : top
+        let mL = top + elHeight - height
+        top = mL > 0 ? top - mL - 45 : top
         left = left + elWidth > width ? width - elWidth - 40 : left
         css(el, {
           display: 'block',
@@ -244,25 +260,41 @@
         css(this.$els.order_comment, {
           display: 'block'
         })
+      },
+      setOrderStatus: function (e) {
+        this.searchStatus = e.target.value
+      },
+      filter: function (arr, val) {
+        let newArr = arr.slice(0)
+        let idx = newArr.indexOf(val)
+        ~idx && newArr.splice(idx, 1)
+        return newArr
       }
     },
     route: {
       data (transition) {
         let {to: {path, query: {back}}} = transition
         let orders = this.orders
-        this.searchUser({page: 9999})
-        let isPersonal = false
+        this.searchUser({pageSize: 9999})
+        let isPersonal = this.isPersonal
         let permission = this.permission
         let hasPermission = permission.orderManager || permission.orderView
-        if (path === '/admin/user/order') {
+        if (~path.indexOf('/admin/user/order')) {
           isPersonal = true
           hasPermission = permission.userOrderManager
+        } else {
+          isPersonal = false
         }
         if (!hasPermission) {
           transition.redirect('/admin/forbidden')
         }
         this.setOrderPersonal(isPersonal)
-        back ? this.searchOrder({search: orders.search, curPage: orders.pageInfo.curPage}) : this.searchOrder({})
+        let search = back ? (orders.search || {}) : {}
+        if (isPersonal && this.slaves.length > 0) {
+          let idx = this.slaves.indexOf(this.auth.id)
+          search.creatorId = ~idx ? this.auth.id : this.slaves[0].id
+        }
+        back ? this.searchOrder({search: search, curPage: orders.pageInfo.curPage}) : this.searchOrder({search: search})
       }
     },
     vuex: {
@@ -272,11 +304,12 @@
         checkAll: getCheckAll,
         region: getRegion,
         users: getUsers,
+        slaves: getSlaves,
         orderStatus: getOrderStatus,
-        queryOrderStatus: getQueryOrderStatus,
         permission: getPermission,
         isPersonal: isPersonal,
-        hasCheck: hasCheck
+        hasCheck: hasCheck,
+        auth: getAuth
       },
       actions: {
         searchOrder,
@@ -286,6 +319,24 @@
         updateOrderComment,
         setOrderPersonal,
         toggleDialog
+      }
+    },
+    filters: {
+      filterStatus: function (arr, type) {
+        let vm = this
+        let res = []
+        let checkStatus = vm.checkStatus
+        let searchStatus = vm.searchStatus
+        let select = 'select'
+        let batch = 'batch'
+        if (vm.isPersonal) {
+          let arr1 = arr.slice(1, 5)
+          arr1.push(arr[arr.length - 1])
+          res = type === select ? arr.slice(0, 2) : (type === batch && searchStatus === '' ? arr1 : searchStatus === arr[0] ? arr1 : [arr[3], arr[9]])
+        } else {
+          res = type === select ? arr : (type === batch ? (searchStatus === '' ? arr : vm.filter(arr, searchStatus)) : vm.filter(arr, checkStatus))
+        }
+        return res
       }
     }
   }

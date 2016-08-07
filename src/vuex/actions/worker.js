@@ -3,7 +3,7 @@
  */
 import Server from 'src/api/server.js'
 import {RECEIVE_WORKER, CHECK_ALL_WORKER, CHECK_WORKER, DELETE_WORKER, RECEIVE_WORKER_DETAIL, SET_WORKER_MODE, SET_WORKER} from 'my_vuex/mutations/worker'
-import {trim} from 'src/util/util'
+import {trim, dateFormat} from 'src/util/util'
 import {toggleDialog} from 'my_vuex/actions/actions'
 /*
  * 获取师傅列表
@@ -66,6 +66,7 @@ export const showWorkerDetail = ({dispatch}, id) => {
     let worker = res.result
     if (worker) {
       worker.receiveType = worker.receiveType && parseInt(worker.receiveType, 10)
+      worker.birthday = dateFormat(worker.birthday)
       let itemsValue = worker.serviceItems
       if (itemsValue) {
         let items = JSON.parse(itemsValue)

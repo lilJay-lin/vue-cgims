@@ -50,7 +50,7 @@
           <label class="control-label">产品信息</label>
           <div class="controls">
             <input type="text" :readOnly="isQuery" @change="setData('productInfo', $event)":value="order.productInfo"/>
-            <file-upload title="添加图片" :disabled="isQuery" :url="productUploadURL" @file-upload-loading="productUploadLoading" @file-upload-success="productUploadSuccess"></file-upload>
+            <file-upload title="添加图片" :name="'productImgs'" :disabled="isQuery" :url="productUploadURL" @file-upload-error="uploadError" @file-upload-loading="uploadLoading" @file-upload-success="uploadSuccess"></file-upload>
           </div>
           <div class="controls-pics">
             <div class="controls-pics-item" v-for="src in order.productImgs" track-by="$index" v-show="src !== ''">
@@ -64,11 +64,12 @@
           <label class="control-label">物流信息</label>
           <div class="controls">
             <input type="text" :readOnly="isQuery" @change="setData('logisticsInfo', $event)":value="order.logisticsInfo"/>
-            <file-upload title='添加图片' :disabled="isQuery" :url="logisticsUploadURL" @file-upload-loading="logisticsUploadLoading" @file-upload-success="logisticsUploadSuccess"></file-upload>
+            <file-upload title='添加图片' :name="'logisticsImgs'" :disabled="isQuery" :url="logisticsUploadURL" @file-upload-error="uploadError" @file-upload-loading="uploadLoading" @file-upload-success="uploadSuccess"></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in order.logisticsImgs" track-by="$index">
-              <img :src="src" alt="">
+            <div class="controls-pics-item" v-for="src in order.logisticsImgs" track-by="$index"  v-show="src !== ''">
+              <span v-if="src === 'loading'" class="loading"></span>
+              <img :src="src" alt="" v-else>
               <a v-if="isEdit" v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('logisticsImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
@@ -77,11 +78,12 @@
           <label class="control-label">维修信息</label>
           <div class="controls">
             <input type="text" :readOnly="isQuery" @change="setData('repairInfo', $event)":value="order.repairInfo"/>
-            <file-upload title="添加图片" :disabled="isQuery" :url="repairUploadURL" @file-upload-loading="repairUploadLoading" @file-upload-success="repairUploadSuccess" ></file-upload>
+            <file-upload title="添加图片" :name="'repairImgs'" :disabled="isQuery" :url="repairUploadURL" @file-upload-error="uploadError" @file-upload-loading="uploadLoading" @file-upload-success="uploadSuccess" ></file-upload>
           </div>
           <div class="controls-pics">
-            <div class="controls-pics-item" v-for="src in order.repairImgs" track-by="$index">
-              <img :src="src" alt="">
+            <div class="controls-pics-item" v-for="src in order.repairImgs" track-by="$index"  v-show="src !== ''">
+              <span v-if="src === 'loading'" class="loading"></span>
+              <img :src="src" alt="" v-else>
               <a v-if="isEdit" href="javascript:void(0)" @click="onDealOrderImage('repairImgs', $index, 'del')"><i class="icon-remove"></i></a>
             </div>
           </div>
@@ -91,17 +93,17 @@
           <div class="controls label-inline">
             <label>
               <div class="radio" >
-                <span :class="{checked: order.checked === 1}">
-                  <input type="radio" :disabled="isQuery" value=1 name="checked" @change="setData('checked', $event)"/>
+                <span :class="{checked: order.checked}">
+                  <input type="radio" :disabled="isQuery" value='1' name="checked" @change="setData('checked', $event)"/>
                 </span>
               </div>
               是
-              <input type="text" :readOnly="isQuery" :value="order.checkInfo" v-show="order.checked === 1" @change="setData('checkInfo', $event)"/>
+              <input type="text" :readOnly="isQuery" :value="order.checkInfo" v-show="order.checked" @change="setData('checkInfo', $event)"/>
             </label>
             <label>
               <div class="radio" >
-                <span :class="{checked: order.checked === 0}">
-                  <input type="radio" name="checked" :disabled="isQuery" value=0 @change="setData('checked', $event)"/>
+                <span :class="{checked: !order.checked}">
+                  <input type="radio" name="checked" :disabled="isQuery" value='0' @change="setData('checked', $event)"/>
                 </span>
               </div>
               否
@@ -166,7 +168,7 @@
         <div class="control-group">
           <label class="control-label">创建人</label>
           <div class="controls">
-            <input type="text" class="span5" placeholder="创建人"  :value="order.creatorId" readonly="true" />
+            <input type="text" class="span5" placeholder="创建人"  :value="order.user.name" readonly="true" />
           </div>
         </div>
         <div class="control-group">
@@ -267,10 +269,11 @@
   import Region from 'components/Region'
   import FileUpload from 'components/FileUpload'
   import {getPermission} from 'my_vuex/getters/auth'
-  import {getDetailOrder, getUIOptions, getOrderStatus, isPersonal, getBaseUrl, getAddOrderStatus} from 'my_vuex/getters/order'
+  import {getDetailOrder, getUIOptions, getOrderStatus, isPersonal, getBaseUrl} from 'my_vuex/getters/order'
   import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage, setOrderPersonal} from 'my_vuex/actions/order'
   import {getWorkers} from 'my_vuex/getters/worker'
   import {searchWorker} from 'my_vuex/actions/worker'
+  import {toggleDialog} from 'my_vuex/actions/actions'
   export default {
     components: {
       Content,
@@ -279,9 +282,6 @@
       Region,
       RadioGroup,
       FileUpload
-    },
-    detached () {
-      this.clearOrderDetail()
     },
     computed: {
       title: function () {
@@ -306,7 +306,9 @@
         return this.mode === 'query'
       },
       orderStatus: function () {
-        let status = this.mode === 'new' ? this.addStatus : this.status
+        let arr = this.status
+        let isNew = this.mode === 'new'
+        let status = this.isPersonal ? (isNew ? arr.slice(0, 4) : arr.slice(0, 2)) : (isNew ? arr.slice(0, 8) : arr)
         return status.map((val, idx) => {
           return {
             name: val,
@@ -374,28 +376,25 @@
         let obj = {}
         let val = e.target.value
         if (key === 'checked') {
-          val = parseInt(val, 10)
+          val = val === '1'
         }
         obj[key] = val
         this.setOrder(obj)
       },
-      productUploadLoading: function (src) {
-        this.onDealOrderImage('productImgs', src, 'add')
+      uploadError: function (name, msg) {
+        this.toggleDialog({
+          content: msg,
+          show: true,
+          auto: true,
+          hasSuccessBtn: false,
+          hasCloseBtn: false
+        })
       },
-      logisticsUploadLoading: function (src) {
-        this.onDealOrderImage('logisticsImgs', src, 'add')
+      uploadLoading: function (name, src) {
+        this.onDealOrderImage(name, src, 'add')
       },
-      repairUploadLoading: function (src) {
-        this.onDealOrderImage('repairImgs', src, 'add')
-      },
-      productUploadSuccess: function (src, idx) {
-        this.order.productImgs[idx] === 'loading' && this.onDealOrderImage('productImgs', src, 'add', idx)
-      },
-      logisticsUploadSuccess: function (src, idx) {
-        this.order.logisticsImgs[idx] === 'loading' && this.onDealOrderImage('logisticsImgs', src, 'add', idx)
-      },
-      repairUploadSuccess: function (src, idx) {
-        this.order.logisticsImgs[idx] === 'loading' && this.onDealOrderImage('repairImgs', src, 'add', idx)
+      uploadSuccess: function (name, src, idx) {
+        this.order[name][idx] === 'loading' && this.onDealOrderImage(name, src, 'add', idx)
       },
       onDealOrderImage: function (key, src, type, idx) {
         this.dealOrderImage({
@@ -432,9 +431,9 @@
             type = 'query'
           }
         }
+        this.clearOrderDetail()
         this.setOrderPersonal(isPersonal)
         this.setOrderMode(type)
-        this.clearOrderDetail()
         this.searchWorker({})
         if (type !== 'new') {
           return this.showOrderDetail(id)
@@ -451,7 +450,6 @@
         isPersonal: isPersonal,
         region: getRegion,
         status: getOrderStatus,
-        addStatus: getAddOrderStatus,
         permission: getPermission,
         baseUrl: getBaseUrl
       },
@@ -463,7 +461,8 @@
         clearOrderDetail,
         setOrder,
         dealOrderImage,
-        setOrderPersonal
+        setOrderPersonal,
+        toggleDialog
       }
     }
   }

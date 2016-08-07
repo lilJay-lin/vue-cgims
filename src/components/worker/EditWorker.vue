@@ -27,7 +27,7 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="头像" url="/workman/upload/headImg" @file-upload-loading="headImgUploadSuccess" @file-upload-success="headImgUploadSuccess" ></file-upload>
+            <file-upload :name="'headImg'" :disabled="isQuery" title="头像" url="/workman/upload/headImg" @file-upload-error="uploadError" @file-upload-loading="upload" @file-upload-success="upload" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box headImg">
@@ -99,7 +99,7 @@
         </div>
         <div class="control-group">
           <label class="control-label uploader-identity-wrap">
-            <file-upload :disabled="isQuery" title="身份证正面" url="/workman/upload/idCardFace" @file-upload-loading="cardFaceUploadSuccess" @file-upload-success="cardFaceUploadSuccess" ></file-upload>
+            <file-upload :name="'idCardFace'" :disabled="isQuery" title="身份证正面" url="/workman/upload/idCardFace"@file-upload-error="uploadError" @file-upload-loading="upload" @file-upload-success="upload" ></file-upload>
           </label>
           <div class="controls">
             <div class="identity-box">
@@ -108,7 +108,7 @@
             </div>
             <div class="inner-control-group">
               <label class="control-label">
-                <file-upload :disabled="isQuery" title="身份证背面" url="/workman/upload/idCardBack" @file-upload-loading="cardBackUploadSuccess" @file-upload-success="cardBackUploadSuccess" ></file-upload>
+                <file-upload :name="'idCardBack'" :disabled="isQuery" title="身份证背面" url="/workman/upload/idCardBack"@file-upload-error="uploadError" @file-upload-loading="upload" @file-upload-success="upload" ></file-upload>
               </label>
               <div class="controls" style="padding-top:0">
                 <div class="identity-box">
@@ -163,22 +163,30 @@
         </div>
         <div class="control-group">
           <label class="control-label">服务区域</label>
-          <div class="controls service-region-radio ">
+          <div class="controls service-region-radio" v-if="service_areas.length !== 0">
             <checkbox-group :readonly="isQuery" :radios="service_areas" :name="'serviceArea'" :checked="worker.serviceArea | toArray" @radio-checked="setServiceArea"></checkbox-group>
           </div>
+          <label class="controls " v-else style="padding: 15px 0 5px;color:red">请先选择所在所在城市</label>
         </div>
         <div class="control-group">
           <label class="control-label">团队人数</label>
           <div class="controls ">
-            <input type="text" class="span30":readonly="isQuery" :value="teamPeopleNum" @change="setData('teamPeopleNum', $event)"/>
+            <input type="text" class="span30":readonly="isQuery" :value="worker.teamPeopleNum" @change="setData('teamPeopleNum', $event)"/>
             人
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">货车数量</label>
           <div class="controls ">
-            <input type="text" class="span30":readonly="isQuery" :value="truckNum" @change="setData('truckNum', $event)"/>
+            <input type="text" class="span30":readonly="isQuery" :value="worker.truckNum" @change="setData('truckNum', $event)"/>
             辆
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">货车吨位</label>
+          <div class="controls ">
+            <input type="text" class="span30":readonly="isQuery" :value="worker.tonnage" @change="setData('tonnage', $event)"/>
+            吨
           </div>
         </div>
 
@@ -186,20 +194,20 @@
           <div class="control-group">
             <label class="control-label">推荐提货点</label>
             <div class="controls">
-              <input type="text"placeholder="推荐提货点":readonly="isQuery" :value="willingPickAddress" @change="setData('willingPickAddress', $event)"/>
+              <input type="text"placeholder="推荐提货点":readonly="isQuery" :value="worker.willingPickAddress" @change="setData('willingPickAddress', $event)"/>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">提存物流</label>
             <div class="controls">
-              <input type="text" placeholder="提存物流":readonly="isQuery" :value="logistics" @change="setData('logistics', $event)"/>
+              <input type="text" placeholder="提存物流":readonly="isQuery" :value="worker.logistics" @change="setData('logistics', $event)"/>
             </div>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">优势</label>
           <div class="controls">
-            <textarea name="" class="span5" :readonly="isQuery" @change="setData('strength', $event)">{{strength}}</textarea>
+            <textarea name="" class="span5" :readonly="isQuery" @change="setData('strength', $event)">{{worker.strength}}</textarea>
           </div>
         </div>
 
@@ -207,13 +215,76 @@
           <div class="control-group">
             <label class="control-label">合作次数</label>
             <div class="controls">
-              <input type="text"placeholder="合作次数":readonly="isQuery" :value="cooperateTimes" @change="setData('cooperateTimes', $event)"/>
+              <input type="text"placeholder="合作次数":readonly="isQuery" :value="worker.cooperateTimes" @change="setData('cooperateTimes', $event)"/>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label">综合评分</label>
             <div class="controls">
-              <input type="text" placeholder="综合评分":readonly="isQuery" :value="score" @change="setData('score', $event)"/>
+              <input type="text" placeholder="综合评分":readonly="isQuery" :value="worker.score" @change="setData('score', $event)"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-title" v-if="mode === 'edit'">
+          <h3>订单查询</h3>
+        </div>
+        <div class="control-group order" v-if="mode === 'edit'">
+          <div class="control-box ">
+            <div class="search-table-box">
+              <div class="dataTables-filter-wrap order">
+                <div class="dataTables-filter">
+                  <label>
+                    <select class="form-control" v-el:order_status>
+                      <option value="" selected>全部状态</option>
+                      <option :value="status" v-for="status in orderStatus" track-by="$index">{{status}}</option>
+                    </select>
+                    <select class="form-control" v-el:service_type>
+                      <option value="" selected>全部类型</option>
+                      <option value="配送安装">配送安装</option>
+                      <option value="维修">维修</option>
+                    </select>
+                    <select class="form-control" v-el:creator_id v-if="isPersonal">
+                      <option value="" selected>全部</option>
+                      <option  v-for="slave in slaves" :value="slave.id">{{slave.name}}</option>
+                    </select>
+                    <select class="form-control" v-el:creator_id v-else>
+                      <option value="" selected>全部</option>
+                      <option  v-for="user in users.list" :value="user.id">{{user.name}}</option>
+                    </select>
+                    <input type="date" v-el:begin_time/>
+                    至
+                    <input type="date" v-el:end_time/>
+                    <input type="text" @keydown.enter="startSearchOrder(1)" v-el:search/>
+                    <button type="button" class="btn btn-info" @click="startSearchOrder(1)">搜索</button>
+                    <a v-show="hasPermission" v-link="detailUrl + '/add'" class="btn btn-info">新增</a>
+                  </label>
+                </div>
+              </div>
+              <table class="table order">
+                <thead>
+                <tr>
+                  <th>订单号</th>
+                  <th>商家信息</th>
+                  <th>接单价/服务价</th>
+                  <th>师傅</th>
+                  <th>详情</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="order in orders.list">
+                  <td>{{order.orderNumber}}</td>
+                  <td>{{order.shopInfo}}</td>
+                  <td><span class="orderPrice" :class="{'change': order.orderPriceChanged}">{{order.orderPrice}}</span>/<span class="servicePrice" :class="{'change': order.servicePriceChanged}">{{order.servicePrice}}</span></td>
+                  <td>{{order.orderNumber}}</td>
+                  <td class="description">
+                    <span>{{order.customerName}}</span><span>{{order.customerPhoneNum}}</span><span>{{order.customerAddress}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <div class="fg-toolbar">
+                <Pagination :cur-page="orders.pageInfo.curPage" :total="orders.pageInfo.total" :page-size="orders.pageInfo.pageSize" :total-page="orders.pageInfo.totalPage" @go-page="startSearchOrder"></Pagination>
+              </div>
             </div>
           </div>
         </div>
@@ -237,6 +308,11 @@
   import {getPermission} from 'my_vuex/getters/auth'
   import {getDetailWorker, getUIOptions} from 'my_vuex/getters/worker'
   import {showWorkerDetail, saveWorker, setWorkerMode, clearWorkerDetail, setWorker} from 'my_vuex/actions/worker'
+  import {toggleDialog} from 'my_vuex/actions/actions'
+  import {getOrders, getOrderStatus} from 'my_vuex/getters/order'
+  import {searchOrder} from 'my_vuex/actions/order'
+  import {getUsers} from 'my_vuex/getters/user'
+  import {searchUser} from 'my_vuex/actions/user'
   let forEach = require('lodash/forEach')
   export default {
     components: {
@@ -247,9 +323,6 @@
       RadioGroup,
       FileUpload,
       CheckboxGroup
-    },
-    detached () {
-      this.clearWorkerDetail()
     },
     computed: {
       title: function () {
@@ -319,7 +392,10 @@
         return this.createRadios(this.householdTypeArr)
       },
       service_areas: function () {
-        return this.createRadios(['端州区', '鼎湖区', '大旺区', '四会', '怀集', '广宁', '封开', '高要'])
+        let vm = this
+        let worker = vm.worker
+        let areas = worker.city === '' ? [] : (worker.province && vm.region[worker.province] && vm.region[worker.province][worker.city] || [])
+        return vm.createRadios(areas)
       },
       newCardNum: function () {
         let vm = this
@@ -331,6 +407,15 @@
       }
     },
     methods: {
+      uploadError: function (name, msg) {
+        this.toggleDialog({
+          content: msg,
+          show: true,
+          auto: true,
+          hasSuccessBtn: false,
+          hasCloseBtn: false
+        })
+      },
       createRadios: function (arr) {
         return arr.map((val, idx) => {
           return {
@@ -376,20 +461,10 @@
           'area': region[2]
         })
       },
-      headImgUploadSuccess: function (src) {
-        this.setWorker({
-          headImg: src
-        })
-      },
-      cardFaceUploadSuccess: function (src) {
-        this.setWorker({
-          idCardFace: src
-        })
-      },
-      cardBackUploadSuccess: function (src) {
-        this.setWorker({
-          idCardBack: src
-        })
+      upload: function (name, src) {
+        let obj = {}
+        obj[name] = src
+        this.setWorker(obj)
       },
       setData: function (key, e) {
         let obj = {}
@@ -407,23 +482,44 @@
           }
         }
         return str
+      },
+      startSearchOrder: function (page) {
+        let searchKeyword = this.$els.search.value.trim()
+        let orderStatus = this.$els.order_status.value.trim()
+        let serviceType = this.$els.service_type.value.trim()
+        let creatorId = this.$els.creator_id.value.trim()
+        let beginTime = this.$els.begin_time.value.trim()
+        let endTime = this.$els.end_time.value.trim()
+        let search = {
+          searchKeyword,
+          orderStatus,
+          serviceType,
+          creatorId,
+          beginTime,
+          endTime,
+          url: '/workman/' + this.worker.id + '/order'
+        }
+        this.searchOrder({search, curPage: page || 1})
       }
 
     },
     route: {
       data (transition) {
         let {to: {params: {id}, query: {type}}} = transition
-        if (id && !type) {
-          type = 'query'
-        } else if (!type) {
+        if (id) {
+          type = 'edit'
+        } else {
           type = 'new'
           this.clearWorkerDetail()
         }
-        if ((type === 'edit' || type === 'new') && !this.permission.workmanManager) {
+        if (!this.permission.workmanManager) {
           transition.redirect('/admin/forbidden')
         }
+        this.clearWorkerDetail()
         this.setWorkerMode(type)
         if (type !== 'new') {
+          this.searchUser({pageSize: 9999})
+          this.searchOrder({search: {url: '/workman/' + id + '/order'}})
           return this.showWorkerDetail(id)
         }
       }
@@ -434,14 +530,20 @@
         worker: getDetailWorker,
         mode: getUIOptions,
         permission: getPermission,
-        region: getRegion
+        region: getRegion,
+        orderStatus: getOrderStatus,
+        orders: getOrders,
+        users: getUsers
       },
       actions: {
         showWorkerDetail,
         saveWorker,
         setWorkerMode,
         clearWorkerDetail,
-        setWorker
+        setWorker,
+        toggleDialog,
+        searchOrder,
+        searchUser
       }
     },
     filters: {
@@ -451,16 +553,3 @@
     }
   }
 </script>
-<style>
-  .inner-control-group{
-    vertical-align: top;
-  }
-  .headImg.identity-box{
-    width: 200px;
-    height: 200px;
-  }
-  .identity-box{
-    width: 428px;
-    height: 270px;
-  }
-</style>

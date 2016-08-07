@@ -33,7 +33,7 @@
           <th>评价</th>
           <th>合作次数</th>
           <th>备注</th>
-          <th>操作</th>
+          <!--<th>操作</th>-->
         </tr>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@
               <span :class="{checked: worker.checked}"><input type="checkbox" :checked="worker.checked" @change="toggleCheck($event, worker.id)"></span>
             </div>
           </td>
-          <td>{{worker.workmanNumber}}</td>
+          <td><a v-link="'/admin/worker/' + worker.id">{{worker.workmanNumber}}</a></td>
           <td>{{worker.name}}</td>
           <td>{{worker.phoneNum}}</td>
           <td>{{worker.qq}}</td>
@@ -51,6 +51,7 @@
           <td>{{worker.score}}</td>
           <td>{{worker.cooperateTimes}}</td>
           <td class="description">{{worker.description}}</td>
+          <!--
           <td class="operation-group-td">
             <div class="operation-group">
               <a v-link="'/admin/worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
@@ -58,6 +59,7 @@
               <a v-show="permission.workmanManager" href="javascript:void(0)" title="删除" @click="onDeleteWorker(worker.id)"><i class="icon-remove"></i></a>
             </div>
           </td>
+          -->
         </tr>
         </tbody>
 

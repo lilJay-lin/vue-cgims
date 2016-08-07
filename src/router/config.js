@@ -12,6 +12,7 @@ import SearchWorker from 'components/worker/SearchWorker.vue'
 import EditWorker from 'components/worker/EditWorker.vue'
 import SearchOrder from 'components/order/SearchOrder.vue'
 import EditOrder from 'components/order/EditOrder.vue'
+import Forbidden from 'components/Forbidden.vue'
 import store from 'my_vuex/store'
 import {isLogin} from 'my_vuex/getters/auth'
 import {setActiveMenu} from 'my_vuex/actions/actions'
@@ -25,7 +26,7 @@ export default (router) => {
       subRoutes: {
         '/': {
           component: {
-            template: '<p>this is default view</p>'
+            template: ''
           }
         },
         '/user': {
@@ -98,9 +99,7 @@ export default (router) => {
         },
         '/forbidden': {
           name: '/admin/forbidden',
-          component: {
-            template: '<p>没有权限访问</p>'
-          }
+          component: Forbidden
         }
       }
     },

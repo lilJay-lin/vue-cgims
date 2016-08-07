@@ -39,7 +39,7 @@ export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1, pageSiz
 * */
 export const showUserDetail = ({dispatch}, id) => {
   let url = baseUrl + '/' + id
-  Server.request({
+  return Server.request({
     method: 'get',
     url
   }).then((res) => {

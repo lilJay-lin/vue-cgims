@@ -197,13 +197,37 @@
     cursor: pointer;
   }
   .slider-toggle{
+    left: 100px;
     transition: transform 0.5s linear, -webkit-transform 0.5s linear;
+  }
+  .slider-toggle.extend{
+    transform: translate3d(-100px, 0, 0) rotate3d(0, 0, 1, 90deg)
   }
   .top-nav, .right-content, .left-slider{
     transition: all 0.5s linear;
   }
+  .extend .left-slider {
+    transform: translate3d(-150px, 0, 0);
+  }
   .identity-box{
     position: relative;
+    text-align: center;
+    line-height: 270px;
+    overflow: hidden;
+  }
+
+  .inner-control-group{
+    vertical-align: top;
+  }
+  .headImg.identity-box{
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
+  }
+  .identity-box{
+    width: 280px;
+    height: 176px;
+    line-height: 176px;
   }
   .loading{
     width: 48px;
@@ -230,12 +254,55 @@
     vertical-align: top;
     position: relative;
     margin: 5px;
-  }
-  .controls-pics-item img{
-    width: 100%;
-    height: auto;
+    text-align: center;
+    line-height: 200px;
+    overflow: hidden;
   }
   .controls-pics-item a{
     background-color: #eeeeee;
+  }
+  .slider-view > ul, .slider-view{
+    width:150px
+  }
+  .top-nav, .right-content{
+    margin-left:150px;
+  }
+  .slider-view > ul > li ul li a{
+    padding-left: 42px;
+  }
+  /*
+    弹窗演示
+  */
+  .modal{
+    display: block;
+  }
+  .show-transition{
+    transition: all .3s linear;
+    opacity: 1;
+  }
+  .modal-backdrop.show-transition{
+    opacity: 0.5;
+  }
+  .show-enter, .show-leave{
+    opacity: 0;
+  }
+  .modal-backdrop.show-enter, .modal-backdrop.show-leave{
+    opacity: 0;
+  }
+
+  .service-region-radio label{
+    min-width: 100px;
+  }
+  .error_ex h1{
+    font-size: 60px;
+  }
+  .error_ex .btn {
+    margin-bottom: 20px;
+  }
+  .dataTables-filter-wrap{
+    min-height: 45px;
+  }
+  .dataTables-filter{
+    position: relative;
   }
 </style>

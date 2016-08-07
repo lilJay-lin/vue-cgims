@@ -4,7 +4,7 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_PERSONAL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
 import {getBaseUrl} from 'my_vuex/getters/order'
-import {trim} from 'src/util/util'
+import {trim, dateFormat} from 'src/util/util'
 import {toggleDialog} from 'my_vuex/actions/actions'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
@@ -17,14 +17,21 @@ export const searchOrder = ({dispatch, state}, {search = {
   serviceType: '',
   creatorId: '',
   beginTime: '',
-  endTime: ''
+  endTime: '',
+  url: ''
 }, curPage = 1}) => {
-  let url = getBaseUrl(state) + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword) +
-    '&orderStatus=' + window.encodeURIComponent(search.orderStatus) +
-    '&serviceType=' + window.encodeURIComponent(search.serviceType) +
-    '&creatorId=' + window.encodeURIComponent(search.creatorId) +
-    '&beginTime=' + window.encodeURIComponent(search.beginTime) +
-    '&endTime=' + window.encodeURIComponent(search.endTime) +
+  let searchKeyword = search.searchKeyword || ''
+  let orderStatus = search.orderStatus || ''
+  let serviceType = search.serviceType || ''
+  let creatorId = search.creatorId || ''
+  let beginTime = search.beginTime || ''
+  let endTime = endTime || ''
+  let url = (search.url || getBaseUrl(state)) + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) +
+    '&orderStatus=' + window.encodeURIComponent(orderStatus) +
+    '&serviceType=' + window.encodeURIComponent(serviceType) +
+    '&creatorId=' + window.encodeURIComponent(creatorId) +
+    '&beginTime=' + window.encodeURIComponent(beginTime) +
+    '&endTime=' + window.encodeURIComponent(endTime) +
     '&curPage=' + curPage
   return Server.request({
     url,
@@ -36,6 +43,14 @@ export const searchOrder = ({dispatch, state}, {search = {
       return order
     })
     dispatch(RECEIVE_ORDER, {
+      search: {
+        searchKeyword,
+        orderStatus,
+        serviceType,
+        creatorId,
+        beginTime,
+        endTime
+      },
       list,
       pageInfo: {
         curPage: parseInt(result.curPage, 10),
@@ -44,6 +59,15 @@ export const searchOrder = ({dispatch, state}, {search = {
         total: parseInt(result.total, 10)
       }
     })
+  }, () => {
+    dispatch(RECEIVE_ORDER, {search: {},
+      list: [],
+      pageInfo: {
+        curPage: 1,
+        pageSize: 10,
+        totalPage: 0,
+        total: 0
+      }})
   })
 }
 /*
@@ -62,7 +86,11 @@ export const showOrderDetail = ({dispatch, state}, id) => {
     order.repairImgs = getImages(order.repairImgs)
     order.logisticsImgs = getImages(order.logisticsImgs)
     order.productImgs = getImages(order.productImgs)
-    order.checked = order.checked && parseInt(order.checked)
+    order.checked = !!order.checked
+    order.createDate = dateFormat(order.createDate)
+    order.completeDate = dateFormat(order.completeDate)
+    order.user = order.user || {name: ''}
+    order.worker = order.worker || {}
     dispatch(RECEIVE_ORDER_DETAIL, res.result)
   })
 }
@@ -70,11 +98,12 @@ export const clearOrderDetail = ({dispatch}) => {
   dispatch(RECEIVE_ORDER_DETAIL, {
     orderStatus: '未收未付',
     serviceType: '配送安装',
-    checked: 1,
+    checked: true,
     repairImgs: [],
     logisticsImgs: [],
     productImgs: [],
-    workman: {}
+    workman: {},
+    user: {name: ''}
   })
 }
 
@@ -135,6 +164,7 @@ export const saveOrder = ({state, dispatch}, order) => {
     newOrder[key] = arr.join(',')
   })
   delete newOrder.workman
+  delete newOrder.user
   save({state, dispatch}, newOrder)
 }
 const save = ({state, dispatch}, order) => {
@@ -166,10 +196,11 @@ export const updateOrderComment = ({dispatch, state}, {id, description}) => {
   let orders = state.order.list
   forEach(orders, (order, idx) => {
     if (order.id === id) {
-      save({state, dispatch}, {
-        id: id,
-        description: description
-      }).then((res) => {
+      let newOrder = clone(order)
+      delete newOrder.workman
+      delete newOrder.user
+      newOrder.description = description
+      save({state, dispatch}, newOrder).then((res) => {
         dispatch(UPDATE_ORDER_DESCRIPTION, {idx, description})
       })
     }
@@ -193,3 +224,13 @@ export const dealOrderImage = ({state, dispatch}, {key, src, type, idx}) => {
   obj[key] = arr
   dispatch(SET_ORDER, obj)
 }
+/*
+export const querySlaves = ({dispatch}) => {
+  Server.request({
+    method: 'get',
+    url: '/user/self'
+  }).then((res) => {
+    dispatch(AUTH_SLAVES, res.result.slaves)
+  })
+}
+*/

@@ -5,7 +5,7 @@
         <a href="javascript:void(0)" @click.prevent="onItemClick($event, menu)">
           <i class="icon icon-th-list"></i>
           <span>{{menu.title}}</span>
-          <span class="label" v-show="menu.sub.length">{{menu.sub.length}}</span>
+          <!--<span class="label" v-show="menu.sub.length">{{menu.sub.length}}</span>-->
         </a>
         <ul v-show="menu.sub">
           <li v-for="sub in menu.sub" :class="{active: sub.name === active || sub.contains && ~sub.contains.indexOf(active)}">
