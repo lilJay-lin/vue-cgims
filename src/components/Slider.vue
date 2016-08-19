@@ -1,14 +1,13 @@
 <template>
   <ul>
-    <template v-for="menu in menus">
-      <li :class="{submenu: menu.sub.length, active: menu.name === active}" class="open">
+    <template v-for="menu in allMenus | filterMenus active" track-by="$index">
+      <li :class="{submenu: menu.sub.length, 'open': menu.close === false}">
         <a href="javascript:void(0)" @click.prevent="onItemClick($event, menu)">
           <i class="icon icon-th-list"></i>
           <span>{{menu.title}}</span>
-          <!--<span class="label" v-show="menu.sub.length">{{menu.sub.length}}</span>-->
         </a>
         <ul v-show="menu.sub">
-          <li v-for="sub in menu.sub" :class="{active: sub.name === active || sub.contains && ~sub.contains.indexOf(active)}">
+          <li v-for="sub in menu.sub" :class="{'active': sub.active === true}"  track-by="$index">
             <a v-link="sub.name" @click.prevent="onItemClick($event, sub)">{{sub.title}}</a>
           </li>
         </ul>
@@ -16,50 +15,68 @@
     </template>
   </ul>
 </template>
-<script>
-import go from '../util/go'
-export default {
-  props: {
-    menus: {
-      type: Array
+<script type="text/ecmascript-6">
+  import {isUndefined} from '../util/util'
+  import go from '../util/go'
+  const forEach = require('lodash/forEach')
+  export default {
+    props: {
+      menus: Array,
+      active: {
+        type: String,
+        default: '/'
+      }
     },
-    active: {
-      type: String,
-      default: '/'
-    }
-  },
-  filters: {
-    canOpen: function (active, menu) {
-      let res = 0
-      if (menu.sub && menu.sub.length > 0) {
-        res = menu.sub.some(function (sub) {
-          if (!res) {
-            res = sub.contains ? sub.contains.indexOf(active) > -1 : sub.name === active
-            return res
+    computed: {
+      allMenus () {
+        let vm = this
+        let allMenus = vm.menus.slice()
+        forEach(allMenus, (menu) => {
+          isUndefined(menu.close) && (menu.close = false)
+          isUndefined(menu.sub) && (menu.sub = [])
+          forEach(menu.sub, (sub) => {
+            isUndefined(sub.contains) && (sub.contains = [])
+            isUndefined(sub.active) && (sub.active = false)
+          })
+        })
+        return allMenus
+      }
+    },
+    filters: {
+      filterMenus (allMenus, active) {
+        let menus = allMenus.slice(0)
+        forEach(menus, (menu, idx) => {
+          let subs = menu.sub
+          if (subs && subs.length > 0) {
+            forEach(subs, (sub) => {
+              let isActive = sub.name === active || sub.contains && ~sub.contains.indexOf(active)
+              if (isActive) {
+                sub.active = true
+              } else {
+                sub.active = false
+              }
+            })
           }
         })
+        return menus
       }
-      return res
-    }
-  },
-  directives: {
-    open: function (open) {
-      open && this.el.classList.add('open')
-    }
-  },
-  methods: {
-    onItemClick: function (e, menu) {
-      let el = e.currentTarget
-      if (el.tagName.toLowerCase() === 'a') {
-        let parent = el.parentNode
-        let classList = parent.classList
-        if (menu.sub && menu.sub.length > 0) {
-          classList[!classList.contains('open') ? 'add' : 'remove']('open')
-        } else {
-          go(menu.name, this.$router)
+    },
+    methods: {
+      setDefault (val, def) {
+        isUndefined(val) && (val = def)
+      },
+      onItemClick: function (e, menu) {
+        let el = e.currentTarget
+        if (el.tagName.toLowerCase() === 'a') {
+          let parent = el.parentNode
+          let classList = parent.classList
+          if (menu.sub && menu.sub.length > 0) {
+            classList[!classList.contains('open') ? 'add' : 'remove']('open')
+          } else {
+            go(menu.name, this.$router)
+          }
         }
       }
     }
   }
-}
 </script>

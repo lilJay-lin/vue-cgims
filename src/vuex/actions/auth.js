@@ -3,7 +3,6 @@
  */
 import {AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_PERMISSION} from 'my_vuex/mutations/mutation-types'
 import Server from 'src/api/server.js'
-import {toggleDialog} from 'my_vuex/actions/actions'
 let forEach = require('lodash/forEach')
 let baseUrl = '/user'
 /*
@@ -19,11 +18,13 @@ export const login = (store, {loginName, password}) => {
       password
     }
   }).then((res) => {
-    toggleDialog(store, {
+/*
+toggleDialog(store, {
       content: '登录成功',
       show: true,
       auto: true
     })
+    */
     resolveLogin(store, res.result)
   })
 }
@@ -65,12 +66,19 @@ export const setPermission = ({dispatch}, permissionCodes) => {
 /*
 * 退出
 * */
-export const logout = ({dispatch}) => {
-  window.__LOGIN_USER__ = null
-  dispatch(AUTH_LOGOUT)
+export const logout = (store) => {
+  clearAuth(store)
   let url = '/user/logout'
   Server.request({
     url,
     method: 'post'
   })
+}
+
+/*
+* 清楚登录信息
+* */
+export const clearAuth = ({dispatch}) => {
+  window.__LOGIN_USER__ = null
+  dispatch(AUTH_LOGOUT)
 }

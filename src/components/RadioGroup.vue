@@ -1,9 +1,9 @@
 <template>
   <div class="label-inline">
-    <label v-for="radio in radios | showChecked" track-by="$index">
+    <label v-for="radio in radios" track-by="$index">
       <div class="radio">
         <span :class="{'checked': radio.value === checked}">
-          <input type="radio" @change="change($event, $index)" :name="name" :value="radio.value" :disabled="readonly"/>
+          <input type="radio" @click="change($event, $index)" :name="name" :value="radio.value" :disabled="readonly"/>
         </span>
       </div>
       {{radio.name}}
@@ -35,11 +35,14 @@
         this.checked = e.target.value
         this.$dispatch('radio-checked', this.checked)
       }
-    },
+    }
+/*
     filters: {
-      showChecked: function (radios) {
+      showChecked: function (radios, checked) {
         let vm = this
-        let checked = vm.checked || vm.radios.length > 0 && vm.radios[0].value
+        /!*
+        let checked = checked || vm.radios.length > 0 && vm.radios[0].value
+        *!/
         return radios.map((radio) => {
           if (radio.value === checked) {
             radio.checked = true
@@ -49,6 +52,6 @@
           return radio
         })
       }
-    }
+    }*/
   }
 </script>

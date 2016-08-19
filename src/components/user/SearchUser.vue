@@ -1,12 +1,13 @@
 <template>
   <Content :breads="breads" :title="title">
-    <Widget :padding="false" :title="title">
+    <Widget :padding="false" :title="'用户列表'">
       <div class="dataTables-filter-wrap">
         <div class="dataTables-filter">
           <label>
             <input type="text" v-el:search @keydown.enter="startSearchUser(1)"/>
             <button type="button" class="btn btn-info" @click="startSearchUser(1)">搜索</button>
           </label>
+        </div>
         </div>
       </div>
       <table class="table with-check user">

@@ -3171,7 +3171,7 @@ table.table td.description{
 .identity-box .loading, .controls-pics-item .loading{
   width: 48px;
   height: 48px;
-  background: url('./assets/loading.png') 0 0 no-repeat;
+  background: url('../img/loading.png') 0 0 no-repeat;
   background-size: cover;
   position: absolute;
   display: inline-block;

@@ -1,17 +1,17 @@
 <template>
   <Content :breads="breads" :title="title">
-    <Widget :padding="false" :title="title">
+    <Widget :padding="false" :title="'师傅列表'">
       <div class="dataTables-filter-wrap">
         <div class="dataTables-filter">
           <label>
-            <Region @select-region="selectRegion" :region="region"></Region>
+            <Region @select-region="selectRegion" :region="region" :sort-provinces="sortProvinces"></Region>
             <input type="hidden" v-el:search_region/>
             <select class="form-control" v-el:search_service>
               <option value="" selected>全部</option>
               <option value="配送安装">配送安装</option>
               <option value="维修">维修</option>
             </select>
-            <input type="text" placeholder="师傅名、电话" @keydown.enter="startSearchWorker(1)" v-el:search/>
+            <input type="text"style="width: 220px;" placeholder="工号、师傅姓名、电话、服务地区" @keydown.enter="startSearchWorker(1)" v-el:search/>
             <button type="button" class="btn btn-info"  @click="startSearchWorker(1)">搜索</button>
             <a v-show="permission.workmanManager" v-link="'/admin/worker/add?type=new'" class="btn btn-success">新增</a>
           </label>
@@ -30,8 +30,8 @@
           <th>电话</th>
           <th>qq</th>
           <th>服务地区</th>
-          <th>评价</th>
-          <th>合作次数</th>
+          <th>服务类型</th>
+          <th>合作</th>
           <th>备注</th>
           <!--<th>操作</th>-->
         </tr>
@@ -47,18 +47,18 @@
           <td>{{worker.name}}</td>
           <td>{{worker.phoneNum}}</td>
           <td>{{worker.qq}}</td>
-          <td>{{worker.serviceArea}}</td>
-          <td>{{worker.score}}</td>
-          <td>{{worker.cooperateTimes}}</td>
+          <td style="width:220px">{{worker.serviceArea}}</td>
+          <td style="width:60px">{{worker.serviceType}}</td>
+          <td style="width:30px">{{worker.cooperateTimes}}</td>
           <td class="description">{{worker.description}}</td>
           <!--
-          <td class="operation-group-td">
-            <div class="operation-group">
-              <a v-link="'/admin/worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
-              <a v-show="permission.workmanManager" v-link="'/admin/worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
-              <a v-show="permission.workmanManager" href="javascript:void(0)" title="删除" @click="onDeleteWorker(worker.id)"><i class="icon-remove"></i></a>
-            </div>
-          </td>
+            <td class="operation-group-td">
+              <div class="operation-group">
+                <a v-link="'/admin/worker/' + worker.id + '?type=query'" title="详情"><i class="icon-search"></i></a>
+                <a v-show="permission.workmanManager" v-link="'/admin/worker/' + worker.id + '?type=edit'" title="更新"><i class="icon-pencil"></i></a>
+                <a v-show="permission.workmanManager" href="javascript:void(0)" title="删除" @click="onDeleteWorker(worker.id)"><i class="icon-remove"></i></a>
+              </div>
+            </td>
           -->
         </tr>
         </tbody>
@@ -75,7 +75,7 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-  import {toggleDialog} from 'my_vuex/actions/actions'
+  import {toggleDialog, setRegion} from 'my_vuex/actions/actions'
   import {getPermission} from 'my_vuex/getters/auth'
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getWorkers, getCheckAll, hasCheck} from 'my_vuex/getters/worker'
@@ -85,6 +85,14 @@
   import Pagination from 'components/Pagination'
   import Region from 'components/Region'
   export default {
+    props: {
+      sortProvinces: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      }
+    },
     components: {
       Content,
       Widget,
@@ -145,6 +153,8 @@
         if (!(permission.orderManager || permission.orderView || permission.workmanManager || permission.userOrderManager)) {
           transition.redirect('/admin/forbidden')
         }
+        this.setRegion()
+        this.sortProvinces = window.__PROVINCE_NAMES__ && window.__PROVINCE_NAMES__.split(',') || []
         let workers = this.workers
         back ? this.searchWorker({search: workers.search, curPage: this.workers.pageInfo.curPage}) : this.searchWorker({})
       }
@@ -162,7 +172,8 @@
         searchWorker,
         checkWorker,
         deleteWorker,
-        toggleDialog
+        toggleDialog,
+        setRegion
       }
     }
   }

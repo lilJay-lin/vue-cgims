@@ -46,7 +46,12 @@ export const showRoleDetail = ({dispatch}, id) => {
   })
 }
 export const clearRoleDetail = ({dispatch}) => {
-  dispatch(RECEIVE_ROLE_DETAIL, {permissions: []})
+  dispatch(RECEIVE_ROLE_DETAIL, {
+    id: '',
+    name: '',
+    description: '',
+    permissions: []
+  })
 }
 
 /*
@@ -76,7 +81,6 @@ export const deleteRole = ({state, dispatch}, id) => {
   } else {
     ids.push(id)
   }
-  dispatch(DELETE_ROLE, ids)
   Server.request({
     url,
     method: 'post',
@@ -84,6 +88,7 @@ export const deleteRole = ({state, dispatch}, id) => {
       ids: ids.join(',')
     }
   }).then((res) => {
+    dispatch(DELETE_ROLE, ids)
     searchRole({dispatch}, {searchKeyword: roles.searchKeyword, curPage: roles.pageInfo.curPage})
   })
 }

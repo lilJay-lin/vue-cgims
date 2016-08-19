@@ -26,30 +26,24 @@
     </aside>
     <footer>
       <div class="footer"  v-el:footer>
-        底部fixed
+        信息管理系统
       </div>
     </footer>
     <div class="slider-toggle" @click="toggleSlider"></div>
     <go-top :top=""></go-top>
-    <dialog :success = 'dialog.success' :close="dialog.close" :title="dialog.title" :content="dialog.content" :has-success-btn="dialog.hasSuccessBtn"
-            :has-close-btn="dialog.hasCloseBtn" :show="dialog.show" :auto="dialog.auto" @dialog-close="onDialogClose">
-    </dialog>
   </div>
 </template>
 <script>
   import Slider from 'src/components/Slider.vue'
   import GoTop from 'src/components/GoTop.vue'
-  import Dialog from 'src/components/Dialog.vue'
-  import {getSlider, getDialog} from './vuex/getters/getters'
-  import {toggleDialog} from './vuex/actions/actions'
+  import {getSlider} from './vuex/getters/getters'
   import {getAuth} from 'my_vuex/getters/auth'
   import {logout} from 'my_vuex/actions/auth'
   import {css} from './util/dom.js'
   export default {
     components: {
       Slider,
-      GoTop,
-      Dialog
+      GoTop
     },
     ready: function () {
       let me = this
@@ -69,31 +63,20 @@
         let hasClass = el.classList.contains(cls)
         el.classList[hasClass ? 'remove' : 'add'](cls)
         container.classList[hasClass ? 'remove' : 'add'](cls)
-      },
-      onDialogClose: function () {
-        this.toggleDialog({
-          show: false
-        })
       }
     },
     vuex: {
       getters: {
         slider: getSlider,
-        auth: getAuth,
-        dialog: getDialog
+        auth: getAuth
       },
       actions: {
-        logout,
-        toggleDialog
-      }
-    },
-    route: {
-      data: function () {
-        console.log('is enter')
+        logout
       }
     }
   }
 </script>
+<!--
 <style>
   .dataTables-filter-wrap input, .dataTables-filter-wrap .btn, .dataTables-filter-wrap select{
     margin-bottom: 10px;
@@ -108,7 +91,7 @@
     user-select: none;
   }
   .relation-list li{
-    min-width: auto;
+    width: auto;
   }
   .pagination-box{
     margin-top: 15px;
@@ -212,8 +195,13 @@
   .identity-box{
     position: relative;
     text-align: center;
+  }
+  .identity-box>a:first-child{
     line-height: 270px;
-    overflow: hidden;
+  }
+  .identity-box img{
+    width:100%;
+    vertical-align: middle;
   }
 
   .inner-control-group{
@@ -221,15 +209,17 @@
   }
   .headImg.identity-box{
     width: 200px;
-    height: 200px;
+    min-height: 200px;
+  }
+  .headImg.identity-box>a:first-child{
     line-height: 200px;
   }
   .identity-box{
     width: 280px;
-    height: 176px;
+    min-height: 176px;
     line-height: 176px;
   }
-  .loading{
+  .identity-box .loading, .controls-pics-item .loading{
     width: 48px;
     height: 48px;
     background: url('./assets/loading.png') 0 0 no-repeat;
@@ -255,8 +245,7 @@
     position: relative;
     margin: 5px;
     text-align: center;
-    line-height: 200px;
-    overflow: hidden;
+    height: auto
   }
   .controls-pics-item a{
     background-color: #eeeeee;
@@ -300,9 +289,59 @@
     margin-bottom: 20px;
   }
   .dataTables-filter-wrap{
+    height: auto;
     min-height: 45px;
   }
   .dataTables-filter{
     position: relative;
   }
+  /*
+ 色值配置
+*/
+  .login-box,.login-form.form-vertical,.normal-text,.slider-view,.slider-toggle, .footer, .container{
+    background-color:#337ab7;
+  }
+
+  .login-form.form-vertical{
+    border-color:#6d9fca;
+  }
+  /*
+  导航菜单背景色
+  */
+  .slider-view > ul > li ul{
+    background-color: #286090;
+    border-color: #286090
+  }
+  .slider-view > ul > li, .slider-view > ul{
+    border-color: #337ab7;
+  }
+  /*
+    导航菜单文字
+  */
+  .slider-view > ul > li > a,.slider-view > ul > li ul li a, .footer{
+    color: #fff;
+  }
+  .go-up{
+    background-color: #fff;
+  }
+
+  /*
+    样式优化
+  */
+  .creators label{
+    min-width: 20%;
+    margin-right: 0;
+  }
+  .slider-view{
+    font-size: 14px;
+    /*font-weight: bold;*/
+  }
+  .table td{
+    vertical-align: middle;
+    text-align: center;
+  }
+  select{
+    border-radius: 4px;
+  }
 </style>
+-->

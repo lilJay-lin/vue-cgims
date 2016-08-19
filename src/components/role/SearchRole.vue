@@ -1,6 +1,6 @@
 <template>
   <Content :breads="breads" :title="title">
-    <Widget :padding="false" :title="title">
+    <Widget :padding="false" :title="'角色列表'">
       <div class="dataTables-filter-wrap">
         <div class="dataTables-filter">
           <label>
@@ -111,7 +111,7 @@
       data (transition) {
         let {to: {query: {back}}} = transition
         let permission = this.permission
-        if (!(permission.userManager || permission.roleManager)) {
+        if (!permission.roleManager) {
           transition.redirect('/admin/forbidden')
         }
         let roles = this.roles

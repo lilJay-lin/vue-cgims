@@ -56,7 +56,17 @@ export const showSelfUserDetail = ({dispatch}) => {
   })
 }
 export const clearUserDetail = ({dispatch}) => {
-  dispatch(RECEIVE_USER_DETAIL, {roles: [], slaves: []})
+  dispatch(RECEIVE_USER_DETAIL, {
+    id: '',
+    name: '',
+    loginName: '',
+    phoneNum: '',
+    identity: '',
+    password: '',
+    description: '',
+    roles: [],
+    slaves: []
+  })
 }
 
 /*
@@ -86,7 +96,6 @@ export const deleteUser = ({state, dispatch}, id) => {
   } else {
     ids.push(id)
   }
-  dispatch(DELETE_USER, ids)
   Server.request({
     url,
     method: 'post',
@@ -94,6 +103,7 @@ export const deleteUser = ({state, dispatch}, id) => {
       ids: ids.join(',')
     }
   }).then((res) => {
+    dispatch(DELETE_USER, ids)
     searchUser({dispatch}, {searchKeyword: users.searchKeyword, curPage: users.pageInfo.curPage})
   })
 }
@@ -129,8 +139,8 @@ export const addRelSlave = ({dispatch}, slave) => {
 /*
  * 保存角色
  * */
-export const saveUser = (store, user, newUser) => {
-  let url = baseUrl + (user.id ? '/' + user.id : '')
+export const saveUser = (store, user, newUser, selfEdit) => {
+  let url = selfEdit ? '/user/self' : baseUrl + (user.id ? '/' + user.id : '')
   /*
    dispatch(SAVE_ROLE, newUser)
    */

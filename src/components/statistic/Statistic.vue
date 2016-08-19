@@ -3,7 +3,7 @@
     <Widget :padding="true" :title="title">
       <form class="form-horizontal">
         <div class="control-group">
-          <div class="controls">
+          <div class="controls creators">
             <radio-group :radios="creators"  :name="'creatorId'" @radio-checked="setCreatorId" :checked="search.creatorId"></radio-group>
           </div>
         </div>
@@ -15,11 +15,11 @@
         <div class="control-group">
           <div class="controls label-inline">
             <label>
-              <input type="date" @change="setTime($event, 'beginTime')">
+              <input type="text" placeholder="订单完成时间：起（包含）" onClick="WdatePicker()"  readonly="true" v-el:beging/>
             </label>
             <label>至</label>
             <label>
-              <input type="date" @change="setTime($event, 'endTime')">
+              <input type="text" onClick="WdatePicker()" placeholder="订单完成时间：止（包含）"  readonly="true" v-el:end/>
             </label>
           </div>
         </div>
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="form-actions">
-          <input type="button" class="btn btn-success btn-large" @click="startStatistic" value="开始统计" v-if="state"/>
+          <input type="button" class="btn btn-success btn-large" @click="onStartStatistic" value="开始统计" v-if="state"/>
           <input type="button" class="btn btn-success btn-large"  value="统计中..." v-else/>
           <div class="statistics-result">
             统计结果：
@@ -121,6 +121,13 @@
       }
     },
     methods: {
+      onStartStatistic: function () {
+        this.setSearch({
+          beginTime: this.$els.beging.value,
+          endTime: this.$els.end.value
+        })
+        this.startStatistic()
+      },
       setCreatorId: function (value) {
         this.setSearch({
           creatorId: value
@@ -134,11 +141,6 @@
       setSearchType: function (value) {
         this.setSearch({
           searchType: value
-        })
-      },
-      setTime: function (e, key) {
-        this.setSearch({
-          [key]: e.target.value
         })
       }
     },

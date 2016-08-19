@@ -20,3 +20,8 @@ export const AUTH_SLAVES = 'auth_slaves'
 * 弹窗
 * */
 export const TOGGLE_DIALOG = 'toggle_dialog'
+
+/*
+设置地区
+*/
+export const SET_REGION = 'set_region'

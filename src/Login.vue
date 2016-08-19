@@ -1,6 +1,7 @@
 <template>
   <div class="login-box">
     <div class="login">
+      <h3>陈工家具服务</h3>
       <form class="login-form form-vertical">
         <div class="control-group normal-text">
           <h3>后台系统登录</h3>
@@ -17,7 +18,7 @@
           <div class="controls">
             <div class="main-input-box">
               <span class="add-on bg-ly"><i class="icon-lock"></i></span>
-              <input type="password" placeholder="请输入密码" v-el:password/>
+              <input type="password" placeholder="请输入密码" v-el:password @keydown.enter="onUserLogin"/>
             </div>
           </div>
         </div>
@@ -68,11 +69,6 @@
         })
       }
     },
-    route: {
-      data () {
-        console.log(this.auth.login)
-      }
-    },
     vuex: {
       getters: {
         auth: getAuth
@@ -84,7 +80,10 @@
     watch: {
       isLogin: function (login) {
         if (login) {
-          this.$router.go('/admin')
+          let url = '/admin'
+          let permission = this.auth.permission
+          url += permission.userManager ? '/order' : permission.userOrderManager ? '/user/order' : ''
+          this.$router.go(url)
         }
       }
     }
@@ -97,5 +96,9 @@
   }
   .login-btn a{
     width: 200px;
+  }
+  .login > h3{
+    text-align: center;
+    color: #fff;
   }
 </style>

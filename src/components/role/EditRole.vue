@@ -1,6 +1,6 @@
 <template>
   <Content :breads="breads" :title="title">
-    <Widget :title="title">
+    <Widget :title="'角色信息'">
       <form  class="form-horizontal">
         <div class="control-group">
           <label class="control-label">角色名</label>
@@ -39,7 +39,7 @@
                   <tr v-for="permission in permissions.list">
                     <td>{{permission.name}}</td>
                     <td>{{permission.description}}</td>
-                    <td class="operation-group-td">
+                    <td class="operation-group-td" style="width:50px;">
                       <div class="operation-group">
                         <a  href="javascript:void(0)" title="添加" @click="addRelPermission(permission)"><i class="icon-plus"></i></a>
                       </div>
@@ -60,10 +60,13 @@
         <div class="control-group">
           <label class="control-label">已分配权限</label>
           <div class="controls">
-            <ul class="relation-list">
-              <li v-for="permission in role.permissions">
-                <i class="icon-remove"  v-if="isEdit" @click="deleteRelPermission(permission.id)"></i>{{permission.name}}
+            <ul class="relation-list"  v-show="isEdit">
+              <li v-for="permission in role.permissions"  @click="deleteRelPermission(permission.id)">
+                <i class="icon-remove" ></i>{{permission.name}}
               </li>
+            </ul>
+            <ul class="relation-list" v-else>
+              <li v-for="permission in role.permissions">{{permission.name}}</li>
             </ul>
           </div>
         </div>
@@ -75,7 +78,7 @@
     </Widget>
   </Content>
 </template>
-<script>
+<script type="text/ecmascript-6">
   import {getBreadCrumb} from 'my_vuex/getters/getters'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
@@ -91,12 +94,9 @@
       Widget,
       Pagination
     },
-    detached () {
-      this.clearRoleDetail()
-    },
     computed: {
       title: function () {
-        return '角色信息'
+        return '角色管理'
       },
       isEdit: function () {
         return this.mode !== 'query'
@@ -118,6 +118,8 @@
           id: role.id,
           name: els.name.value,
           description: els.description.value
+        }).then(() => {
+          this.$router.go('/admin/role?back=true')
         })
       }
     },
@@ -132,6 +134,7 @@
         if ((type === 'edit' || type === 'new') && !this.permission.roleManager) {
           transition.redirect('/admin/forbidden')
         }
+        this.clearRoleDetail()
         this.setRoleMode(type)
         type !== 'new' && this.showRoleDetail(id)
         this.searchPermission({})
