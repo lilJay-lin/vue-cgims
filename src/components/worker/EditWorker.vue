@@ -52,7 +52,7 @@
                 </span>
               </div>
               <input  type="text" :readonly="worker.receiveType === 1 || isQuery" style="width: 426px;" placeholder="支付宝帐号" :value="worker.alipayAccount" @change="setData('alipayAccount', $event)"/>
-              <input type="text"  :readonly="worker.receiveType === 1 || isQuery" style=" width: 185px;" placeholder="支付宝帐号名称" :value="worker.alipayAccountName" @change="setData('alipayAccountName', $event)"/>
+              <input type="text"  :readonly="worker.receiveType === 1 || isQuery" style=" width: 125px;" placeholder="姓名" :value="worker.alipayAccountName" @change="setData('alipayAccountName', $event)"/>
             </label>
             <label>
               <div class="radio" >
@@ -61,9 +61,9 @@
                 </span>
               </div>
               银行卡
-              <input  :readOnly="worker.receiveType === 0 || isQuery" style=" width: 185px;" type="text" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
-              <input :readOnly="worker.receiveType === 0 || isQuery" style=" width: 185px;" type="text" placeholder="银行卡帐号" :value="newCardNum"  @change="setData('cardNum', $event)"/>
-              <input  :readOnly="worker.receiveType === 0 || isQuery" style=" width: 185px;" type="text" placeholder="银行卡帐户名称" :value="worker.bankCardName" @change="setData('bankCardName', $event)"/>
+              <input  :readOnly="worker.receiveType === 0 || isQuery" style=" width: 135px;" type="text" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
+              <input :readOnly="worker.receiveType === 0 || isQuery" style="  width: 235px;" type="text" placeholder="账号" :value="newCardNum"  @change="setData('cardNum', $event)"/>
+              <input  :readOnly="worker.receiveType === 0 || isQuery" style=" width: 125px;" type="text" placeholder="姓名" :value="worker.bankCardName" @change="setData('bankCardName', $event)"/>
             </label>
           </div>
         </div>
