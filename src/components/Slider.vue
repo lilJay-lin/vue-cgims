@@ -32,11 +32,11 @@
         let vm = this
         let allMenus = vm.menus.slice()
         forEach(allMenus, (menu) => {
-          isUndefined(menu.close) && (menu.close = false)
-          isUndefined(menu.sub) && (menu.sub = [])
+          vm.setDefault(menu.close, false)
+          vm.setDefault(menu.sub, [])
           forEach(menu.sub, (sub) => {
-            isUndefined(sub.contains) && (sub.contains = [])
-            isUndefined(sub.active) && (sub.active = false)
+            vm.setDefault(sub.contains, [])
+            vm.setDefault(sub.active, false)
           })
         })
         return allMenus
@@ -52,6 +52,7 @@
               let isActive = sub.name === active || sub.contains && ~sub.contains.indexOf(active)
               if (isActive) {
                 sub.active = true
+                menu.close = false
               } else {
                 sub.active = false
               }
@@ -73,7 +74,7 @@
           if (menu.sub && menu.sub.length > 0) {
             classList[!classList.contains('open') ? 'add' : 'remove']('open')
           } else {
-            go(menu.name, this.$router)
+            go(menu.link, this.$router)
           }
         }
       }

@@ -3,7 +3,12 @@
  */
 import {SET_ACTIVE_MENU, SET_SLIDER} from '../mutations/mutation-types'
 /*
-* contains: 所有指定链接都定位到当前name菜单上
+  close: 是否关闭菜单，默认打开
+  link: 菜单路径
+  name: 菜单name用来匹配当前聚焦的菜单，对应的是router配置的路由name
+  多个链接指向同一个菜单的方法：
+* 1. 所有指定链接name存放入contains
+* 2. router定义所有链接name和菜单的name一致
 * */
 const state = {
   menus: [
@@ -12,7 +17,8 @@ const state = {
       title: '统计管理',
       sub: [
         {
-          name: '/admin/statistic',
+          name: 'startStatistic',
+          link: '/admin/statistic',
           title: '订单统计'
         }
       ]
@@ -23,12 +29,14 @@ const state = {
       close: true,
       sub: [
         {
-          name: '/admin/user',
-          contains: ['/admin/user', '/admin/user/:id'],
+          name: 'searchUser',
+          link: '/admin/user',
+          contains: ['editUser'],
           title: '搜索用户'
         },
         {
-          name: '/admin/user/add',
+          name: 'addUser',
+          link: '/admin/user/add',
           title: '添加用户'
         }
       ]
@@ -39,12 +47,14 @@ const state = {
       close: true,
       sub: [
         {
-          name: '/admin/role',
-          contains: ['/admin/role', '/admin/role/:id'],
+          name: 'searchRole',
+          link: '/admin/role',
+          contains: ['editRole'],
           title: '搜索角色'
         },
         {
-          name: '/admin/role/add',
+          name: 'addRole',
+          link: '/admin/role/add',
           title: '添加角色'
         }
       ]
@@ -54,12 +64,14 @@ const state = {
       title: '订单管理',
       sub: [
         {
-          name: '/admin/order',
-          contains: ['/admin/order', '/admin/order/:id'],
+          name: 'searchOrder',
+          link: '/admin/order',
+          contains: ['editOrder'],
           title: '搜索订单'
         },
         {
-          name: '/admin/order/add',
+          name: 'addOrder',
+          link: '/admin/order/add',
           title: '添加订单'
         }
       ]
@@ -69,12 +81,14 @@ const state = {
       title: '个人订单管理',
       sub: [
         {
-          name: '/admin/user/order',
-          contains: ['/admin/user/order', '/admin/user/order/:id'],
+          name: 'searchUserOrder',
+          link: '/admin/user/order',
+          contains: ['editUserOrder'],
           title: '搜索订单'
         },
         {
-          name: '/admin/user/order/add',
+          name: 'addUserOrder',
+          link: '/admin/user/order/add',
           title: '添加订单'
         }
       ]
@@ -84,12 +98,14 @@ const state = {
       title: '师傅管理',
       sub: [
         {
-          name: '/admin/worker',
-          contains: ['/admin/worker', '/admin/worker/:id'],
+          name: 'searchWorker',
+          link: '/admin/worker',
+          contains: ['editWorker'],
           title: '搜索师傅'
         },
         {
-          name: '/admin/worker/add',
+          name: 'addWorker',
+          link: '/admin/worker/add',
           title: '添加师傅'
         }
       ]

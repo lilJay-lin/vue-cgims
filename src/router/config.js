@@ -30,75 +30,75 @@ export default (router) => {
           }
         },
         '/user': {
-          name: '/admin/user',
+          name: 'searchUser',
           component: SearchUser
         },
         '/user/add': {
-          name: '/admin/user/add',
+          name: 'addUser',
           component: EditUser
         },
         '/user/self': {
-          name: '/admin/user/self',
+          name: 'editUser',
           component: EditUser
         },
         '/user/:id': {
-          name: '/admin/user/:id',
+          name: 'editUser',
           component: EditUser
         },
         '/role': {
-          name: '/admin/role',
+          name: 'searchRole',
           component: SearchRole
         },
         '/role/add': {
-          name: '/admin/role/add',
+          name: 'addRole',
           component: EditRole
         },
         '/role/:id': {
-          name: '/admin/role/:id',
+          name: 'editRole',
           component: EditRole
         },
         '/worker': {
-          name: '/admin/worker',
+          name: 'searchWorker',
           component: SearchWorker
         },
         '/worker/add': {
-          name: '/admin/worker/add',
+          name: 'addWorker',
           component: EditWorker
         },
         '/worker/:id': {
-          name: '/admin/worker/:id',
+          name: 'editWorker',
           component: EditWorker
         },
         '/statistic': {
-          name: '/admin/statistic',
+          name: 'startStatistic',
           component: Statistic
         },
         '/order': {
-          name: '/admin/order',
+          name: 'searchOrder',
           component: SearchOrder
         },
         '/order/add': {
-          name: '/admin/order/add',
+          name: 'addOrder',
           component: EditOrder
         },
         '/order/:id': {
-          name: '/admin/order/:id',
+          name: 'editOrder',
           component: EditOrder
         },
         '/user/order': {
-          name: '/admin/user/order',
+          name: 'searchUserOrder',
           component: SearchOrder
         },
         '/user/order/add': {
-          name: '/admin/user/order/add',
+          name: 'addUserOrder',
           component: EditOrder
         },
         '/user/order/:id': {
-          name: '/admin/user/order/:id',
+          name: 'editUserOrder',
           component: EditOrder
         },
         '/forbidden': {
-          name: '/admin/forbidden',
+          name: 'forbidden',
           component: Forbidden
         }
       }
