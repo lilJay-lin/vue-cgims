@@ -14,3 +14,14 @@ export const SET_ACTIVE_MENU = 'set_active_menu'
 export const AUTH_LOGIN_SUCCESS = 'auth_login_success'
 export const AUTH_PERMISSION = 'auth_permission'
 export const AUTH_LOGOUT = 'login_out'
+export const AUTH_SLAVES = 'auth_slaves'
+
+/*
+* 弹窗
+* */
+export const TOGGLE_DIALOG = 'toggle_dialog'
+
+/*
+设置地区
+*/
+export const SET_REGION = 'set_region'

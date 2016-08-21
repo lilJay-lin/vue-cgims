@@ -17,6 +17,12 @@
   let _area = '区'
   export default {
     props: {
+      sortProvinces: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
       province: {
         type: String,
         default: _province
@@ -37,16 +43,19 @@
     },
     computed: {
       provinces: function () {
-        this.province = this.province || _province
-        this.city = this.city || _city
-        this.area = this.area || _area
-        let provinces = Object.keys(this.region)
+        let vm = this
+        vm.province = vm.province || _province
+        vm.city = vm.city || _city
+        vm.area = vm.area || _area
+        let provinces = vm.sortProvinces.length > 0 ? vm.sortProvinces.slice(0) : Object.keys(vm.region)
         provinces.unshift(_province)
         return provinces
       },
       cities: function () {
-        let cities = this.region[this.province]
-        if (this.province === _province || !cities) {
+        let vm = this
+        let cities = vm.region[vm.province]
+        if (!vm.province || vm.province === _province || !cities) {
+          vm.city = _city
           return [_city]
         }
         cities = Object.keys(cities)
@@ -54,11 +63,14 @@
         return cities
       },
       areas: function () {
-        if (this.city === _city) {
+        let vm = this
+        if (!vm.city || vm.city === _city) {
+          vm.area = _area
           return [_area]
         }
-        let cities = this.region[this.province][this.city]
+        let cities = vm.region[vm.province] && vm.region[vm.province][vm.city]
         if (!cities) {
+          vm.area = _area
           return [_area]
         }
         let areas = cities.map((city) => {
@@ -70,10 +82,11 @@
     },
     methods: {
       changeProvince: function (e) {
-        this.city = _city
-        this.area = _area
-        this.areas = [_area]
-        this.change()
+        let vm = this
+        vm.city = _city
+        vm.area = _area
+        vm.areas = [_area]
+        vm.change()
       },
       changeCity: function (e) {
         this.area = _area
@@ -83,10 +96,11 @@
         this.change()
       },
       change: function () {
-        let province = this.province === _province ? '' : this.province
-        let city = this.city === _city ? '' : this.city
-        let area = this.area === _area ? '' : this.area
-        this.$dispatch('select-region', [province, city, area])
+        let vm = this
+        let province = vm.province === _province ? '' : vm.province
+        let city = vm.city === _city ? '' : vm.city
+        let area = vm.area === _area ? '' : vm.area
+        vm.$dispatch('select-region', [province, city, area])
       }
     }
   }

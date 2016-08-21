@@ -7,3 +7,6 @@ export const getSearch = (state) => {
 export const getValue = (state) => {
   return state.statistic.value
 }
+export const getState = (state) => {
+  return state.statistic.state
+}

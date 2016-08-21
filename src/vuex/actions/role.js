@@ -4,6 +4,8 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_ROLE, CHECK_ALL_ROLE, CHECK_ROLE, DELETE_ROLE, RECEIVE_ROLE_DETAIL,
   DELETE_ROLE_REL_PERMISSION, ADD_ROLE_REL_PERMISSION, SET_ROLE_MODE} from 'my_vuex/mutations/role'
+import {trim} from 'src/util/util'
+import {toggleDialog} from 'my_vuex/actions/actions'
 /*
  * 获取权限列表
  * */
@@ -44,7 +46,12 @@ export const showRoleDetail = ({dispatch}, id) => {
   })
 }
 export const clearRoleDetail = ({dispatch}) => {
-  dispatch(RECEIVE_ROLE_DETAIL, {permissions: []})
+  dispatch(RECEIVE_ROLE_DETAIL, {
+    id: '',
+    name: '',
+    description: '',
+    permissions: []
+  })
 }
 
 /*
@@ -74,7 +81,6 @@ export const deleteRole = ({state, dispatch}, id) => {
   } else {
     ids.push(id)
   }
-  dispatch(DELETE_ROLE, ids)
   Server.request({
     url,
     method: 'post',
@@ -82,6 +88,7 @@ export const deleteRole = ({state, dispatch}, id) => {
       ids: ids.join(',')
     }
   }).then((res) => {
+    dispatch(DELETE_ROLE, ids)
     searchRole({dispatch}, {searchKeyword: roles.searchKeyword, curPage: roles.pageInfo.curPage})
   })
 }
@@ -113,10 +120,16 @@ export const saveRole = ({state, dispatch}, role, newRole) => {
     return permission.id
   }) || []
   newRole['permissionIds'] = permissions.join(',')
-  Server.request({
+  trim(newRole)
+  return Server.request({
     method: 'post',
     url,
     data: newRole
+  }).then(() => {
+    toggleDialog({state, dispatch}, {
+      show: true,
+      content: '角色保存成功'
+    })
   })
 }
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="label-inline">
+  <div class="label-inline" style="font-size:0">
     <label v-show="hasAll">
       <div class="checker">
-        <span :class="{'checked': all}">
-          <input type="checkbox" @change="checkAll" :name="name" value="" :disabled="readonly"/>
+        <span :class="{'checked': all === true}">
+          <input type="checkbox" @click="checkAll" :name="name" value="" :disabled="readonly"/>
         </span>
       </div>
       {{allText}}
@@ -23,7 +23,7 @@
         </span>
       </div>
       其他
-      <input type="text" :disabled="!other" :value="otherValue" @input="onOtherText"/>
+      <input type="text" :disabled="!other" :value="otherValue" @input="onOtherText" :placeholder="otherPlaceholder" v-el:other/>
     </label>
   </div>
 </template>
@@ -55,6 +55,10 @@
         type: String,
         default: ''
       },
+      otherPlaceholder: {
+        type: String,
+        default: '其他'
+      },
       radios: {
         type: Array,
         default: function () {
@@ -81,15 +85,26 @@
       }
     },
     methods: {
+      isCheckAll: function () {
+        let vm = this
+        let checkLen = vm.checked.length
+        let selectLen = vm.radios.length
+        let checkAll = selectLen === checkLen ? (vm.hasOther ? vm.other : 1) : 0
+        if (checkAll) {
+          vm.all = true
+        } else {
+          vm.all = false
+        }
+      },
       checkAll: function (e) {
         let vm = this
-        vm.all = !vm.all
-        vm.all ? vm.checked = vm.allRadio : (vm.checked = [], this.other = false)
-        vm.dispatchCheckValue(vm.checked)
+        let other = vm.$els.other
+        !vm.all ? (vm.checked = vm.allRadio, this.hasOther && (this.other = true, 1) && vm.checked.push(other && other.value || '')) : (vm.checked = [], this.other = false)
+        vm.dispatchCheckValue()
       },
       checkOther: function (e) {
         let vm = this
-        vm.other = !vm.other
+        vm.other = !!(vm.other ? 0 : 1)
         vm.addOtherValue()
       },
       onOtherText: function (e) {
@@ -99,9 +114,7 @@
       },
       addOtherValue: function () {
         let vm = this
-        let checked = vm.checked.slice(0)
-        vm.other && vm.otherValue.trim() !== '' && checked.push(vm.otherValue)
-        vm.dispatchCheckValue(checked)
+        vm.dispatchCheckValue()
       },
       change: function (e) {
         let vm = this
@@ -126,19 +139,27 @@
       dispatchCheckValue: function (arr) {
         let val = null
         let vm = this
-        if (arr) {
-          val = arr
-        } else {
-          val = vm.checked.slice(0)
-          vm.other && this.otherValue && val.push(this.otherValue)
-        }
+        val = vm.checked.slice(0)
+        vm.other && this.otherValue && val.push(this.otherValue)
         vm.$dispatch('radio-checked', val.join(','))
+      }
+    },
+    ready () {
+      this.isCheckAll()
+    },
+    watch: {
+      checked: function (val) {
+        this.isCheckAll()
       }
     }
   }
 </script>
 <style>
   label.other-checkbox{
-    width: 230px;
+    width: 400px;
+  }
+  .other-checkbox input{
+    width: 300px;
+    display: inline-block;
   }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="login-box">
     <div class="login">
+      <h3>陈工家具服务</h3>
       <form class="login-form form-vertical">
         <div class="control-group normal-text">
           <h3>后台系统登录</h3>
@@ -17,18 +18,21 @@
           <div class="controls">
             <div class="main-input-box">
               <span class="add-on bg-ly"><i class="icon-lock"></i></span>
-              <input type="password" placeholder="请输入密码" v-el:password/>
+              <input type="password" placeholder="请输入密码" v-el:password @keydown.enter="onUserLogin"/>
             </div>
           </div>
         </div>
-        <div class="form-actions">
-          <span class="pull-left">
+        <div class="login-btn">
+          <a href="javascript:void(0)" class="btn btn-success" @click="onUserLogin">登录</a>
+        </div>
+<!--        <div class="form-actions">
+          <span class="pull-left" style="display: none">
             <a href="javascript:void(0)" class="flip-link btn btn-info" id="to-recover">忘记密码?</a>
           </span>
           <span class="pull-right">
             <a href="javascript:void(0)" class="btn btn-success" @click="onUserLogin">登录</a>
           </span>
-        </div>
+        </div>-->
       </form>
       <!--<form action="#" class="recover-form form-vertical">
           <p class="normal-text">Enter your e-mail address below and we will send you instructions how to recover a password.</p>
@@ -65,11 +69,6 @@
         })
       }
     },
-    route: {
-      data () {
-        console.log(this.auth.login)
-      }
-    },
     vuex: {
       getters: {
         auth: getAuth
@@ -80,11 +79,26 @@
     },
     watch: {
       isLogin: function (login) {
-        console.log(login)
         if (login) {
-          this.$router.go('/admin')
+          let url = '/admin'
+          let permission = this.auth.permission
+          url += permission.userManager ? '/order' : permission.userOrderManager ? '/user/order' : ''
+          this.$router.go(url)
         }
       }
     }
   }
 </script>
+<style>
+  .login-btn{
+    margin-top: 15px;
+    text-align: center;
+  }
+  .login-btn a{
+    width: 200px;
+  }
+  .login > h3{
+    text-align: center;
+    color: #fff;
+  }
+</style>

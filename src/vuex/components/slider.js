@@ -20,6 +20,7 @@ const state = {
     {
       name: 'user',
       title: '用户管理',
+      close: true,
       sub: [
         {
           name: '/admin/user',
@@ -35,6 +36,7 @@ const state = {
     {
       name: 'role',
       title: '角色管理',
+      close: true,
       sub: [
         {
           name: '/admin/role',
@@ -83,6 +85,7 @@ const state = {
       sub: [
         {
           name: '/admin/worker',
+          contains: ['/admin/worker', '/admin/worker/:id'],
           title: '搜索师傅'
         },
         {

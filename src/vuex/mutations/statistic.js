@@ -3,3 +3,4 @@
  */
 export const SET_SEARCH = 'set_search'
 export const RECEIVE_VALUE = 'receive_value'
+export const REQUEST_STATE = 'request_state'

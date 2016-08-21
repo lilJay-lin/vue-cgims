@@ -1,17 +1,17 @@
 <template>
   <Content :breads="breads" :title="title">
-    <Widget :padding="false" :title="title">
+    <Widget :padding="false" :title="'用户信息'">
       <form class="form-horizontal">
         <div class="control-group">
           <label class="control-label">登录名</label>
           <div class="controls">
-            <input type="text" class="span5" :value="user.loginName" :readonly="isQuery" placeholder="登录名" v-el:login_name>
+            <input type="text" class="span5" :value="user.loginName" :readonly="!isEdit" placeholder="登录名" v-el:login_name>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label">手机</label>
           <div class="controls">
-            <input type="phone":value="user.phoneNum" class="span5" :readonly="isQuery"  placeholder="手机" v-el:phone_num>
+            <input type="text":value="user.phoneNum" class="span5" :readonly="isQuery" @change="setData('phoneNum', $event)" placeholder="请输入11位手机号码" v-el:phone_num>
           </div>
         </div>
         <div class="control-group">
@@ -81,15 +81,18 @@
         <div class="control-group">
           <label class="control-label">已担当角色</label>
           <div class="controls">
-            <ul class="relation-list ">
-              <li v-for="role in user.roles">
-                <i class="icon-remove"  v-if="isEdit" @click="deleteRelRole(role.id)"></i>{{role.name}}
+            <ul class="relation-list " v-show="isEdit">
+              <li v-for="role in user.roles" @click="deleteRelRole(role.id)">
+                <i class="icon-remove"></i>{{role.name}}
               </li>
+            </ul>
+            <ul class="relation-list " v-else>
+              <li v-for="role in user.roles">{{role.name}}</li>
             </ul>
           </div>
         </div>
         <div class="control-group"   v-if="isEdit">
-          <label class="control-label">添加私人订单</label>
+          <label class="control-label">关联个人订单</label>
           <div class="controls">
             <div class="control-box span10">
               <div class="search-table-box">
@@ -130,7 +133,7 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label">已关联私人订单</label>
+          <label class="control-label">已关联个人订单</label>
           <div class="controls">
             <ul class="relation-list">
               <li v-for="slave in user.slaves">
@@ -140,44 +143,65 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-success" @click="onSaveUser" v-if="isEdit" >保存</button>
+          <button type="button" class="btn btn-success" @click="onSaveUser" v-if="!isQuery" >保存</button>
           <a v-link="{path: '/admin/user', query: {back: true}}" class="btn btn-success">返回</a>
         </div>
       </form>
     </Widget>
   </Content>
 </template>
-<script>
+<script type="text/ecmascript-6">
   import {getBreadCrumb} from 'my_vuex/getters/getters'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
   import {getUsers, getDetailUser, getUIOptions} from 'my_vuex/getters/user'
-  import {searchUser, showUserDetail, deleteRelRole, addRelRole, deleteRelSlave, addRelSlave, saveUser, setUserMode, clearUserDetail} from 'my_vuex/actions/user'
+  import {searchUser, showUserDetail, deleteRelRole, addRelRole, deleteRelSlave, addRelSlave, saveUser, setUserMode, clearUserDetail, showSelfUserDetail} from 'my_vuex/actions/user'
   import {getRoles} from 'my_vuex/getters/role'
   import {searchRole} from 'my_vuex/actions/role'
   import {getPermission} from 'my_vuex/getters/auth'
+  import mixins from 'src/mixins/mixins'
   export default {
+    mixins: [mixins],
+    props: {
+      selfEdit: {
+        type: Boolean,
+        default: false
+      }
+    },
     components: {
       Content,
       Widget,
       Pagination
-    },
-    detached () {
-      this.clearUserDetail()
     },
     computed: {
       title: function () {
         return '用户管理'
       },
       isEdit: function () {
-        return this.mode !== 'query'
+        return this.mode === 'selfEdit' ? false : this.mode === 'new' || this.mode === 'edit'
       },
       isQuery: function () {
         return this.mode === 'query'
+      },
+      config: function () {
+        return {
+          phoneNum: 'isPhoneNumber'
+        }
       }
     },
     methods: {
+      setData: function (key, e) {
+        let vm = this
+        let el = e.target
+        let val = el.value.trim()
+        el.value = val
+        let test = vm.config[key]
+        if (val && test && !vm[test](val)) {
+          e.target.value = ''
+          return
+        }
+      },
       startSearchRole: function (page) {
         let searchRoleKeyword = this.$els.search_role.value.trim()
         this.searchRole({searchKeyword: searchRoleKeyword, curPage: page || 1})
@@ -198,24 +222,38 @@
           identity: els.identity.value,
           password: els.password.value,
           description: els.description.value
+        }, vm.selfEdit).then(() => {
+          this.$router.go('/admin/user?back=true')
         })
       }
     },
     route: {
       data (transition) {
-        let {to: {params: {id}, query: {type}}} = transition
-        if (id && !type) {
-          type = 'query'
-        } else if (!type) {
-          type = 'new'
-        }
-        if ((type === 'edit' || type === 'new') && !this.permission.userManager) {
-          transition.redirect('/admin/forbidden')
+        let {to: {path, params: {id}, query: {type}}} = transition
+        let selfEdit = 'selfEdit'
+        let newType = 'new'
+        this.clearUserDetail()
+        /*
+        * 个人信息修改只能修改个人信息，不能修改其他信息
+        * */
+        this.selfEdit = false
+        if (path.indexOf('/admin/user/self') > -1) {
+          type = selfEdit
+          this.selfEdit = selfEdit
+        } else {
+          if (id && !type) {
+            type = 'query'
+          } else if (!type) {
+            type = newType
+          }
+          if ((type === 'edit' || type === newType) && !this.permission.userManager) {
+            transition.redirect('/admin/forbidden')
+          }
+          this.searchRole({})
+          this.searchUser({})
         }
         this.setUserMode(type)
-        this.searchRole({})
-        this.searchUser({})
-        return type !== 'new' && this.showUserDetail(id)
+        return type !== newType ? (type === selfEdit ? this.showSelfUserDetail() : this.showUserDetail(id)) : transition.next()
       }
     },
     vuex: {
@@ -237,7 +275,8 @@
         addRelSlave,
         saveUser,
         setUserMode,
-        clearUserDetail
+        clearUserDetail,
+        showSelfUserDetail
       }
     }
   }

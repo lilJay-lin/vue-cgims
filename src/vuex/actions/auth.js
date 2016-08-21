@@ -10,7 +10,7 @@ let baseUrl = '/user'
  * */
 export const login = (store, {loginName, password}) => {
   let url = baseUrl + '/login'
-  Server.request({
+  return Server.request({
     method: 'post',
     url,
     data: {
@@ -18,18 +18,40 @@ export const login = (store, {loginName, password}) => {
       password
     }
   }).then((res) => {
+/*
+toggleDialog(store, {
+      content: '登录成功',
+      show: true,
+      auto: true
+    })
+    */
     resolveLogin(store, res.result)
   })
 }
-export const resolveLogin = ({dispatch}, json) => {
-  let {userId, userName, permissionCodes} = json
+export const resolveLogin = ({dispatch, state}, json) => {
+  let {userId, userName, permissionCodes, slaveNames, slaveIds} = json
+  let slaves = []
+  let names = slaveNames && slaveNames.split(',') || []
+  let ids = slaveIds && slaveIds.split(',') || []
+  forEach(ids, (val, idx) => {
+    slaves.push({
+      name: names[idx],
+      id: val
+    })
+  })
   let obj = {
     login: true,
     name: userName,
-    id: userId
+    id: userId,
+    slaves
   }
   dispatch(AUTH_LOGIN_SUCCESS, obj)
   setPermission({dispatch}, permissionCodes)
+/*
+showUserDetail({dispatch}, {id: userId}).then(() => {
+    console.log(state.user.detail)
+  })
+  */
 }
 export const setPermission = ({dispatch}, permissionCodes) => {
   if (permissionCodes) {
@@ -44,7 +66,19 @@ export const setPermission = ({dispatch}, permissionCodes) => {
 /*
 * 退出
 * */
-export const logout = ({dispatch}) => {
+export const logout = (store) => {
+  clearAuth(store)
+  let url = '/user/logout'
+  Server.request({
+    url,
+    method: 'post'
+  })
+}
+
+/*
+* 清楚登录信息
+* */
+export const clearAuth = ({dispatch}) => {
   window.__LOGIN_USER__ = null
   dispatch(AUTH_LOGOUT)
 }

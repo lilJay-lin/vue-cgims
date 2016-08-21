@@ -3,7 +3,7 @@
     <Widget :padding="true" :title="title">
       <form class="form-horizontal">
         <div class="control-group">
-          <div class="controls">
+          <div class="controls creators">
             <radio-group :radios="creators"  :name="'creatorId'" @radio-checked="setCreatorId" :checked="search.creatorId"></radio-group>
           </div>
         </div>
@@ -15,11 +15,11 @@
         <div class="control-group">
           <div class="controls label-inline">
             <label>
-              <input type="date" @change="setTime($event, 'beginTime')">
+              <input type="text" placeholder="订单完成时间：起（包含）" onClick="WdatePicker()"  readonly="true" v-el:beging/>
             </label>
             <label>至</label>
             <label>
-              <input type="date" @change="setTime($event, 'endTime')">
+              <input type="text" onClick="WdatePicker()" placeholder="订单完成时间：止（包含）"  readonly="true" v-el:end/>
             </label>
           </div>
         </div>
@@ -29,13 +29,16 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-success btn-large" @click="startStatistic">开始统计</button>
+          <input type="button" class="btn btn-success btn-large" @click="onStartStatistic" value="开始统计" v-if="state"/>
+          <input type="button" class="btn btn-success btn-large"  value="统计中..." v-else/>
           <div class="statistics-result">
             统计结果：
             <div>
-              <label>总利润：</label>
-              <input type="text" />
-              <label>元</label>
+              <label>{{this.searchTypesObject[search.searchType]}}：</label>
+              <input type="text" :value="value" readonly="readonly"/>
+              <label>
+                {{unit}}
+              </label>
             </div>
           </div>
         </div>
@@ -45,7 +48,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {getSearch, getValue} from 'my_vuex/getters/statistic'
+  import {getSearch, getValue, getState} from 'my_vuex/getters/statistic'
   import {setSearch, startStatistic} from 'my_vuex/actions/statistic'
   import {getUsers} from 'my_vuex/getters/user'
   import {searchUser} from 'my_vuex/actions/user'
@@ -53,6 +56,7 @@
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
   import RadioGroup from 'components/RadioGroup'
+  const forEach = require('lodash/forEach')
   export default {
     components: {
       Content,
@@ -63,6 +67,9 @@
     computed: {
       title: function () {
         return '订单统计'
+      },
+      unit: function () {
+        return this.search.searchType === 'orderCount' ? '个' : this.search.searchType === 'profitMargin' ? '%' : '元'
       },
       creators: function () {
         let creators = this.users.list.map((user) => {
@@ -90,17 +97,37 @@
         })
         return serviceTyps
       },
+      searchTypesObject: function () {
+        return {
+          'orderCount': '订单数',
+          'income': '总收入',
+          'expenditure': '总支出',
+          'profit': '总利润',
+          'profitMargin': '利润率',
+          'incomeP': '每单收入',
+          'profitP': '每单利润'
+        }
+      },
       searchTypes: function () {
-        let arrs = ['orderCount', 'income', 'expenditure', 'profit', 'profitMargin']
-        return ['订单数', '总收入', '总支出', '总利润', '利润率'].map((val, idx) => {
-          return {
+        let arrs = []
+        let obj = this.searchTypesObject
+        forEach(obj, (val, key) => {
+          arrs.push({
             name: val,
-            value: arrs[idx]
-          }
+            value: key
+          })
         })
+        return arrs
       }
     },
     methods: {
+      onStartStatistic: function () {
+        this.setSearch({
+          beginTime: this.$els.beging.value,
+          endTime: this.$els.end.value
+        })
+        this.startStatistic()
+      },
       setCreatorId: function (value) {
         this.setSearch({
           creatorId: value
@@ -115,16 +142,11 @@
         this.setSearch({
           searchType: value
         })
-      },
-      setTime: function (e, key) {
-        this.setSearch({
-          [key]: e.target.value
-        })
       }
     },
     route: {
       data () {
-        this.searchUser({})
+        this.searchUser({pageSize: 9999})
       }
     },
     vuex: {
@@ -133,7 +155,8 @@
         region: getRegion,
         users: getUsers,
         search: getSearch,
-        value: getValue
+        value: getValue,
+        state: getState
       },
       actions: {
         searchUser,

@@ -22,7 +22,7 @@ const clone = require('lodash/cloneDeep')
 let menuRelPermission = {
   'statistics': 'analysisManager',
   'user': 'userManager',
-  'role': 'roleManager/userManager',
+  'role': 'roleManager',
   'order': 'orderManager/orderView',
   'user-order': 'userOrderManager',
   'worker': 'orderManager/orderView/workmanManager/userOrderManager'
@@ -118,5 +118,12 @@ export const isLogin = (state) => {
 * 获取区域
 * */
 export const getRegion = (state) => {
-  return state.region.region[0]
+  return state.region.region
+}
+
+/*
+* 弹窗
+* */
+export const getDialog = (state) => {
+  return state.admin.dialog
 }

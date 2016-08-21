@@ -4,12 +4,14 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER, RECEIVE_USER_DETAIL,
   DELETE_USER_REL_ROLE, ADD_USER_REL_ROLE, DELETE_USER_REL_SLAVE, ADD_USER_REL_SLAVE, SET_USER_MODE} from 'my_vuex/mutations/user'
+import {trim} from 'src/util/util'
+import {toggleDialog} from 'my_vuex/actions/actions'
 /*
 * 获取用户列表
 * */
 let baseUrl = '/user'
-export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
-  let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage
+export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1, pageSize = ''}) => {
+  let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage + '&pageSize=' + pageSize
   return Server.request({
     url,
     method: 'get'
@@ -37,6 +39,15 @@ export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
 * */
 export const showUserDetail = ({dispatch}, id) => {
   let url = baseUrl + '/' + id
+  return Server.request({
+    method: 'get',
+    url
+  }).then((res) => {
+    dispatch(RECEIVE_USER_DETAIL, res.result)
+  })
+}
+export const showSelfUserDetail = ({dispatch}) => {
+  let url = baseUrl + '/self'
   Server.request({
     method: 'get',
     url
@@ -45,7 +56,17 @@ export const showUserDetail = ({dispatch}, id) => {
   })
 }
 export const clearUserDetail = ({dispatch}) => {
-  dispatch(RECEIVE_USER_DETAIL, {roles: [], slaves: []})
+  dispatch(RECEIVE_USER_DETAIL, {
+    id: '',
+    name: '',
+    loginName: '',
+    phoneNum: '',
+    identity: '',
+    password: '',
+    description: '',
+    roles: [],
+    slaves: []
+  })
 }
 
 /*
@@ -75,7 +96,6 @@ export const deleteUser = ({state, dispatch}, id) => {
   } else {
     ids.push(id)
   }
-  dispatch(DELETE_USER, ids)
   Server.request({
     url,
     method: 'post',
@@ -83,6 +103,7 @@ export const deleteUser = ({state, dispatch}, id) => {
       ids: ids.join(',')
     }
   }).then((res) => {
+    dispatch(DELETE_USER, ids)
     searchUser({dispatch}, {searchKeyword: users.searchKeyword, curPage: users.pageInfo.curPage})
   })
 }
@@ -118,8 +139,8 @@ export const addRelSlave = ({dispatch}, slave) => {
 /*
  * 保存角色
  * */
-export const saveUser = ({state, dispatch}, user, newUser) => {
-  let url = baseUrl + (user.id ? '/' + user.id : '')
+export const saveUser = (store, user, newUser, selfEdit) => {
+  let url = selfEdit ? '/user/self' : baseUrl + (user.id ? '/' + user.id : '')
   /*
    dispatch(SAVE_ROLE, newUser)
    */
@@ -127,10 +148,16 @@ export const saveUser = ({state, dispatch}, user, newUser) => {
   let slaves = user.slaves.map((slave) => { return slave.id }) || []
   newUser['roleIds'] = roles.join(',')
   newUser['slaveIds'] = slaves.join(',')
-  Server.request({
+  trim(newUser)
+  return Server.request({
     method: 'post',
     url,
     data: newUser
+  }).then(() => {
+    toggleDialog(store, {
+      show: true,
+      content: '用户保存成功'
+    })
   })
 }
 

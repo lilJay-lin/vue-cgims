@@ -25,7 +25,6 @@ const mutations = {
     state.searchKeyword = searchKeyword
     state.list = list
     state.pageInfo = pageInfo
-    console.log(list)
   }
   /*
   [CHECK_ALL_PERMISSION]: (state, checked) => {
