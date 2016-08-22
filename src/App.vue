@@ -2,16 +2,16 @@
   <div id="app">
     <router-view></router-view>
   </div>
-  <dialog :success = 'dialog.success' :close="dialog.close" :title="dialog.title" :content="dialog.content" :has-success-btn="dialog.hasSuccessBtn"
-          :has-close-btn="dialog.hasCloseBtn" :show="dialog.show" :auto="dialog.auto" @dialog-close="onDialogClose">
-  </dialog>
+  <dialog></dialog>
 </template>
 
 <script>
 import store from './vuex/store'
 import Dialog from 'src/components/Dialog.vue'
+/*
 import {getDialog} from './vuex/getters/getters'
-import {toggleDialog} from './vuex/actions/actions'
+*/
+import {toggleDialog} from './vuex/actions/dialog'
 export default {
   components: {
     Dialog
@@ -24,9 +24,10 @@ export default {
     }
   },
   vuex: {
+/*
     getters: {
       dialog: getDialog
-    },
+    },*/
     actions: {
       toggleDialog
     }

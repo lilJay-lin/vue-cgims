@@ -19,6 +19,7 @@ export const AUTH_SLAVES = 'auth_slaves'
 /*
 * 弹窗
 * */
+export const RESET_DIALOG = 'reset_dialog'
 export const TOGGLE_DIALOG = 'toggle_dialog'
 
 /*

@@ -4,7 +4,7 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_PERSONAL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
 import {trim, dateFormat} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog} from 'my_vuex/actions/dialog'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
 const getBaseUrl = (state, id) => {

@@ -75,7 +75,8 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-  import {toggleDialog, setRegion} from 'my_vuex/actions/actions'
+  import {setRegion} from 'my_vuex/actions/actions'
+  import {toggleDialog} from 'my_vuex/actions/dialog'
   import {getPermission} from 'my_vuex/getters/auth'
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getWorkers, getCheckAll, hasCheck} from 'my_vuex/getters/worker'

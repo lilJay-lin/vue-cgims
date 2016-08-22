@@ -122,7 +122,7 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-  import {toggleDialog} from 'my_vuex/actions/actions'
+  import {toggleDialog} from 'my_vuex/actions/dialog'
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
   import {getOrders, getCheckAll, getOrderStatus, isPersonal, hasCheck, getSlaves} from 'my_vuex/getters/order'
   import {searchOrder, checkOrder, dealOrder, updateOrderComment, setOrderPersonal, setOrders} from 'my_vuex/actions/order'

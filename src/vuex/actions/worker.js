@@ -4,7 +4,7 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_WORKER, CHECK_ALL_WORKER, CHECK_WORKER, DELETE_WORKER, RECEIVE_WORKER_DETAIL, SET_WORKER_MODE, SET_WORKER} from 'my_vuex/mutations/worker'
 import {trim, dateFormat} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog} from 'my_vuex/actions/dialog'
 /*
  * 获取师傅列表
  * */

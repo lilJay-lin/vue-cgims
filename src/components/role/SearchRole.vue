@@ -55,7 +55,7 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-  import {toggleDialog} from 'my_vuex/actions/actions'
+  import {toggleDialog} from 'my_vuex/actions/dialog'
   import {getBreadCrumb} from 'my_vuex/getters/getters'
   import {getRoles, getCheckAll, hasCheck} from 'my_vuex/getters/role'
   import {searchRole, checkRole, deleteRole} from 'my_vuex/actions/role'

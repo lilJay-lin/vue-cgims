@@ -1,7 +1,7 @@
 /**
  * Created by liljay on 2016/7/16.
  */
-import {SET_ACTIVE_MENU, TOGGLE_DIALOG, SET_REGION} from './../mutations/mutation-types'
+import {SET_ACTIVE_MENU, SET_REGION} from './../mutations/mutation-types'
 const forEach = require('lodash/forEach')
 const clone = require('lodash/cloneDeep')
 /*
@@ -14,9 +14,10 @@ export const setActiveMenu = ({dispatch}, url) => {
 /*
 * 展示or隐藏弹窗
 * */
+/*
 export const toggleDialog = ({dispatch}, obj) => {
   dispatch(TOGGLE_DIALOG, obj)
-}
+}*/
 
 /*
 * 获取地区

@@ -291,7 +291,8 @@
   import {showOrderDetail, saveOrder, setOrderMode, clearOrderDetail, setOrder, dealOrderImage, setOrderPersonal} from 'my_vuex/actions/order'
   import {getWorkers} from 'my_vuex/getters/worker'
   import {searchWorker, setWorkers} from 'my_vuex/actions/worker'
-  import {toggleDialog, setRegion} from 'my_vuex/actions/actions'
+  import {setRegion} from 'my_vuex/actions/actions'
+  import {toggleDialog} from 'my_vuex/actions/dialog'
   import mixins from 'src/mixins/mixins'
   export default {
     mixins: [mixins],

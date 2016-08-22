@@ -5,7 +5,7 @@ import Server from 'src/api/server.js'
 import {RECEIVE_ROLE, CHECK_ALL_ROLE, CHECK_ROLE, DELETE_ROLE, RECEIVE_ROLE_DETAIL,
   DELETE_ROLE_REL_PERMISSION, ADD_ROLE_REL_PERMISSION, SET_ROLE_MODE} from 'my_vuex/mutations/role'
 import {trim} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog} from 'my_vuex/actions/dialog'
 /*
  * 获取权限列表
  * */

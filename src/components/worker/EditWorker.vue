@@ -291,7 +291,8 @@
 </template>
 <script type="text/ecmascript-6">
   import {getBreadCrumb, getRegion} from 'my_vuex/getters/getters'
-  import {setRegion, toggleDialog} from 'my_vuex/actions/actions'
+  import {setRegion} from 'my_vuex/actions/actions'
+  import {toggleDialog} from 'my_vuex/actions/dialog'
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'

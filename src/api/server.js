@@ -2,7 +2,7 @@
  * Created by linxiaojie on 2016/7/19.
  */
 import store from 'my_vuex/store'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog} from 'my_vuex/actions/dialog'
 import {clearAuth} from 'my_vuex/actions/auth'
 import {getRouter} from '../router/routerHelper'
 let qwest = require('qwest')

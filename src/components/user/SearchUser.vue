@@ -65,7 +65,7 @@
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
-  import {toggleDialog} from 'my_vuex/actions/actions'
+  import {toggleDialog} from 'my_vuex/actions/dialog'
   export default {
     components: {
       Content,

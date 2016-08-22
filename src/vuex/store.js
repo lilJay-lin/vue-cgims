@@ -13,7 +13,7 @@ import order from 'my_vuex/components/order'
 import region from 'my_vuex/components/region'
 import permission from 'my_vuex/components/permission'
 import statistic from 'my_vuex/components/statistic'
-import admin from 'my_vuex/components/admin'
+import dialog from 'my_vuex/components/dialog'
 
 Vue.use(Vuex)
 
@@ -29,7 +29,7 @@ export default new Vuex.Store({
     region,
     order,
     statistic,
-    admin
+    dialog
   },
   plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
 })
