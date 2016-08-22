@@ -4,14 +4,17 @@
       <span>共{{total}}条</span><span>当前展示第{{(curPage - 1 ) * pageSize + 1}}条到第{{curPage * pageSize > total ? total : curPage * pageSize}}条</span>
     </div>
     <div class="pagination " >
-      <a tabindex="0" class="first pg-button  " :class="{'pg-state-disabled':isFirst}" @click="onPageClick($event, 1)" style="display: none">首页</a>
+<!--      <a tabindex="0" class="first pg-button  " :class="{'pg-state-disabled':isFirst}" @click="onPageClick($event, 1)" style="display: none">首页</a>
       <a tabindex="0" class="previous pg-button " :class="{'pg-state-disabled' :hasPre}"  @click="onPageClick($event, 'pre')" style="display: none">上一页</a>
+      -->
       <span v-for = "page in pages" track-by="$index">
           <a href="javascript:void(0)" class="pg-button" v-if="page.idx === 'so'">...</a>
           <a class="pg-button" :class="{'pg-state-disabled':page.isCurrent}" @click="onPageClick($event, page.idx)" v-else>{{page.idx}}</a>
       </span>
+      <!--
       <a tabindex="0" class="next pg-button " :class="{'pg-state-disabled':hasNext}" @click="onPageClick($event, 'next')" style="display: none">下一页</a>
       <a tabindex="0" class="last pg-button " :class="{'pg-state-disabled':isLast}"  @click="onPageClick($event, totalPage)" style="display: none">尾页</a>
+    -->
     </div>
   </div>
 </template>
@@ -56,7 +59,7 @@
       }
     },
     computed: {
-      isFirst: function () {
+/*      isFirst: function () {
         return this.curPage === 1
       },
       isLast: function () {
@@ -69,24 +72,32 @@
       hasPre: function () {
         let vm = this
         return vm.curPage === 1
-      },
+      },*/
       pages: function () {
         let vm = this
         let cur = vm.curPage
         let total = vm.totalPage
         let show = vm.showPage
-        vm.setFor(middle, lc, rc, cur)
+        /*
+        * 1 到 show
+        * */
         let lp = vm.setFor([], 1, show, cur)
-        let rp = vm.setFor([], total - 2, total, cur)
+        /*
+        * total - row + 1 到 total
+        * */
+        let rp = vm.setFor([], total - show + 1, total, cur)
         let middle = []
         let lc = cur - show > 0 ? cur - show : 1
         let rc = cur + show > total ? total : cur + show
-        lc = lc - show - 1 < 1 ? (lp = [], 1) : lc
-        rc = rc + show + 1 > total ? (rp = [], total) : rc
+        /*
+        * 左边不足 show, 或者show + 1 个，全展示
+        * 右边边不足 show, 或者show + 1 个，全展示
+        * */
+        lc = lc - show - 1 > 1 ? lc : (lp = [], 1)
+        rc = rc + show + 1 < total ? rc : (rp = [], total)
         vm.setFor(middle, lc, rc, cur)
         lp.length > 0 && lp.push({idx: 'so'})
         rp.length > 0 && rp.unshift({idx: 'so'})
-
         return [].concat(lp, middle, rp)
 /*
 let maxPage = vm.showPage + min - 1
