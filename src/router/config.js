@@ -15,7 +15,7 @@ import EditOrder from 'components/order/EditOrder.vue'
 import Forbidden from 'components/Forbidden.vue'
 import store from 'my_vuex/store'
 import {isLogin} from 'my_vuex/getters/auth'
-import {setActiveMenu} from 'my_vuex/actions/actions'
+import {setActiveMenu} from 'my_vuex/actions/slider'
 import {resolveLogin} from 'my_vuex/actions/auth'
 
 let loginUrl = '/login'
@@ -114,7 +114,7 @@ export default (router) => {
   /*
   *  全局路由权限控制，无权限跳转至forbidden
   */
-  router.beforeEach(function (transition) {
+  router.beforeEach((transition) => {
     let login = isLogin(store.state)
     if (!login && window.__LOGIN_USER__) {
       resolveLogin(store, window.__LOGIN_USER__)
@@ -129,8 +129,10 @@ export default (router) => {
       transition.redirect(loginUrl)
       return
     }
-    let to = transition.to
-    setActiveMenu(store, to.name)
     transition.next()
+  })
+
+  router.afterEach(({to: {name}}) => {
+    setActiveMenu(store, name)
   })
 }

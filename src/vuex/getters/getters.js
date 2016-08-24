@@ -31,11 +31,11 @@ let menuRelPermission = {
 * 新增权限过滤
 * */
 let subMenuRelPermission = {
-  '/admin/user/add': 'userManager',
-  '/admin/role/add': 'roleManager',
-  '/admin/order/add': 'orderManager',
-  '/admin/user/order/add': 'userOrderManager',
-  '/admin/worker/add': 'workmanManager'
+  'addUser': 'userManager',
+  'addRole': 'roleManager',
+  'addOrder': 'orderManager',
+  'addUserOrder': 'userOrderManager',
+  'addWorker': 'workmanManager'
 }
 const filterMenus = (menus, permission, relPermission) => {
   let len = menus.length
@@ -124,6 +124,7 @@ export const getRegion = (state) => {
 /*
 * 弹窗
 * */
+/*
 export const getDialog = (state) => {
   return state.admin.dialog
-}
+}*/
