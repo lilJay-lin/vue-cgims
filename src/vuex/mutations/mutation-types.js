@@ -8,6 +8,7 @@
 export const SET_SLIDER = 'set_slider'
 export const SET_ACTIVE_MENU = 'set_active_menu'
 export const SET_MENU_OPEN = 'set_menu_open'
+export const SET_MENU_REL_PERMISSION = 'set_menu_rel_permission'
 /*
 * 登录页
 * */

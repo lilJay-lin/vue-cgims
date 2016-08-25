@@ -3,6 +3,7 @@
  */
 import {AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_PERMISSION} from 'my_vuex/mutations/mutation-types'
 import Server from 'src/api/server.js'
+import {setMenuRelPermission} from 'my_vuex/actions/slider'
 let forEach = require('lodash/forEach')
 let baseUrl = '/user'
 /*
@@ -47,13 +48,8 @@ export const resolveLogin = ({dispatch, state}, json) => {
   }
   dispatch(AUTH_LOGIN_SUCCESS, obj)
   setPermission({dispatch}, permissionCodes)
-/*
-showUserDetail({dispatch}, {id: userId}).then(() => {
-    console.log(state.user.detail)
-  })
-  */
 }
-export const setPermission = ({dispatch}, permissionCodes) => {
+export const setPermission = ({dispatch, state}, permissionCodes) => {
   if (permissionCodes) {
     let arr = permissionCodes.split(',')
     let obj = {}
@@ -61,6 +57,7 @@ export const setPermission = ({dispatch}, permissionCodes) => {
       obj[val.trim()] = true
     })
     dispatch(AUTH_PERMISSION, obj)
+    setMenuRelPermission({dispatch, state}, obj)
   }
 }
 /*

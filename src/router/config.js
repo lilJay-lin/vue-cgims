@@ -18,7 +18,7 @@ import {isLogin} from 'my_vuex/getters/auth'
 import {setActiveMenu} from 'my_vuex/actions/slider'
 import {resolveLogin} from 'my_vuex/actions/auth'
 
-let loginUrl = '/login'
+const LOGIN_ROUTER_NAME = 'login'
 export default (router) => {
   router.map({
     '/admin': {
@@ -103,7 +103,8 @@ export default (router) => {
         }
       }
     },
-    [loginUrl]: {
+    '/login': {
+      name: LOGIN_ROUTER_NAME,
       component: Login
     }
   })
@@ -120,14 +121,19 @@ export default (router) => {
       resolveLogin(store, window.__LOGIN_USER__)
       login = isLogin(store.state)
     }
-    let toPath = transition.to.path
-    if (~toPath.indexOf(loginUrl)) {
+    let toName = transition.to.name
+    if (toName === LOGIN_ROUTER_NAME) {
       if (login) {
         transition.redirect('/admin')
+        return
       }
     } else if (!login) {
-      transition.redirect(loginUrl)
+      transition.redirect('/login')
       return
+    }
+    let menuRelPermission = store.state.slider.menuRelPermission
+    if (menuRelPermission.hasOwnProperty(toName) && !menuRelPermission[toName]) {
+      transition.redirect('/admin/forbidden')
     }
     transition.next()
   })

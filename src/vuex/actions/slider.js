@@ -1,32 +1,17 @@
 /**
  * Created by liljay on 2016/8/23.
  */
-import {SET_SLIDER, SET_MENU_OPEN, SET_ACTIVE_MENU} from '../mutations/mutation-types'
+import {SET_SLIDER, SET_MENU_OPEN, SET_ACTIVE_MENU, SET_MENU_REL_PERMISSION} from '../mutations/mutation-types'
 import {isUndefined} from 'src/util/util'
+import {menuRelPermission} from 'my_vuex/config'
 const forEach = require('lodash/forEach')
 const clone = require('lodash/cloneDeep')
-/*
- * 菜单和权限关联表配置
- * key-map, eg: {菜单名: 权限}
- * */
-let menuRelPermission = {
-  'startStatistic': 'analysisManager',
-  'searchUser': 'userManager',
-  'searchRole': 'roleManager',
-  'searchOrder': 'orderManager/orderView',
-  'searchUserOrder': 'userOrderManager',
-  'searchWorker': 'orderManager/orderView/workmanManager/userOrderManager',
-  'addUser': 'userManager',
-  'addRole': 'roleManager',
-  'addOrder': 'orderManager',
-  'addUserOrder': 'userOrderManager',
-  'addWorker': 'workmanManager'
-}
 /*
  * 菜单关联权限
  * permission: 用户拥有的权限，key-map,eg: {roleManager: true, orderManager: false}
  * */
-const setRelPermission = (permission, relPermission) => {
+export const setMenuRelPermission = ({dispatch, state}, permission) => {
+  let relPermission = menuRelPermission
   forEach(relPermission, (val, key) => {
     let hasPermission = false
     let pArr = val.split('/')
@@ -38,8 +23,9 @@ const setRelPermission = (permission, relPermission) => {
         }
       })
     }
-    hasPermission ? relPermission[key] = true : relPermission[key] = false
+    hasPermission === true ? relPermission[key] = true : relPermission[key] = false
   })
+  dispatch(SET_MENU_REL_PERMISSION, relPermission)
 }
 const filterMenus = (menus, relPermission) => {
   let len = menus.length
@@ -167,8 +153,7 @@ export const setMenus = ({dispatch, state}) => {
       ]
     }
   ]
-  let permission = state.auth.permission
-  setRelPermission(permission, menuRelPermission)
+  let menuRelPermission = state.slider.menuRelPermission
   filterMenus(menus, menuRelPermission)
   dispatch(SET_SLIDER, setActive(fixMenus(menus), state.slider.active))
 }
