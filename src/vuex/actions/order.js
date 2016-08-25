@@ -20,6 +20,22 @@ export const setOrders = ({dispatch}, obj = {
   }}) => {
   dispatch(RECEIVE_ORDER, obj)
 }
+function insertSpace (str, position) {
+  if (str.length > position) {
+    if (str.charAt(position) !== ' ') {
+      str = str.substr(0, position) + ' ' + str.substring(position, str.length)
+    }
+  }
+  return str
+}
+function dealCardNum (val) {
+  val = val.replace(/([^\d])+/g, '')
+  val = insertSpace(val, 4)
+  val = insertSpace(val, 9)
+  val = insertSpace(val, 14)
+  val = insertSpace(val, 19)
+  return val
+}
 /*
  * 获取订单列表
  * */
@@ -57,6 +73,7 @@ export const searchOrder = ({dispatch, state}, {search = {
       order.completeDate = order.completeDate && dateFormat(order.completeDate)
       order.user = order.user || {id: ''}
       order.workman = order.workman || {}
+      order.workman.cardNum = order.workman.cardNum && dealCardNum(order.workman.cardNum) || ''
       return order
     })
     setOrders({dispatch}, {
@@ -95,12 +112,14 @@ export const showOrderDetail = ({dispatch, state}, id, creatorId) => {
     order.user = order.user || {name: ''}
     order.workman = order.workman || {}
     dispatch(RECEIVE_ORDER_DETAIL, res.result)
+    return res.result
   })
 }
-export const clearOrderDetail = ({dispatch}) => {
+export const clearOrderDetail = ({dispatch, state}) => {
+  let orderStatus = state.order.ui.personal ? '已收未付' : '未收未付'
   dispatch(RECEIVE_ORDER_DETAIL, {
     orderNumber: '',
-    orderStatus: '未收未付',
+    orderStatus: orderStatus,
     serviceType: '配送安装',
     customerName: '',
     customerPhoneNum: '',

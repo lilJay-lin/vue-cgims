@@ -3,7 +3,31 @@
     <Widget :padding="false" :title="'订单列表'">
       <div class="dataTables-filter-wrap order">
         <div class="dataTables-filter">
-          <label>
+          <label v-if="isPersonal">
+            <select class="form-control" v-el:order_status @change="setOrderStatus">
+              <option :value="isPersonal ? allPersonalStatus : ''" selected>全部状态</option>
+              <option :value="status" v-for="status in orderStatus | filterStatus 'select'" track-by="$index">{{status}}</option>
+            </select>
+            <select class="form-control" v-el:service_type>
+              <option value="" selected>全部类型</option>
+              <option value="配送安装">配送安装</option>
+              <option value="维修">维修</option>
+            </select>
+            <select class="form-control" v-el:creator_id v-if="isPersonal">
+              <option  v-for="slave in slaves" :value="slave.id" :selected="slave.id === orders.search.creatorId">{{slave.name}}</option>
+            </select>
+            <select class="form-control" v-el:creator_id v-else>
+              <option value="" selected>全部</option>
+              <option  v-for="user in users.list" :value="user.id">{{user.name}}</option>
+            </select>
+            <input type="text" v-el:begin_time placeholder="开始时间" style="width:80px" onClick="WdatePicker()"  readonly="true"/>
+            至
+            <input type="text" v-el:end_time placeholder="截止时间"  style="width:80px" onClick="WdatePicker()"  readonly="true"/>
+            <input type="text" @keydown.enter="startSearchOrder(1)" v-el:search/>
+            <button type="button" class="btn btn-info" @click="startSearchOrder(1)">搜索</button>
+            <a v-show="hasPermission" v-link="detailUrl + '/add'" class="btn btn-info">新增</a>
+          </label>
+          <label v-else>
             <select class="form-control" v-el:order_status @change="setOrderStatus">
               <option :value="isPersonal ? allPersonalStatus : ''" selected>全部状态</option>
               <option :value="status" v-for="status in orderStatus | filterStatus 'select'" track-by="$index">{{status}}</option>
@@ -98,8 +122,13 @@
               <span v-if="order.checked">{{order.checkInfo}}</span>
             </div>
           </td>
-          <td v-show="hasPermission" class="operation-group-td">
-            <div class="operation-group">
+          <td v-if="hasPermission" class="operation-group-td">
+            <div class="operation-group" v-if="isPersonal">
+              <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id, order.orderStatus)" v-if="order.orderStatus === '未收未付' || order.orderStatus === '已收未付'"><i class="icon-th-list"></i>操作</a>
+              <a href="javascript:void(0)" style="opacity: 0" v-else><i class="icon-th-list"></i>操作</a>
+              <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-flag" :class="{'red': order.description}"></i>备注</a>
+            </div>
+            <div class="operation-group" v-else>
               <a href="javascript:void(0)" @mouseout="hideOrderOpera" @mouseover="showOrderOpera($event, order.id, order.orderStatus)"><i class="icon-th-list"></i>操作</a>
               <a href="javascript:void(0)" @mouseout="hideOrderComment" @mouseover="showOrderComment($event, order.id, order.description)"><i class="icon-flag" :class="{'red': order.description}"></i>备注</a>
             </div>
@@ -109,12 +138,21 @@
 
       </table>
       <div class="fg-toolbar">
-        <div class="fg-toolbar-operation" v-show="hasPermission">
-          <select class="form-control" v-el:action>
-            <option value="删除" selected>删除</option>
-            <option :value="status" v-for="status in orderStatus | filterStatus 'batch'" track-by="$index">{{status}}</option>
-          </select>
-          <button type="button" class="btn btn-success" @click="onDealBatch()">批量操作</button>
+        <div v-if="hasPermission">
+          <div class="fg-toolbar-operation" v-if="isPersonal">
+            <select class="form-control" v-el:action v-if="searchStatus === '未收未付' || searchStatus === '已收未付'">
+              <option value="删除" selected>删除</option>
+              <option :value="status" v-for="status in orderStatus | filterStatus 'batch'" track-by="$index">{{status}}</option>
+            </select>
+            <button style="margin-left:2px" type="button" class="btn btn-success" @click="onDealBatch()" v-if="searchStatus === '未收未付' || searchStatus === '已收未付'">批量操作</button>
+          </div>
+          <div class="fg-toolbar-operation" v-else>
+            <select class="form-control" v-el:action>
+              <option value="删除" selected>删除</option>
+              <option :value="status" v-for="status in orderStatus | filterStatus 'batch'" track-by="$index">{{status}}</option>
+            </select>
+            <button type="button" class="btn btn-success" @click="onDealBatch()">批量操作</button>
+          </div>
         </div>
         <Pagination :cur-page="orders.pageInfo.curPage" :total="orders.pageInfo.total" :page-size="orders.pageInfo.pageSize" :total-page="orders.pageInfo.totalPage" @go-page="startSearchOrder"></Pagination>
       </div>
@@ -166,7 +204,8 @@
         return this.isPersonal ? '/admin/user/order' : '/admin/order'
       },
       allPersonalStatus: function () {
-        return '未收未付,已收未付'
+        let arr = this.orderStatus
+        return [].concat(arr.slice(0, 2), arr.slice(4, 6), [arr[9]]).join(',')
       }
     },
     ready: function () {
@@ -376,6 +415,7 @@
             return
           }
         }
+        vm.search = search
         back ? vm.searchOrder({search: search, curPage: orders.pageInfo.curPage}) : vm.searchOrder({search: search})
       }
     },
@@ -413,9 +453,9 @@
         let select = 'select'
         let batch = 'batch'
         if (vm.isPersonal) {
-          let arr1 = arr.slice(1, 5)
-          arr1.push(arr[9])
-          res = type === select ? arr.slice(0, 2) : (type === batch ? (searchStatus === vm.allPersonalStatus || searchStatus === '未收未付' ? arr1 : [arr[3], arr[9]]) : checkStatus === arr[0] ? arr1 : [arr[3], arr[9]])
+          let arr1 = arr.slice(1, 4)
+          arr1 = arr1.concat(arr.slice(6, 8))
+          res = type === select ? [].concat(arr.slice(0, 2), arr.slice(4, 6), [arr[9]]) : (type === batch ? (searchStatus === vm.allPersonalStatus || searchStatus === '未收未付' ? arr1 : [arr[3], arr[7]]) : checkStatus === arr[0] ? arr1 : [arr[3], arr[7]])
         } else {
           res = type === select ? arr : (type === batch ? (searchStatus === '' ? arr : vm.filter(arr, searchStatus)) : vm.filter(arr, checkStatus))
         }
@@ -437,7 +477,9 @@
     box-shadow: -1px 0px 2px #888888;
   }
   .orderPrice, .servicePrice{
-    color: #666
+    color: #666;
+    width: 40px;
+    display: inline-block;
   }
   .servicePrice {
     font-size: 16px;

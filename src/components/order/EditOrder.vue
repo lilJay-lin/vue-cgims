@@ -375,7 +375,10 @@
       orderStatus: function () {
         let arr = this.status
         let isNew = this.mode === 'new'
-        let status = this.isPersonal ? (isNew ? arr.slice(0, 4) : [].concat(arr.slice(0, 5), arr[arr.length - 1])) : (isNew ? arr.slice(0, 8) : arr)
+        let isQuery = this.mode === 'query'
+        let curStatus = this.order.orderStatus
+        let queryStatus = ['未收未完', '已收未完', '未收失败']
+        let status = this.isPersonal ? (isNew ? arr.slice(0, 4) : (isQuery ? (~queryStatus.indexOf(curStatus) ? queryStatus : [].concat(arr.slice(0, 4), arr.slice(4, 6)), [arr[6], arr[8], arr[9]]) : [].concat(arr.slice(0, 4), [arr[6], arr[8], arr[10]]))) : (isNew ? [].concat(arr.slice(0, 4), arr.slice(5, 7), arr.slice(9)) : arr)
         return status.map((val, idx) => {
           return {
             name: val,
@@ -527,6 +530,7 @@
     route: {
       data (transition) {
         let {to: {path, params: {id}, query: {type, creatorId}}} = transition
+        let vm = this
         if (id) {
           type = 'edit'
         } else {
@@ -537,10 +541,10 @@
         let hasPermission = permission.orderManager
         if (~path.indexOf('/admin/user/order')) {
           isPersonal = true
-          this.backUrl = '/admin/user/order/'
+          vm.backUrl = '/admin/user/order/'
           hasPermission = permission.userOrderManager
         } else {
-          this.backUrl = '/admin/order'
+          vm.backUrl = '/admin/order'
         }
         /*
          * 1.新增无权限或者无权限 跳转限制
@@ -553,21 +557,20 @@
             type = 'query'
           }
         }
-        this.sortProvinces = window.__PROVINCE_NAMES__ && window.__PROVINCE_NAMES__.split(',') || []
-        this.setRegion()
-        this.clearOrderDetail()
-        this.setOrderPersonal(isPersonal)
-        this.setOrderMode(type)
+        vm.sortProvinces = window.__PROVINCE_NAMES__ && window.__PROVINCE_NAMES__.split(',') || []
+        vm.setRegion()
+        vm.setOrderPersonal(isPersonal)
+        vm.clearOrderDetail()
         /*
-         this.searchWorker({})
+         vm.searchWorker({})
          */
-        this.searchKeyword = ''
-        this.searchService = ''
-        this.searchService = ''
-        this.searchRegion = ''
-        this.province = '省'
+        vm.searchKeyword = ''
+        vm.searchService = ''
+        vm.searchService = ''
+        vm.searchRegion = ''
+        vm.province = '省'
 
-        this.setWorkers({
+        vm.setWorkers({
           search: {},
           list: [],
           pageInfo: {
@@ -578,7 +581,14 @@
           }
         })
         if (type !== 'new') {
-          return this.showOrderDetail(id, creatorId)
+          return vm.showOrderDetail(id, creatorId).then((order) => {
+            if (isPersonal) {
+              type = order.orderStatus === '未收未付' || order.orderStatus === '已收未付' ? type : 'query'
+            }
+            vm.setOrderMode(type)
+          })
+        } else {
+          vm.setOrderMode(type)
         }
         return transition.next()
       }

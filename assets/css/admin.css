@@ -3292,3 +3292,6 @@ table.table td.description{
 select{
   border-radius: 4px;
 }
+.controls-pics-item{
+  overflow: hidden;
+}
