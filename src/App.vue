@@ -8,9 +8,6 @@
 <script>
 import store from './vuex/store'
 import Dialog from 'src/components/Dialog.vue'
-/*
-import {getDialog} from './vuex/getters/getters'
-*/
 import {toggleDialog} from './vuex/actions/dialog'
 export default {
   components: {
@@ -24,10 +21,6 @@ export default {
     }
   },
   vuex: {
-/*
-    getters: {
-      dialog: getDialog
-    },*/
     actions: {
       toggleDialog
     }
