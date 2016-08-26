@@ -94,7 +94,7 @@
             </div>
           </td>
           <td><span class="orderPrice" :class="{'change': order.orderPriceChanged}">{{order.orderPrice}}</span><i class="priceSplit"></i><span class="servicePrice" :class="{'change': order.servicePriceChanged}">{{order.servicePrice}}</span></td>
-          <td style="width:20%">
+          <td style="width:20%;font-size: 14px;">
             <div v-if="isPersonal">
               <p>{{order.workman.name}}</p>
               <p>{{order.workman.phoneNum}}</p>
