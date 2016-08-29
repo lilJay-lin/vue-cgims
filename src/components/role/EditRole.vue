@@ -79,7 +79,7 @@
   </Content>
 </template>
 <script type="text/ecmascript-6">
-  import {getBreadCrumb} from 'my_vuex/getters/getters'
+
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Pagination from 'components/Pagination'
@@ -142,7 +142,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         role: getDetailRole,
         permissions: getPermissions,
         mode: getUIOptions,

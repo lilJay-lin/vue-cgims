@@ -586,7 +586,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         order: getDetailOrder,
         workers: getWorkers,
         mode: getUIOptions,

@@ -71,8 +71,9 @@ export const getSlider = state => {
 }
 
 /*
+/!*
 * 获取面包屑菜单列表
-* */
+* *!/
 function loopSubMenu (menus, breads, active) {
   let isHit = 0
   forEach(menus, (menu) => {
@@ -106,6 +107,7 @@ export const getBreadCrumb = (state) => {
     active: active
   }
 }
+*/
 
 /*
 * 是否登录

@@ -59,7 +59,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {getPermission} from 'my_vuex/getters/auth'
-  import {getBreadCrumb} from 'my_vuex/getters/getters'
+
   import {getUsers, getCheckAll, hasCheck} from 'my_vuex/getters/user'
   import {searchUser, checkUser, deleteUser} from 'my_vuex/actions/user'
   import Content from 'components/Content'
@@ -123,7 +123,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         users: getUsers,
         checkAll: getCheckAll,
         permission: getPermission,

@@ -381,7 +381,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         orders: getOrders,
         checkAll: getCheckAll,
         region: getRegion,

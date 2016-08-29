@@ -614,7 +614,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         worker: getDetailWorker,
         mode: getUIOptions,
         permission: getPermission,

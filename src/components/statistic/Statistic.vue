@@ -151,7 +151,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         region: getRegion,
         users: getUsers,
         search: getSearch,

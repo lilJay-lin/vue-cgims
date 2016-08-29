@@ -6,7 +6,7 @@
   </Content>
 </template>
 <script>
-  import {getBreadCrumb} from 'my_vuex/getters/getters'
+
   import Content from 'components/Content'
   import Widget from 'components/Widget'
   import Error from 'components/Error'

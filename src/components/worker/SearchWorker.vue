@@ -162,7 +162,7 @@
     },
     vuex: {
       getters: {
-        breads: getBreadCrumb,
+
         workers: getWorkers,
         checkAll: getCheckAll,
         region: getRegion,
