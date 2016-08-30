@@ -582,9 +582,9 @@
         })
         if (type !== 'new') {
           return vm.showOrderDetail(id, creatorId).then((order) => {
-            if (isPersonal) {
+/*            if (isPersonal) {
               type = order.orderStatus === '未收未付' || order.orderStatus === '已收未付' ? type : 'query'
-            }
+            }*/
             vm.setOrderMode(type)
           })
         } else {

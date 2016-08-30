@@ -61,7 +61,17 @@
                 </span>
               </div>
               银行卡
+<!--
               <input  :readOnly="worker.receiveType === 0 || isQuery" style=" width: 135px;" type="text" placeholder="银行名称" :value="worker.bank" @change="setData('bank', $event)"/>
+-->
+              <select style="height:30px" :disabled="worker.receiveType === 0 || isQuery" @change="setData('bank', $event)" placeholder="银行名称">
+                <option value="" selected="worker.bank === ''"></option>
+                <option value="中国银行" selected="worker.bank === '中国银行'">中国银行</option>
+                <option value="农业银行" selected="worker.bank === '农业银行'">农业银行</option>
+                <option value="建设银行" selected="worker.bank === '建设银行'">建设银行</option>
+                <option value="工商银行" selected="worker.bank === '工商银行'">工商银行</option>
+                <option value="邮政储蓄" selected="worker.bank === '邮政储蓄'">邮政储蓄</option>
+              </select>
               <input :readOnly="worker.receiveType === 0 || isQuery" style="  width: 235px;" type="text" placeholder="账号" :value="newCardNum"  @change="setData('cardNum', $event)"/>
               <input  :readOnly="worker.receiveType === 0 || isQuery" style=" width: 125px;" type="text" placeholder="姓名" :value="worker.bankCardName" @change="setData('bankCardName', $event)"/>
             </label>
