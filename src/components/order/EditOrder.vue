@@ -10,8 +10,8 @@
         </div>
         <div class="control-group">
           <label class="control-label">订单状态</label>
-          <div class="controls">
-            <radio-group :radios="orderStatus" :name="'orderStatus'":readOnly="isQuery" :checked="order.orderStatus" @radio-checked="setOrderStatus"></radio-group>
+          <div class="controls" style="margin-top:5px;">
+            <radio-group :radios="orderStatus" :name="'orderStatus'":readOnly="isQuery || isPersonal && (order.orderStatus === '已收未完' || order.orderStatus === '未收未完' || order.orderStatus === '未收完成')" :checked="order.orderStatus" @radio-checked="setOrderStatus"></radio-group>
           </div>
         </div>
         <div class="control-group">
@@ -375,10 +375,9 @@
       orderStatus: function () {
         let arr = this.status
         let isNew = this.mode === 'new'
-        let isQuery = this.mode === 'query'
         let curStatus = this.order.orderStatus
-        let queryStatus = ['未收未完', '已收未完', '未收失败']
-        let status = this.isPersonal ? (isNew ? arr.slice(0, 4) : (isQuery ? (~queryStatus.indexOf(curStatus) ? queryStatus : [].concat(arr.slice(0, 4), arr.slice(4, 6)), [arr[6], arr[8], arr[9]]) : [].concat(arr.slice(0, 4), [arr[6], arr[8], arr[10]]))) : (isNew ? [].concat(arr.slice(0, 4), arr.slice(5, 7), arr.slice(9)) : arr)
+        let queryStatus = ['未收未完', '已收未完', '未收完成']
+        let status = this.isPersonal ? (isNew ? arr.slice(0, 4) : ~queryStatus.indexOf(curStatus) ? queryStatus : [].concat(arr.slice(0, 4), [arr[6], arr[8], arr[10]])) : (isNew ? [].concat(arr.slice(0, 4), arr.slice(5, 7), arr.slice(9)) : arr)
         return status.map((val, idx) => {
           return {
             name: val,
