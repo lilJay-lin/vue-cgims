@@ -110,7 +110,7 @@
               </div>
             </div>
           </td>
-          <td class="description">
+          <td class="description" style="text-align: left">
             <div>
               <span>{{order.customerName}}</span>
               <span>{{order.customerPhoneNum}}</span>
