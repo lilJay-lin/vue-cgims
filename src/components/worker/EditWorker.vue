@@ -574,7 +574,7 @@
           endTime,
           url: '/workman/' + this.worker.id + '/order'
         }
-        this.searchOrder({search, curPage: page || 1})
+        this.searchOrder({search, curPage: page || 1}, 1)
       }
 
     },

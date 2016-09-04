@@ -5,12 +5,12 @@ import Server from 'src/api/server.js'
 import {RECEIVE_USE, CHECK_ALL_USER, CHECK_USER, DELETE_USER, RECEIVE_USER_DETAIL,
   DELETE_USER_REL_ROLE, ADD_USER_REL_ROLE, DELETE_USER_REL_SLAVE, ADD_USER_REL_SLAVE, SET_USER_MODE} from 'my_vuex/mutations/user'
 import {trim} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog, noFound} from 'my_vuex/actions/actions'
 /*
 * 获取用户列表
 * */
 let baseUrl = '/user'
-export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1, pageSize = ''}) => {
+export const searchUser = ({state, dispatch}, {searchKeyword = '', curPage = 1, pageSize = ''}, act = 0) => {
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage + '&pageSize=' + pageSize
   return Server.request({
     url,
@@ -31,6 +31,7 @@ export const searchUser = ({dispatch}, {searchKeyword = '', curPage = 1, pageSiz
         total: parseInt(result.total, 10)
       }
     })
+    noFound({dispatch, state}, list, act)
   })
 }
 

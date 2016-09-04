@@ -81,7 +81,7 @@
       },
       startSearchRole: function (page) {
         let searchKeyword = this.$els.search.value.trim()
-        this.searchRole({searchKeyword, curPage: page || 1})
+        this.searchRole({searchKeyword, curPage: page || 1}, 1)
       },
       onDeleteRole: function (id) {
         let vm = this

@@ -430,7 +430,7 @@
           searchKeyword,
           region,
           serverType: service
-        }, curPage: page || 1})
+        }, curPage: page || 1}, 1)
       },
       selectRegion: function (region) {
         this.$els.search_region.value = region.join('/')

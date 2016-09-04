@@ -4,7 +4,7 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_ORDER, CHECK_ALL_ORDER, CHECK_ORDER, DELETE_ORDER, RECEIVE_ORDER_DETAIL, SET_ORDER_PERSONAL, SET_ORDER_MODE, UPDATE_ORDER_DESCRIPTION, SET_ORDER} from 'my_vuex/mutations/order'
 import {trim, dateFormat} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog, noFound} from 'my_vuex/actions/actions'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
 const getBaseUrl = (state, id) => {
@@ -47,7 +47,7 @@ export const searchOrder = ({dispatch, state}, {search = {
   beginTime: '',
   endTime: '',
   url: ''
-}, curPage = 1}) => {
+}, curPage = 1}, act = 0) => {
   let searchKeyword = search.searchKeyword || ''
   let orderStatus = search.orderStatus || ''
   let serviceType = search.serviceType || ''
@@ -86,6 +86,7 @@ export const searchOrder = ({dispatch, state}, {search = {
         total: parseInt(result.total, 10)
       }
     })
+    noFound({dispatch, state}, list, act)
   }, () => {
     setOrders({dispatch}, {search})
   })

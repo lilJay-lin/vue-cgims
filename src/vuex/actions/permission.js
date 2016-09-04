@@ -3,6 +3,7 @@
  */
 import Server from 'src/api/server.js'
 import {RECEIVE_PERMISSION} from 'my_vuex/mutations/permission'
+import {noFound} from 'my_vuex/actions/actions'
 /*
 import {RECEIVE_PERMISSION, CHECK_ALL_PERMISSION, CHECK_PERMISSION, DELETE_PERMISSION, RECEIVE_PERMISSION_DETAIL} from 'my_vuex/mutations/permission'
 */
@@ -10,7 +11,7 @@ import {RECEIVE_PERMISSION, CHECK_ALL_PERMISSION, CHECK_PERMISSION, DELETE_PERMI
  * 获取用户列表
  * */
 let baseUrl = '/permission'
-export const searchPermission = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
+export const searchPermission = ({state, dispatch}, {searchKeyword = '', curPage = 1}, act = 0) => {
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage
   Server.request({
     url,
@@ -33,6 +34,7 @@ export const searchPermission = ({dispatch}, {searchKeyword = '', curPage = 1}) 
         total: parseInt(result.total, 10)
       }
     })
+    noFound({dispatch, state}, result.datas, act)
   })
 }
 

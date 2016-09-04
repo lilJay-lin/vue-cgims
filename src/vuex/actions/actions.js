@@ -39,3 +39,14 @@ export const setOrderRegion = ({dispatch}) => {
   }
   dispatch(SET_REGION, region)
 }
+
+export const noFound = ({state, dispatch}, list = [], act = 0) => {
+  if (list.length === 0 && act === 1) {
+    toggleDialog({state, dispatch}, {
+      show: true,
+      content: '未找到匹配数据',
+      hasSuccessBtn: false,
+      hasCloseBtn: false
+    })
+  }
+}

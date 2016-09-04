@@ -108,7 +108,7 @@
     methods: {
       startSearchPermission: function (page) {
         let searchKeyword = this.$els.search.value.trim()
-        this.searchPermission({searchKeyword, curPage: page || 1})
+        this.searchPermission({searchKeyword, curPage: page || 1}, 1)
       },
       onSaveRole: function () {
         let vm = this

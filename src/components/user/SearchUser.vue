@@ -84,7 +84,7 @@
       },
       startSearchUser: function (page) {
         let searchKeyword = this.$els.search.value.trim()
-        this.searchUser({searchKeyword, curPage: page || 1})
+        this.searchUser({searchKeyword, curPage: page || 1}, 1)
       },
       onDeleteUser: function (id) {
         let vm = this

@@ -204,11 +204,11 @@
       },
       startSearchRole: function (page) {
         let searchRoleKeyword = this.$els.search_role.value.trim()
-        this.searchRole({searchKeyword: searchRoleKeyword, curPage: page || 1})
+        this.searchRole({searchKeyword: searchRoleKeyword, curPage: page || 1}, 1)
       },
       startSearchUser: function (page) {
         let searchUserKeyword = this.$els.search_user.value.trim()
-        this.searchUser({searchKeyword: searchUserKeyword, curPage: page || 1})
+        this.searchUser({searchKeyword: searchUserKeyword, curPage: page || 1}, 1)
       },
       onSaveUser: function () {
         let vm = this

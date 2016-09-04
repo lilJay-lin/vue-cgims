@@ -141,7 +141,7 @@
         <div v-if="hasPermission">
           <div class="fg-toolbar-operation" v-if="isPersonal">
             <select class="form-control" v-el:action v-if="searchStatus === '未收未付' || searchStatus === '已收未付'">
-              <option value="删除" selected>删除</option>
+              <!--<option value="删除" selected>删除</option>-->
               <option :value="status" v-for="status in orderStatus | filterStatus 'batch'" track-by="$index">{{status}}</option>
             </select>
             <button style="margin-left:2px" type="button" class="btn btn-success" @click="onDealBatch()" v-if="searchStatus === '未收未付' || searchStatus === '已收未付'">批量操作</button>
@@ -244,7 +244,7 @@
           beginTime,
           endTime
         }
-        this.searchOrder({search, curPage: page || 1})
+        this.searchOrder({search, curPage: page || 1}, 1)
       },
       onSaveComment: function () {
         let vm = this

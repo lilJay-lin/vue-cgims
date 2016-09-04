@@ -4,18 +4,18 @@
 import Server from 'src/api/server.js'
 import {RECEIVE_WORKER, CHECK_ALL_WORKER, CHECK_WORKER, DELETE_WORKER, RECEIVE_WORKER_DETAIL, SET_WORKER_MODE, SET_WORKER} from 'my_vuex/mutations/worker'
 import {trim, dateFormat} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog, noFound} from 'my_vuex/actions/actions'
 /*
  * 获取师傅列表
  * */
 let baseUrl = '/workman'
 let forEach = require('lodash/forEach')
 let clone = require('lodash/cloneDeep')
-export const searchWorker = ({dispatch}, {search = {
+export const searchWorker = ({state, dispatch}, {search = {
   searchKeyword: '',
   region: '',
   serverType: ''
-}, curPage = 1}) => {
+}, curPage = 1}, act = 0) => {
   let regions = (search.region || '').split('/')
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(search.searchKeyword || '') +
     '&province=' + window.encodeURIComponent(regions[0] || '') +
@@ -43,6 +43,7 @@ export const searchWorker = ({dispatch}, {search = {
         total: parseInt(result.total, 10)
       }
     })
+    noFound({dispatch, state}, list, act)
   })
 }
 export const setWorkers = ({dispatch}, obj = {

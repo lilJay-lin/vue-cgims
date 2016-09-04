@@ -5,12 +5,12 @@ import Server from 'src/api/server.js'
 import {RECEIVE_ROLE, CHECK_ALL_ROLE, CHECK_ROLE, DELETE_ROLE, RECEIVE_ROLE_DETAIL,
   DELETE_ROLE_REL_PERMISSION, ADD_ROLE_REL_PERMISSION, SET_ROLE_MODE} from 'my_vuex/mutations/role'
 import {trim} from 'src/util/util'
-import {toggleDialog} from 'my_vuex/actions/actions'
+import {toggleDialog, noFound} from 'my_vuex/actions/actions'
 /*
  * 获取权限列表
  * */
 let baseUrl = '/role'
-export const searchRole = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
+export const searchRole = ({state, dispatch}, {searchKeyword = '', curPage = 1}, act = 0) => {
   let url = baseUrl + '?searchKeyword=' + window.encodeURIComponent(searchKeyword) + '&curPage=' + curPage
   return Server.request({
     url,
@@ -31,6 +31,7 @@ export const searchRole = ({dispatch}, {searchKeyword = '', curPage = 1}) => {
         total: parseInt(result.total, 10)
       }
     })
+    noFound({dispatch, state}, list, act)
   })
 }
 /*
